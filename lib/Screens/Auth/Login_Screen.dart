@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../Utilties/App_Colors.dart';
+import 'Register_Screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -408,16 +409,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 SizedBox(width: 5),
                                 GestureDetector(
-                                  // onTap: () {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) =>
-                                  //           RegisterScreen(),
-                                  //     ),
-                                  //   );
-                                  //   clearController();
-                                  // },
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RegisterScreen(),
+                                      ),
+                                    );
+                                    clearController();
+                                  },
                                   child: Text(
                                     "Sign Up",
                                     style: TextStyle(
