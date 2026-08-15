@@ -11,7 +11,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.background,
     inputDecorationTheme: InputDecorationTheme(
       prefixIconColor: Colors.black,
-      hintStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      hintStyle: TextStyle(color: AppColors.moderateGrey, fontWeight: FontWeight.bold),
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),

@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      backgroundColor: Colors.grey.shade900,
+                                      backgroundColor: AppColors.cards,
                                       title: Text("Forget Password"),
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -168,16 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   textInputAction:
                                                       TextInputAction.done,
                                                   decoration: InputDecoration(
-                                                    filled: true,
-                                                    fillColor:
-                                                        Colors.grey.shade900,
                                                     hintText:
                                                         "Enter Your Email",
-                                                    hintStyle: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                    border:
-                                                        OutlineInputBorder(),
                                                   ),
                                                   validator: (value) {
                                                     if (value!.isEmpty) {
@@ -193,6 +185,57 @@ class _LoginScreenState extends State<LoginScreen> {
                                           SizedBox(height: 1),
                                         ],
                                       ),
+                                      actions: [
+                                        Container(
+                                          width: MediaQuery.of(
+                                            context,
+                                          ).size.width,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.primaryColor,
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadiusGeometry.circular(
+                                                      8.0,
+                                                    ),
+                                              ),
+                                            ),
+                                            onPressed: () {},
+                                            child: Text(
+                                              "Send Resent Link",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(
+                                            context,
+                                          ).size.width,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.primaryColor,
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadiusGeometry.circular(
+                                                      8.0,
+                                                    ),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              clearController();
+                                            },
+                                            child: Text(
+                                              "Back To Login",
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                       // actions: [
                                       //   ElevatedButton(
                                       //     style: ElevatedButton.styleFrom(
