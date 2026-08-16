@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:task_flow/Widgets/Error_SnackBar.dart';
 
 import '../../Utilties/App_Colors.dart';
@@ -206,7 +204,57 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     ),
                                               ),
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () async {
+                                              if (_forgetformkey.currentState!
+                                                  .validate()) {
+                                                try {
+                                                  await FirebaseAuth.instance
+                                                      .sendPasswordResetEmail(
+                                                        email:
+                                                            forgetPasswordController
+                                                                .text,
+                                                      );
+                                                  SuccessSnackBar.showSuccessSnackBar(
+                                                    context,
+                                                    "Password reset email sent",
+                                                  );
+                                                  Navigator.pop(context);
+                                                } on FirebaseAuthException catch (
+                                                  e
+                                                ) {
+                                                  if (e.code ==
+                                                      'invalid-email') {
+                                                    ErrorSnackbar.showErrorSnackBar(
+                                                      context,
+                                                      "Invalid Email",
+                                                    );
+                                                  } else if (e.code ==
+                                                      'user-not-found') {
+                                                    ErrorSnackbar.showErrorSnackBar(
+                                                      context,
+                                                      "No user found",
+                                                    );
+                                                  } else if (e.code ==
+                                                      'invalid-credential') {
+                                                    ErrorSnackbar.showErrorSnackBar(
+                                                      context,
+                                                      "Invalid email or password",
+                                                    );
+                                                  } else if (e.code ==
+                                                      'network-request-failed') {
+                                                    ErrorSnackbar.showErrorSnackBar(
+                                                      context,
+                                                      "Please check your internet connection",
+                                                    );
+                                                  } else {
+                                                    ErrorSnackbar.showErrorSnackBar(
+                                                      context,
+                                                      "Something went wrong",
+                                                    );
+                                                  }
+                                                }
+                                              }
+                                            },
                                             child: Text(
                                               "Send Resent Link",
                                               style: TextStyle(fontSize: 16),
@@ -240,91 +288,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                         ),
                                       ],
-                                      // actions: [
-                                      //   ElevatedButton(
-                                      //     style: ElevatedButton.styleFrom(
-                                      //       backgroundColor:
-                                      //       AppColors.error,
-                                      //       foregroundColor: Colors.white,
-                                      //       shape: RoundedRectangleBorder(
-                                      //         borderRadius:
-                                      //         BorderRadiusGeometry.circular(
-                                      //           8.0,
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //     onPressed: () {
-                                      //       Navigator.pop(context);
-                                      //       clearController();
-                                      //     },
-                                      //     child: Text("Cancel"),
-                                      //   ),
-                                      //   ElevatedButton(
-                                      //     style: ElevatedButton.styleFrom(
-                                      //       backgroundColor:
-                                      //       AppColors.success,
-                                      //       foregroundColor: Colors.white,
-                                      //       shape: RoundedRectangleBorder(
-                                      //         borderRadius:
-                                      //         BorderRadiusGeometry.circular(
-                                      //           8.0,
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //     onPressed: () async {
-                                      //       if (_forgetformkey.currentState!
-                                      //           .validate()) {
-                                      //         try {
-                                      //           await FirebaseAuth.instance
-                                      //               .sendPasswordResetEmail(
-                                      //             email:
-                                      //             forgetPasswordController
-                                      //                 .text,
-                                      //           );
-                                      //           SuccessSnackBar.showSuccessSnackBar(
-                                      //             context,
-                                      //             "Password reset email sent",
-                                      //           );
-                                      //           Navigator.pop(context);
-                                      //         } on FirebaseAuthException catch (
-                                      //         e
-                                      //         ) {
-                                      //           if (e.code ==
-                                      //               'invalid-email') {
-                                      //             ErrorSnackbar.showErrorSnackBar(
-                                      //               context,
-                                      //               "Invalid Email",
-                                      //             );
-                                      //           } else if (e.code ==
-                                      //               'user-not-found') {
-                                      //             ErrorSnackbar.showErrorSnackBar(
-                                      //               context,
-                                      //               "No user found",
-                                      //             );
-                                      //           } else if (e.code ==
-                                      //               'invalid-credential') {
-                                      //             ErrorSnackbar.showErrorSnackBar(
-                                      //               context,
-                                      //               "Invalid email or password",
-                                      //             );
-                                      //           } else if (e.code ==
-                                      //               'network-request-failed') {
-                                      //             ErrorSnackbar.showErrorSnackBar(
-                                      //               context,
-                                      //               "Please check your internet connection",
-                                      //             );
-                                      //           } else {
-                                      //             ErrorSnackbar.showErrorSnackBar(
-                                      //               context,
-                                      //               "Something went wrong",
-                                      //             );
-                                      //           }
-                                      //         }
-                                      //       }
-                                      //     },
-                                      //     child: Text("Reset Password"),
-                                      //   ),
-                                      // ],
                                     ),
                                   );
                                 },
