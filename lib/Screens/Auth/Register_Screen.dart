@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../Utilties/App_Colors.dart';
+import '../../Widgets/Error_SnackBar.dart';
+import '../../Widgets/Success_SnackBar.dart';
 import 'Login_Screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -213,85 +216,71 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   foregroundColor: AppColors.lightColor,
                                   backgroundColor: AppColors.primaryColor,
                                 ),
-                                // onPressed: () async {
-                                //   if (_formKey.currentState!.validate()) {
-                                //     setState(() {
-                                //       isLoading = true;
-                                //     });
-                                //     try {
-                                //       await FirebaseAuth.instance
-                                //           .createUserWithEmailAndPassword(
-                                //         email: emailController.text
-                                //             .trim(),
-                                //         password: passwordController
-                                //             .text
-                                //             .trim(),
-                                //       );
-                                //       SuccessSnackBar.showSuccessSnackBar(
-                                //         context,
-                                //         "Account Created Successfully",
-                                //       );
-                                //       Navigator.pop(context);
-                                //       clearController();
-                                //     } on FirebaseAuthException catch (e) {
-                                //       if (e.code == 'invalid-email') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Invalid Email",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'user-not-found') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "No user found",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'email-already-in-use') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Email already exists",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'invalid-credential') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Invalid email or password",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'network-request-failed') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Please check your internet connection",
-                                //         );
-                                //       } else {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Something went wrong",
-                                //         );
-                                //       }
-                                //     } finally {
-                                //       setState(() {
-                                //         isLoading = false;
-                                //       });
-                                //     }
-                                //   } else {
-                                //     ScaffoldMessenger.of(
-                                //       context,
-                                //     ).showSnackBar(
-                                //       SnackBar(
-                                //         duration: Duration(seconds: 1),
-                                //         backgroundColor: AppColors.error,
-                                //         content: Text(
-                                //           "Please fill all the fields correctly",
-                                //           style: TextStyle(
-                                //             color: Colors.white,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     );
-                                //   }
-                                // },
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    try {
+                                      await FirebaseAuth.instance
+                                          .createUserWithEmailAndPassword(
+                                            email: emailController.text.trim(),
+                                            password: passwordController.text
+                                                .trim(),
+                                          );
+                                      SuccessSnackBar.showSuccessSnackBar(
+                                        context,
+                                        "Account Created Successfully",
+                                      );
+                                      Navigator.pop(context);
+                                      clearController();
+                                    } on FirebaseAuthException catch (e) {
+                                      if (e.code == 'invalid-email') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Invalid Email",
+                                        );
+                                      } else if (e.code == 'user-not-found') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "No user found",
+                                        );
+                                      } else if (e.code ==
+                                          'email-already-in-use') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Email already exists",
+                                        );
+                                      } else if (e.code ==
+                                          'invalid-credential') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Invalid email or password",
+                                        );
+                                      } else if (e.code ==
+                                          'network-request-failed') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Please check your internet connection",
+                                        );
+                                      } else {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Something went wrong",
+                                        );
+                                      }
+                                    } finally {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
+                                  } else {
+                                    ErrorSnackbar.showErrorSnackBar(
+                                      context,
+                                      "Please fill all the fields",
+                                    );
+                                  }
+                                },
                                 child: isLoading
                                     ? CircularProgressIndicator()
                                     : Text(

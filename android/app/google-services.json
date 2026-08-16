@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "396480238762",
+    "project_id": "black-dragon-411407",
+    "storage_bucket": "black-dragon-411407.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396480238762:android:f04f0fe443bb959eaf2cd3",
+        "android_client_info": {
+          "package_name": "com.example.task_flow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFKy2l0C9643e8grBwqnFpUjdHZggWKA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
