@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:task_flow/Widgets/Error_SnackBar.dart';
 
 import '../../Utilties/App_Colors.dart';
+import '../../Widgets/Success_SnackBar.dart';
+import '../Home/Home_Screen.dart';
 import 'Register_Screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -340,84 +344,71 @@ class _LoginScreenState extends State<LoginScreen> {
                             Container(
                               width: MediaQuery.of(context).size.width,
                               child: ElevatedButton(
-                                // onPressed: () async {
-                                //   if (_formKey.currentState!.validate()) {
-                                //     setState(() {
-                                //       isLoading = true;
-                                //     });
-                                //     try {
-                                //       await FirebaseAuth.instance
-                                //           .signInWithEmailAndPassword(
-                                //         email: emailController.text
-                                //             .trim(),
-                                //         password: passwordController
-                                //             .text
-                                //             .trim(),
-                                //       );
-                                //
-                                //       Navigator.pushReplacement(
-                                //         context,
-                                //         MaterialPageRoute(
-                                //           builder: (context) =>
-                                //               HomeScreen(),
-                                //         ),
-                                //       );
-                                //       SuccessSnackBar.showSuccessSnackBar(
-                                //         context,
-                                //         "Login successful",
-                                //       );
-                                //       clearController();
-                                //     } on FirebaseAuthException catch (e) {
-                                //       if (e.code == 'invalid-email') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Invalid email",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'user-not-found') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "No user found",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'invalid-credential') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Invalid email or password",
-                                //         );
-                                //       } else if (e.code ==
-                                //           'network-request-failed') {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Please check your internet connection",
-                                //         );
-                                //       } else {
-                                //         ErrorSnackbar.showErrorSnackBar(
-                                //           context,
-                                //           "Something went wrong",
-                                //         );
-                                //       }
-                                //     } finally {
-                                //       setState(() {
-                                //         isLoading = false;
-                                //       });
-                                //     }
-                                //   } else {
-                                //     ScaffoldMessenger.of(
-                                //       context,
-                                //     ).showSnackBar(
-                                //       SnackBar(
-                                //         duration: Duration(seconds: 1),
-                                //         backgroundColor: AppColors.error,
-                                //         content: Text(
-                                //           "Please fill all the fields",
-                                //           style: TextStyle(fontSize: 16),
-                                //         ),
-                                //       ),
-                                //     );
-                                //   }
-                                // },
-                                onPressed: () {},
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    try {
+                                      await FirebaseAuth.instance
+                                          .signInWithEmailAndPassword(
+                                            email: emailController.text.trim(),
+                                            password: passwordController.text
+                                                .trim(),
+                                          );
+
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HomeScreen(),
+                                        ),
+                                      );
+                                      SuccessSnackBar.showSuccessSnackBar(
+                                        context,
+                                        "Login successful",
+                                      );
+                                      clearController();
+                                    } on FirebaseAuthException catch (e) {
+                                      if (e.code == 'invalid-email') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Invalid email",
+                                        );
+                                      } else if (e.code == 'user-not-found') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "No user found",
+                                        );
+                                      } else if (e.code ==
+                                          'invalid-credential') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Invalid email or password",
+                                        );
+                                      } else if (e.code ==
+                                          'network-request-failed') {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Please check your internet connection",
+                                        );
+                                      } else {
+                                        ErrorSnackbar.showErrorSnackBar(
+                                          context,
+                                          "Something went wrong",
+                                        );
+                                      }
+                                    } finally {
+                                      setState(() {
+                                        isLoading = false;
+                                      });
+                                    }
+                                  } else {
+                                    ErrorSnackbar.showErrorSnackBar(
+                                      context,
+                                      "Please fill all the fields",
+                                    );
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsetsGeometry.all(15.0),
                                   shape: RoundedRectangleBorder(

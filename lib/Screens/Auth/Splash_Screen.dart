@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../Utilties/App_Colors.dart';
+import 'Login_Screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,6 +10,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,9 +54,11 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               Text(
                 "TaskFlow",
-                style: TextStyle(fontSize: 60,
-                    fontWeight: FontWeight(550),
-                    color: AppColors.textPrimary),
+                style: TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight(550),
+                  color: AppColors.textPrimary,
+                ),
               ),
             ],
           ),
@@ -54,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
             style: TextStyle(color: AppColors.moderateGrey, fontSize: 22),
           ),
           SizedBox(height: 50),
-          CircularProgressIndicator(color: AppColors.primaryColor,),
+          CircularProgressIndicator(color: AppColors.primaryColor),
           SizedBox(height: 20),
           Text(
             "Loading...",
