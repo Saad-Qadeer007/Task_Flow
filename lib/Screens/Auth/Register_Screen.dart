@@ -1,8 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Error_SnackBar.dart';
 import '../../Widgets/Success_SnackBar.dart';
@@ -227,6 +224,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             email: emailController.text.trim(),
                                             password: passwordController.text
                                                 .trim(),
+                                          );
+                                      FirebaseAuth.instance.currentUser
+                                          ?.updateDisplayName(
+                                            nameController.text.trim(),
                                           );
                                       SuccessSnackBar.showSuccessSnackBar(
                                         context,
