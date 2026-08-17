@@ -1,7 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../Auth/Login_Screen.dart';
+import 'package:task_flow/Screens/Home/Home_Screen_UI.dart';
+import '../../Utilties/App_Colors.dart';
+import '../Habits/Habit_Screen.dart';
+import '../Profile/Profile_Screen.dart';
+import '../Statistics/Statistics_Screen.dart';
+import '../Tasks/Show_Tasks_Screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,22 +14,58 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int selectedItem = 0;
+  List<Widget> screens = [
+    HomeScreenUi(),
+    ShowTasksScreen(),
+    HabitScreen(),
+    StatisticsScreen(),
+    ProfileScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
+      bottomNavigationBar: SafeArea(
+        child: BottomNavigationBar(
+          currentIndex: selectedItem,
+          onTap: (value) {
+            setState(() {
+              selectedItem = value;
             });
           },
-          child: Text("Press Me"),
+          backgroundColor: AppColors.background,
+          selectedItemColor: AppColors.primaryColor,
+          unselectedItemColor: AppColors.secondaryTextColor,
+          selectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_rounded),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.task_alt_rounded),
+              label: "Tasks",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.monitor_heart_rounded),
+              label: "Habits",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_rounded),
+              label: "Stats",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_2_rounded),
+              label: "Profile",
+            ),
+          ],
         ),
       ),
+      body: screens[selectedItem],
     );
   }
 }
