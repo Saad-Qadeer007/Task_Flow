@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../Utilties/App_Colors.dart';
 
 class TaskPriorityChips extends StatefulWidget {

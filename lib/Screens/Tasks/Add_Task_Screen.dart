@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:task_flow/Widgets/Success_SnackBar.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Priority_Chips.dart';
 
@@ -24,6 +24,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   final List<String> taskPriority = ["Low", "Medium", "High"];
 
+  final addTaskScreenFormKey = GlobalKey<FormState>();
+
   final List<String> reminderOptionList = [
     "5 Minutes Before",
     "10 Minutes Before",
@@ -38,6 +40,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   late String defaultReminder = reminderOptionList[0];
 
   TextEditingController dueDateController = TextEditingController();
+  TextEditingController dueTimeController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+  TextEditingController reminderController = TextEditingController();
+  TextEditingController repeatController = TextEditingController();
 
   late String selectedCategory = taskCategories[0];
 
@@ -76,6 +84,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 SizedBox(height: 20),
                 Form(
+                  key: addTaskScreenFormKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -90,6 +99,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: titleController,
                         textInputAction: TextInputAction.done,
                         decoration: InputDecoration(
                           hintText: "Complete Flutter Project",
@@ -114,6 +124,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        controller: descriptionController,
                         maxLines: 2,
                         textInputAction: TextInputAction.done,
                         decoration: InputDecoration(hintText: "Description..."),
@@ -137,6 +148,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       SizedBox(height: 10),
                       DropdownButtonFormField(
+                        validator: (value) {
+                          if (value == null) {
+                            return "Please Select Task Category";
+                          } else {
+                            return null;
+                          }
+                        },
                         initialValue: selectedCategory,
                         items: taskCategories
                             .map(
@@ -189,6 +207,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        validator: (value) {
+                          if (selectedDate == null) {
+                            return "Please Select Due Date";
+                          } else {
+                            return null;
+                          }
+                        },
                         controller: dueDateController,
                         readOnly: true,
                         onTap: () async {
@@ -225,7 +250,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
-                        controller: dueDateController,
+                        validator: (value) {
+                          if (selectedDate == null) {
+                            return "Please Select Due Time";
+                          } else {
+                            return null;
+                          }
+                        },
+                        controller: dueTimeController,
                         readOnly: true,
                         onTap: () async {
                           gettedTime = (await showTimePicker(
@@ -235,7 +267,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           if (gettedTime != null) {
                             setState(() {
                               selectedTime = gettedTime;
-                              dueDateController.text =
+                              dueTimeController.text =
                                   "${selectedTime!.hour}:${selectedTime!.minute} ${selectedTime!.period.name}";
                             });
                           }
@@ -324,8 +356,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () {},
-                          child: Text("Create Task",style: TextStyle(fontSize: 18),)
+                          onPressed: () {
+                            if (addTaskScreenFormKey.currentState!.validate()) {
+                              SuccessSnackBar.showSuccessSnackBar(
+                                context,
+                                "Task Created Successfully",
+                              );
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: Text(
+                            "Create Task",
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ),
                       ),
                     ],
