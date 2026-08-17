@@ -325,7 +325,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           onPressed: () {},
-                          child: Text("Create Task",style: TextStyle(fontSize: 18),),
+                          child: Text("Create Task",style: TextStyle(fontSize: 18),)
                         ),
                       ),
                     ],
