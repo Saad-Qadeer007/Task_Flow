@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../Auth/Login_Screen.dart';
+import 'package:task_flow/Widgets/Greeting_Card.dart';
+import '../../Utilties/App_Colors.dart';
+import '../../Widgets/Progress_Card.dart';
 
 class HomeScreenUi extends StatefulWidget {
   const HomeScreenUi({super.key});
@@ -14,17 +14,45 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            });
-          },
-          child: Text("Press Me"),
+      floatingActionButton: FloatingActionButton(
+        elevation: 2,
+        backgroundColor: AppColors.primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+        onPressed: () {},
+        child: Icon(Icons.add, size: 32, color: AppColors.lightColor),
+      ),
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Container(
+            padding: EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                GreetingCard(),
+                SizedBox(height: 10),
+                ProgressCard(),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                      "Today's Tasks",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Text(
+                      "View All",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

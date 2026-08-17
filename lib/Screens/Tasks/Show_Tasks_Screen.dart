@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class ShowTasksScreen extends StatefulWidget {
   const ShowTasksScreen({super.key});
 
@@ -11,6 +10,6 @@ class ShowTasksScreen extends StatefulWidget {
 class _ShowTasksScreenState extends State<ShowTasksScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(appBar: AppBar(title: Text("Tasks"), centerTitle: true));
   }
 }
