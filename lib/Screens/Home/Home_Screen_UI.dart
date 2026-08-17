@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Progress_Card.dart';
+import '../Tasks/Add_Task_Screen.dart';
 
 class HomeScreenUi extends StatefulWidget {
   const HomeScreenUi({super.key});
@@ -18,7 +19,12 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
         elevation: 2,
         backgroundColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AddTaskScreen()),
+          );
+        },
         child: Icon(Icons.add, size: 32, color: AppColors.lightColor),
       ),
       body: SingleChildScrollView(
