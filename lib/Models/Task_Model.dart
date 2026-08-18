@@ -10,6 +10,7 @@ class TaskModel {
   TimeOfDay? taskDueTime;
   String? taskReminder;
   String? taskRepeat;
+  DateTime? createdAt;
 
   TaskModel({
     this.id,
@@ -21,6 +22,7 @@ class TaskModel {
     this.taskDueTime,
     this.taskReminder,
     this.taskRepeat,
+    this.createdAt
   });
 
   static Map<String, dynamic> toMap(TaskModel model) {
@@ -37,6 +39,7 @@ class TaskModel {
       },
       "taskReminder": model.taskReminder,
       "taskRepeat": model.taskRepeat,
+      "createdAt": model.createdAt,
     };
   }
 
@@ -54,6 +57,7 @@ class TaskModel {
       ),
       taskReminder: map["taskReminder"],
       taskRepeat: map["taskRepeat"],
+      createdAt: map["createdAt"].toDate(),
     );
   }
 }

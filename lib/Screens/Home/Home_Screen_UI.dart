@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Progress_Card.dart';
+import '../../Widgets/Task_Cards.dart';
 import '../Tasks/Add_Task_Screen.dart';
 
 class HomeScreenUi extends StatefulWidget {
@@ -76,7 +77,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                         shrinkWrap: true,
                         itemCount: data?.length,
                         itemBuilder: (context, index) {
-                          return Text("Card Fetched");
+                          return TaskCards(data: data![index]);
                         },
                       );
                     }

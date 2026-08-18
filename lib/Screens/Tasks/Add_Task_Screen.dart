@@ -398,6 +398,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       taskDueTime: selectedTime,
                                       taskReminder: '',
                                       taskRepeat: '',
+                                      createdAt: DateTime.now(),
                                     ),
                                   );
 

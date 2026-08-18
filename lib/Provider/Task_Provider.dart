@@ -15,25 +15,28 @@ class TaskProvider extends ChangeNotifier {
 
   void addTask(TaskModel task) async {
     tasks.add(task);
-    print(tasks);
     await FirebaseServices().addTaskToFirebase(task);
     notifyListeners();
   }
 
   void getTasks() async {
     tasks.clear();
-    print("data deleted from the list");
-    print(tasks.length);
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
       data.docs.map((items) {
         tasks.add(TaskModel.toModel(items.data() as Map<String, dynamic>));
       }).toList();
-      print("data loaded in the list");
-      print(tasks.length);
       notifyListeners();
     } catch (e) {
       print(e);
     }
   }
+
+
+
+
+
+
+
+
 }

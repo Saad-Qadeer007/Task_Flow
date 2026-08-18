@@ -6,11 +6,12 @@ class FirebaseServices {
   Future<void> addTaskToFirebase(TaskModel model) async {
     Map<String, dynamic> data = TaskModel.toMap(model);
     try {
-      await FirebaseFirestore.instance
+      final document = await FirebaseFirestore.instance
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection("tasks")
           .add(data);
+      await document.update({"id": document.id});
     } catch (e) {
       print(e);
     }
@@ -25,4 +26,6 @@ class FirebaseServices {
         .get();
     return data;
   }
+
+
 }

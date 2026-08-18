@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Home/Home_Screen.dart';
 import '../../Utilties/App_Colors.dart';
 import 'Login_Screen.dart';
@@ -16,6 +18,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    initializeApp();
+  }
+
+  void initializeApp() async {
+    context.read<TaskProvider>().getTasks();
     Future.delayed(Duration(seconds: 3), () {
       print(FirebaseAuth.instance.currentUser?.displayName);
       if (FirebaseAuth.instance.currentUser != null) {
