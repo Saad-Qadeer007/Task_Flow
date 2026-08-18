@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 import '../Utilties/App_Colors.dart';
 
 class TaskPriorityChips extends StatefulWidget {
@@ -24,7 +26,10 @@ class _TaskPriorityChipsState extends State<TaskPriorityChips> {
             ? Colors.orange.shade600
             : Colors.red,
       ),
-      onPressed: () {},
+      onPressed: () {
+        print("pressed");
+        context.read<TaskProvider>().setPriority(widget.item);
+      },
       child: Text(
         widget.item,
         style: TextStyle(
