@@ -49,6 +49,7 @@ class _TaskCardsState extends State<TaskCards> {
               ),
               Spacer(),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Icon(
                     Icons.arrow_forward_ios_rounded,

@@ -1,13 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
-
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Summary_Card.dart';
 
 class TasksDetailScreen extends StatefulWidget {
-  const TasksDetailScreen({super.key});
+  final QueryDocumentSnapshot<Map<String, dynamic>> data;
+
+  const TasksDetailScreen({super.key, required this.data});
 
   @override
   State<TasksDetailScreen> createState() => _TasksDetailScreenState();
@@ -71,7 +73,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Complete Flutter Project",
+                          widget.data.data()["taskTitle"],
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -83,11 +85,24 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                             Icon(Icons.circle_rounded, color: Colors.red),
                             SizedBox(width: 10),
                             Text(
-                              "High",
+                              widget.data.data()["taskPriority"],
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.red,
+                                color:
+                                    widget.data
+                                            .data()["taskPriority"]
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "low"
+                                    ? Colors.cyan.shade800
+                                    : widget.data
+                                              .data()["taskPriority"]
+                                              .toString()
+                                              .toLowerCase() ==
+                                          "medium"
+                                    ? Colors.orange.shade600
+                                    : Colors.red,
                               ),
                             ),
                           ],
@@ -103,7 +118,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         ),
                         SizedBox(height: 15),
                         Text(
-                          "Description...",
+                          widget.data.data()["taskDescription"],
                           style: TextStyle(
                             color: AppColors.moderateGrey,
                             fontSize: 16,
@@ -114,37 +129,48 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         TaskSummaryCard(
                           icon: Icons.keyboard_option_key,
                           taskOption: "Category",
-                          taskOptionsData: "Study",
+                          taskOptionsData: widget.data.data()["taskCategory"],
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
-                          icon: Icons.keyboard_option_key,
+                          icon: Icons.lock_clock,
                           taskOption: "Due Date",
-                          taskOptionsData: "Study",
+                          taskOptionsData: widget.data
+                              .data()["taskDueDate"]
+                              .toDate()
+                              .toString()
+                              .substring(0, 10),
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
-                          icon: Icons.keyboard_option_key,
+                          icon: Icons.timeline,
                           taskOption: "Due Time",
-                          taskOptionsData: "Study",
+                          taskOptionsData:
+                              "${widget.data.data()["taskDueTime"]["hour"]}:${widget.data.data()["taskDueTime"]["minute"]}",
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
-                          icon: Icons.keyboard_option_key,
+                          icon: Icons.notifications_none,
                           taskOption: "Reminder",
-                          taskOptionsData: "Study",
+                          taskOptionsData:
+                              widget.data.data()["taskReminder"] == ""
+                              ? "No Data"
+                              : widget.data.data()["taskReminder"],
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
-                          icon: Icons.keyboard_option_key,
+                          icon: Icons.timer_rounded,
                           taskOption: "Repeat",
-                          taskOptionsData: "Study",
+                          taskOptionsData:
+                              widget.data.data()["taskReminder"] == ""
+                              ? "No Data"
+                              : widget.data.data()["taskRepeat"],
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
-                          icon: Icons.keyboard_option_key,
+                          icon: Icons.check_circle_outline_rounded,
                           taskOption: "Status",
-                          taskOptionsData: "Study",
+                          taskOptionsData: "Pending",
                         ),
                         Spacer(),
                         Container(

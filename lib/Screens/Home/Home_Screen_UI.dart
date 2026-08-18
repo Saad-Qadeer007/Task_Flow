@@ -83,7 +83,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TasksDetailScreen(),
+                                  builder: (context) => TasksDetailScreen(data : data[index]),
                                 ),
                               );
                             },
