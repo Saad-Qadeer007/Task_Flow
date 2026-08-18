@@ -32,11 +32,10 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
-
-
-
-
-
-
-
+  void deleteTask(Map<String, dynamic> data) async {
+    TaskModel task = TaskModel.toModel(data);
+    tasks.remove(task);
+    await FirebaseServices().deleteTaskFromFirebase(data);
+    notifyListeners();
+  }
 }

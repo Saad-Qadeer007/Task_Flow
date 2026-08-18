@@ -27,5 +27,12 @@ class FirebaseServices {
     return data;
   }
 
-
+  Future<void> deleteTaskFromFirebase(Map<String, dynamic> data) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tasks")
+        .doc(data["id"])
+        .delete();
+  }
 }

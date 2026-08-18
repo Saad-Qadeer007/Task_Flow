@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
+import 'package:task_flow/Widgets/Success_SnackBar.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Summary_Card.dart';
 
@@ -59,7 +60,10 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                   SizedBox(height: 15),
                   //   Card Detail Section
                   Container(
-                    height: MediaQuery.of(context).size.height * .9,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * .9,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadiusGeometry.only(
                         topLeft: Radius.circular(20),
@@ -68,7 +72,10 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                       color: AppColors.background,
                     ),
                     padding: EdgeInsets.all(15),
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -90,17 +97,17 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color:
-                                    widget.data
-                                            .data()["taskPriority"]
-                                            .toString()
-                                            .toLowerCase() ==
-                                        "low"
+                                widget.data
+                                    .data()["taskPriority"]
+                                    .toString()
+                                    .toLowerCase() ==
+                                    "low"
                                     ? Colors.cyan.shade800
                                     : widget.data
-                                              .data()["taskPriority"]
-                                              .toString()
-                                              .toLowerCase() ==
-                                          "medium"
+                                    .data()["taskPriority"]
+                                    .toString()
+                                    .toLowerCase() ==
+                                    "medium"
                                     ? Colors.orange.shade600
                                     : Colors.red,
                               ),
@@ -146,14 +153,15 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           icon: Icons.timeline,
                           taskOption: "Due Time",
                           taskOptionsData:
-                              "${widget.data.data()["taskDueTime"]["hour"]}:${widget.data.data()["taskDueTime"]["minute"]}",
+                          "${widget.data.data()["taskDueTime"]["hour"]}:${widget
+                              .data.data()["taskDueTime"]["minute"]}",
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.notifications_none,
                           taskOption: "Reminder",
                           taskOptionsData:
-                              widget.data.data()["taskReminder"] == ""
+                          widget.data.data()["taskReminder"] == ""
                               ? "No Data"
                               : widget.data.data()["taskReminder"],
                         ),
@@ -162,7 +170,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           icon: Icons.timer_rounded,
                           taskOption: "Repeat",
                           taskOptionsData:
-                              widget.data.data()["taskReminder"] == ""
+                          widget.data.data()["taskReminder"] == ""
                               ? "No Data"
                               : widget.data.data()["taskRepeat"],
                         ),
@@ -174,7 +182,10 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         ),
                         Spacer(),
                         Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           child: Wrap(
                             alignment: WrapAlignment.spaceBetween,
                             spacing: 10,
@@ -206,7 +217,14 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<TaskProvider>().deleteTask(
+                                    widget.data.data(),
+                                  );
+                                  Navigator.pop(context);
+                                  SuccessSnackBar.showSuccessSnackBar(
+                                      context, "Task Deleted Successfully");
+                                },
                                 child: Text(
                                   "Delete Task",
                                   style: TextStyle(
