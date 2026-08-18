@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_flow/Screens/Tasks/Tasks_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Progress_Card.dart';
@@ -77,7 +78,17 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                         shrinkWrap: true,
                         itemCount: data?.length,
                         itemBuilder: (context, index) {
-                          return TaskCards(data: data![index]);
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TasksDetailScreen(),
+                                ),
+                              );
+                            },
+                            child: TaskCards(data: data![index]),
+                          );
                         },
                       );
                     }
