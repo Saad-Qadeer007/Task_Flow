@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Tasks/Tasks_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
@@ -18,87 +20,109 @@ class HomeScreenUi extends StatefulWidget {
 class _HomeScreenUiState extends State<HomeScreenUi> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        elevation: 2,
-        backgroundColor: AppColors.primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => AddTaskScreen()),
-          );
-        },
-        child: Icon(Icons.add, size: 32, color: AppColors.lightColor),
-      ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            padding: EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                GreetingCard(),
-                SizedBox(height: 10),
-                ProgressCard(),
-                SizedBox(height: 20),
-                Row(
+    return Consumer<TaskProvider>(
+      builder: (context, provider, child) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            elevation: 2,
+            backgroundColor: AppColors.primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => AddTaskScreen()),
+              );
+            },
+            child: Icon(Icons.add, size: 32, color: AppColors.lightColor),
+          ),
+          body: SingleChildScrollView(
+            child: SafeArea(
+              child: Container(
+                padding: EdgeInsets.all(15.0),
+                child: Column(
                   children: [
-                    Text(
-                      "Today's Tasks",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    GreetingCard(),
+                    SizedBox(height: 10),
+                    ProgressCard(),
+                    SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Text(
+                          "Today's Tasks",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          "View All",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
                     ),
-                    Spacer(),
-                    Text(
-                      "View All",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.primaryColor,
-                      ),
-                    ),
+                    //   Showing the data from the firebase
+                    provider.tasks.isEmpty
+                        ? Container(
+                            height: 400,
+                            child: Center(
+                              child: Text(
+                                "No Task Yet",
+                                style: TextStyle(color: AppColors.moderateGrey),
+                              ),
+                            ),
+                          )
+                        : StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(FirebaseAuth.instance.currentUser?.uid)
+                                .collection("tasks")
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              final data = snapshot.data?.docs;
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (!snapshot.hasData) {
+                                return Center(child: Text("No Data Found"));
+                              } else {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: data?.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TasksDetailScreen(
+                                                  data: data[index],
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      child: TaskCards(data: data![index]),
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                          ),
                   ],
                 ),
-                //   Showing the data from the firebase
-                StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(FirebaseAuth.instance.currentUser?.uid)
-                      .collection("tasks")
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    final data = snapshot.data?.docs;
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (!snapshot.hasData) {
-                      return Center(child: Text("No Data Found"));
-                    } else {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: data?.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TasksDetailScreen(data : data[index]),
-                                ),
-                              );
-                            },
-                            child: TaskCards(data: data![index]),
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
