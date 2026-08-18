@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
@@ -55,6 +57,30 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                       ),
                     ),
                   ],
+                ),
+                //   Showing the data from the firebase
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                      .collection("tasks")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data?.docs;
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (!snapshot.hasData) {
+                      return Center(child: Text("No Data Found"));
+                    } else {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: data?.length,
+                        itemBuilder: (context, index) {
+                          return Text("Card Fetched");
+                        },
+                      );
+                    }
+                  },
                 ),
               ],
             ),

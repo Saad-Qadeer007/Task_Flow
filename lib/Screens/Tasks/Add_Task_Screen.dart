@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Home/Home_Screen.dart';
 import 'package:task_flow/Widgets/Success_SnackBar.dart';
@@ -384,6 +385,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 print(provider.priority);
                                 if (addTaskScreenFormKey.currentState!
                                     .validate()) {
+                                  context.read<TaskProvider>().addTask(
+                                    TaskModel(
+                                      id: "",
+                                      taskTitle: titleController.text.trim(),
+                                      taskDescription: descriptionController
+                                          .text
+                                          .trim(),
+                                      taskCategory: selectedCategory,
+                                      taskPriority: provider.priority,
+                                      taskDueDate: selectedDate,
+                                      taskDueTime: selectedTime,
+                                      taskReminder: '',
+                                      taskRepeat: '',
+                                    ),
+                                  );
+
                                   SuccessSnackBar.showSuccessSnackBar(
                                     context,
                                     "Task Created Successfully",
