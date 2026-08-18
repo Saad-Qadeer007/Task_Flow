@@ -60,10 +60,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                   SizedBox(height: 15),
                   //   Card Detail Section
                   Container(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * .9,
+                    height: MediaQuery.of(context).size.height * .9,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadiusGeometry.only(
                         topLeft: Radius.circular(20),
@@ -72,10 +69,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                       color: AppColors.background,
                     ),
                     padding: EdgeInsets.all(15),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
+                    width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -97,17 +91,17 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color:
-                                widget.data
-                                    .data()["taskPriority"]
-                                    .toString()
-                                    .toLowerCase() ==
-                                    "low"
+                                    widget.data
+                                            .data()["taskPriority"]
+                                            .toString()
+                                            .toLowerCase() ==
+                                        "low"
                                     ? Colors.cyan.shade800
                                     : widget.data
-                                    .data()["taskPriority"]
-                                    .toString()
-                                    .toLowerCase() ==
-                                    "medium"
+                                              .data()["taskPriority"]
+                                              .toString()
+                                              .toLowerCase() ==
+                                          "medium"
                                     ? Colors.orange.shade600
                                     : Colors.red,
                               ),
@@ -153,15 +147,14 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           icon: Icons.timeline,
                           taskOption: "Due Time",
                           taskOptionsData:
-                          "${widget.data.data()["taskDueTime"]["hour"]}:${widget
-                              .data.data()["taskDueTime"]["minute"]}",
+                              "${widget.data.data()["taskDueTime"]["hour"]}:${widget.data.data()["taskDueTime"]["minute"]}",
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.notifications_none,
                           taskOption: "Reminder",
                           taskOptionsData:
-                          widget.data.data()["taskReminder"] == ""
+                              widget.data.data()["taskReminder"] == ""
                               ? "No Data"
                               : widget.data.data()["taskReminder"],
                         ),
@@ -170,7 +163,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           icon: Icons.timer_rounded,
                           taskOption: "Repeat",
                           taskOptionsData:
-                          widget.data.data()["taskReminder"] == ""
+                              widget.data.data()["taskReminder"] == ""
                               ? "No Data"
                               : widget.data.data()["taskRepeat"],
                         ),
@@ -182,10 +175,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         ),
                         Spacer(),
                         Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
+                          width: MediaQuery.of(context).size.width,
                           child: Wrap(
                             alignment: WrapAlignment.spaceBetween,
                             spacing: 10,
@@ -218,12 +208,69 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  context.read<TaskProvider>().deleteTask(
-                                    widget.data.data(),
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      backgroundColor: AppColors.background,
+                                      title: Text(
+                                        "Delete Task",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Are U Sure You Want To Delete This Note?",
+                                            style: TextStyle(
+                                              color: AppColors.moderateGrey,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                          child: Text("Cancel"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            context
+                                                .read<TaskProvider>()
+                                                .deleteTask(widget.data.data());
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                            SuccessSnackBar.showSuccessSnackBar(
+                                              context,
+                                              "Task Deleted Successfully",
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                          ),
+                                          child: Text("Delete"),
+                                        ),
+                                      ],
+                                    ),
                                   );
-                                  Navigator.pop(context);
-                                  SuccessSnackBar.showSuccessSnackBar(
-                                      context, "Task Deleted Successfully");
                                 },
                                 child: Text(
                                   "Delete Task",
