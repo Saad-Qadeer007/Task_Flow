@@ -8,13 +8,46 @@ import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Priority_Chips.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final Map<String, dynamic> data;
+
+  const AddTaskScreen({super.key, required this.data});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.data.isNotEmpty) {
+      titleController.text = widget.data["taskTitle"];
+      descriptionController.text = widget.data["taskDescription"];
+      selectedCategory = widget.data["taskCategory"] == ""
+          ? taskCategories[0]
+          : widget.data["taskCategory"];
+      gettedPriority = widget.data["taskPriority"];
+      selectedDate = widget.data["taskDueDate"] == ""
+          ? null
+          : widget.data["taskDueDate"].toDate();
+      dueDateController.text = selectedDate == null
+          ? "Please Select Date"
+          : "${selectedDate?.day}/${selectedDate?.month}/${selectedDate?.year}";
+      selectedTime = widget.data["taskDueTime"] == ""
+          ? null
+          : TimeOfDay(
+              hour: widget.data["taskDueTime"]["hour"],
+              minute: widget.data["taskDueTime"]["minute"],
+            );
+      dueTimeController.text =
+          selectedTime?.hour == 0 || selectedTime?.minute == 0
+          ? "Please Select Time"
+          : "${selectedTime?.hour}:${selectedTime?.minute}";
+      // defaultReminder = widget.data["taskReminder"] == "" ? defaultReminder : widget.data["taskReminder"];
+    }
+  }
+
   final List<String> taskCategories = [
     'Study',
     'Work',
@@ -29,6 +62,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final List<String> taskPriority = ["Low", "Medium", "High"];
 
   final addTaskScreenFormKey = GlobalKey<FormState>();
+
+  // this will getted when then the user enter the add task screen in edit mode
+  String? gettedPriority;
 
   final List<String> reminderOptionList = [
     "5 Minutes Before",
@@ -69,12 +105,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
+                            provider.editMode == false
+                                ? Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HomeScreen(),
+                                    ),
+                                  )
+                                : Navigator.pop(context);
+                            provider.setEditModeToOff();
                           },
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -203,7 +242,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               ),
                               Spacer(),
                               Text(
-                                provider.priority,
+                                provider.editMode == false
+                                    ? provider.priority
+                                    : provider.priority = gettedPriority =
+                                          provider.priority,
                                 style: TextStyle(
                                   color: AppColors.moderateGrey,
                                   fontSize: 15,
@@ -385,27 +427,55 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 print(provider.priority);
                                 if (addTaskScreenFormKey.currentState!
                                     .validate()) {
-                                  context.read<TaskProvider>().addTask(
-                                    TaskModel(
-                                      id: "",
-                                      taskTitle: titleController.text.trim(),
-                                      taskDescription: descriptionController
-                                          .text
-                                          .trim(),
-                                      taskCategory: selectedCategory,
-                                      taskPriority: provider.priority,
-                                      taskDueDate: selectedDate,
-                                      taskDueTime: selectedTime,
-                                      taskReminder: '',
-                                      taskRepeat: '',
-                                      createdAt: DateTime.now(),
-                                    ),
-                                  );
+                                  provider.editMode == false
+                                      ? context.read<TaskProvider>().addTask(
+                                          TaskModel(
+                                            id: "",
+                                            taskTitle: titleController.text
+                                                .trim(),
+                                            taskDescription:
+                                                descriptionController.text
+                                                    .trim(),
+                                            taskCategory: selectedCategory,
+                                            taskPriority: provider.priority,
+                                            taskDueDate: selectedDate,
+                                            taskDueTime: selectedTime,
+                                            taskReminder: defaultReminder,
+                                            taskRepeat: '',
+                                            createdAt: DateTime.now(),
+                                          ),
+                                        )
+                                      : context.read<TaskProvider>().updateTask(
+                                          {
+                                            "id": widget.data["id"],
+                                            "taskTitle": titleController.text
+                                                .trim(),
+                                            "taskDescription":
+                                                descriptionController.text
+                                                    .trim(),
+                                            "taskCategory": selectedCategory,
+                                            "taskPriority": provider.priority,
+                                            "taskDueDate": selectedDate,
+                                            "taskDueTime": {
+                                              "hour": selectedTime?.hour,
+                                              "minute": selectedTime?.minute,
+                                            },
+                                            "taskReminder": defaultReminder,
+                                            "taskRepeat": '',
+                                            "createdAt": DateTime.now(),
+                                          },
+                                        );
 
-                                  SuccessSnackBar.showSuccessSnackBar(
-                                    context,
-                                    "Task Created Successfully",
-                                  );
+                                  provider.editMode == false
+                                      ? SuccessSnackBar.showSuccessSnackBar(
+                                          context,
+                                          "Task Created Successfully",
+                                        )
+                                      : SuccessSnackBar.showSuccessSnackBar(
+                                          context,
+                                          "Task Updated Successfully",
+                                        );
+                                  provider.setEditModeToOff();
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -415,7 +485,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 }
                               },
                               child: Text(
-                                "Create Task",
+                                provider.editMode
+                                    ? "Update Task"
+                                    : "Create Task",
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),

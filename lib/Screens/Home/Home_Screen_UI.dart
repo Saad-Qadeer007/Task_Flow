@@ -32,7 +32,20 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => AddTaskScreen()),
+                MaterialPageRoute(
+                  builder: (context) => AddTaskScreen(
+                    data: {
+                      "id": "",
+                      "taskTitle": "",
+                      "taskDescription": "",
+                      "taskCategory": "",
+                      "taskPriority": "",
+                      "taskDueDate": "",
+                      "taskDueTime": {"hour": 0, "minute": 0},
+                      // "taskReminder": "",
+                    },
+                  ),
+                ),
               );
             },
             child: Icon(Icons.add, size: 32, color: AppColors.lightColor),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
+import 'package:task_flow/Screens/Tasks/Add_Task_Screen.dart';
 import 'package:task_flow/Widgets/Success_SnackBar.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Summary_Card.dart';
@@ -44,9 +45,21 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           ),
                         ),
                         Spacer(),
-                        FaIcon(
-                          FontAwesomeIcons.penToSquare,
-                          color: AppColors.lightColor,
+                        InkWell(
+                          onTap: () {
+                            provider.setEditModeToOn();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddTaskScreen(data: widget.data.data()),
+                              ),
+                            );
+                          },
+                          child: FaIcon(
+                            FontAwesomeIcons.penToSquare,
+                            color: AppColors.lightColor,
+                          ),
                         ),
                         SizedBox(width: 15),
                         Icon(

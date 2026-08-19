@@ -1,12 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_flow/Models/Task_Model.dart';
-
 import '../Services/Firebase_Services.dart';
 
 class TaskProvider extends ChangeNotifier {
   String priority = "Low";
   List<TaskModel> tasks = [];
+  bool editMode = false;
+
+  void setEditModeToOn() {
+    editMode = true;
+    notifyListeners();
+  }
+
+  void setEditModeToOff() {
+    editMode = false;
+    notifyListeners();
+  }
 
   void setPriority(String value) {
     priority = value;
@@ -37,5 +47,9 @@ class TaskProvider extends ChangeNotifier {
     tasks.remove(task);
     await FirebaseServices().deleteTaskFromFirebase(data);
     notifyListeners();
+  }
+
+  void updateTask(Map<String, dynamic> data) async {
+    await FirebaseServices().updateTaskFromFirebase(data);
   }
 }
