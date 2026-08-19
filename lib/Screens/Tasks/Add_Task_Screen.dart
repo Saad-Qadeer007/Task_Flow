@@ -443,6 +443,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                             taskReminder: defaultReminder,
                                             taskRepeat: '',
                                             createdAt: DateTime.now(),
+                                            isCompleted: false,
                                           ),
                                         )
                                       : context.read<TaskProvider>().updateTask(

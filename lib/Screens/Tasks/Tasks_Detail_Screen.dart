@@ -184,7 +184,10 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         TaskSummaryCard(
                           icon: Icons.check_circle_outline_rounded,
                           taskOption: "Status",
-                          taskOptionsData: "Pending",
+                          taskOptionsData:
+                              widget.data.data()["isCompleted"] == true
+                              ? "Completed"
+                              : "Pending",
                         ),
                         Spacer(),
                         Container(
@@ -196,17 +199,45 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                             children: [
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.background,
+                                  backgroundColor:
+                                      widget.data.data()["isCompleted"] == true
+                                      ? Colors.green
+                                      : AppColors.background,
                                   foregroundColor: AppColors.lightColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  widget.data.data()["isCompleted"] == true
+                                      ? SuccessSnackBar.showSuccessSnackBar(
+                                          context,
+                                          "Task Already Completed",
+                                        )
+                                      : context
+                                            .read<TaskProvider>()
+                                            .updateTask({
+                                              "id": widget.data.data()["id"],
+                                              "isCompleted": true,
+                                            });
+                                  widget.data.data()["isCompleted"] == true
+                                      ? Navigator.pop(context)
+                                      : Navigator.pop(context);
+                                  widget.data.data()["isCompleted"] == false
+                                      ? SuccessSnackBar.showSuccessSnackBar(
+                                          context,
+                                          "Task Completed Successfully",
+                                        )
+                                      : null;
+                                },
                                 child: Text(
                                   "Mark as Completed",
                                   style: TextStyle(
-                                    color: Colors.green,
+                                    color:
+                                        widget.data.data()["isCompleted"] ==
+                                            true
+                                        ? AppColors.lightColor
+                                        : Colors.green,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),

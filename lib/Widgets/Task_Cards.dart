@@ -28,7 +28,16 @@ class _TaskCardsState extends State<TaskCards> {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey.shade200,
-                child: Icon(Icons.done_rounded, color: Colors.green),
+                child: widget.data.data()["isCompleted"] == true
+                    ? Icon(Icons.done_rounded, color: Colors.green)
+                    : Icon(
+                        Icons.circle_rounded,
+                        color: widget.data.data()["taskPriority"] == "Low"
+                            ? Colors.cyan.shade800
+                            : widget.data.data()["taskPriority"] == "Medium"
+                            ? Colors.orange.shade600
+                            : Colors.red,
+                      ),
               ),
               SizedBox(width: 10),
               Column(

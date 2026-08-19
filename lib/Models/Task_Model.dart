@@ -11,6 +11,7 @@ class TaskModel {
   String? taskReminder;
   String? taskRepeat;
   DateTime? createdAt;
+  bool? isCompleted;
 
   TaskModel({
     this.id,
@@ -22,7 +23,8 @@ class TaskModel {
     this.taskDueTime,
     this.taskReminder,
     this.taskRepeat,
-    this.createdAt
+    this.createdAt,
+    this.isCompleted,
   });
 
   static Map<String, dynamic> toMap(TaskModel model) {
@@ -40,6 +42,7 @@ class TaskModel {
       "taskReminder": model.taskReminder,
       "taskRepeat": model.taskRepeat,
       "createdAt": model.createdAt,
+      "isCompleted": model.isCompleted,
     };
   }
 
@@ -58,6 +61,7 @@ class TaskModel {
       taskReminder: map["taskReminder"],
       taskRepeat: map["taskRepeat"],
       createdAt: map["createdAt"].toDate(),
+      isCompleted: map["isCompleted"],
     );
   }
 }
