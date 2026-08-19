@@ -19,6 +19,17 @@ class HomeScreenUi extends StatefulWidget {
 
 class _HomeScreenUiState extends State<HomeScreenUi> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TaskProvider>().taskCalculation();
+      context.read<TaskProvider>().calculateCompletedTasks();
+      context.read<TaskProvider>().calculateCompletedTasksPercentage();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
       builder: (context, provider, child) {

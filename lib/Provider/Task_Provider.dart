@@ -7,6 +7,9 @@ class TaskProvider extends ChangeNotifier {
   String priority = "Low";
   List<TaskModel> tasks = [];
   bool editMode = false;
+  int totalTasks = 0;
+  int completedTasks = 0;
+  double completedTaskByPercentage = 0.0;
 
   void setEditModeToOn() {
     editMode = true;
@@ -31,6 +34,7 @@ class TaskProvider extends ChangeNotifier {
 
   void getTasks() async {
     tasks.clear();
+    print("run");
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
       data.docs.map((items) {
@@ -40,6 +44,7 @@ class TaskProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    print(tasks.length);
   }
 
   void deleteTask(Map<String, dynamic> data) async {
@@ -51,5 +56,22 @@ class TaskProvider extends ChangeNotifier {
 
   void updateTask(Map<String, dynamic> data) async {
     await FirebaseServices().updateTaskFromFirebase(data);
+  }
+
+  void taskCalculation() {
+    totalTasks = tasks.length;
+    notifyListeners();
+  }
+
+  void calculateCompletedTasks() {
+    completedTasks = tasks
+        .where((element) => element.isCompleted == true)
+        .length;
+    notifyListeners();
+  }
+
+  void calculateCompletedTasksPercentage() {
+    completedTaskByPercentage = completedTasks / totalTasks * 100;
+    notifyListeners();
   }
 }

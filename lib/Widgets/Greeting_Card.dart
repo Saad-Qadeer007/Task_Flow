@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Utilties/App_Colors.dart';
@@ -25,10 +26,15 @@ class _GreetingCardState extends State<GreetingCard> {
             Row(
               children: [
                 Text(
-                  "Saad",
+                  FirebaseAuth.instance.currentUser!.displayName
+                          .toString()[0]
+                          .toUpperCase() +
+                      FirebaseAuth.instance.currentUser!.displayName
+                          .toString()
+                          .substring(1),
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight(400)),
                 ),
-                SizedBox(width: 10,),
+                SizedBox(width: 10),
                 FaIcon(
                   FontAwesomeIcons.user,
                   size: 25,
@@ -39,11 +45,7 @@ class _GreetingCardState extends State<GreetingCard> {
           ],
         ),
         Spacer(),
-        Icon(
-          Icons.notifications_none,
-          size: 35,
-          color: AppColors.moderateGrey,
-        ),
+        Icon(Icons.notifications_none, size: 35, color: AppColors.moderateGrey),
       ],
     );
   }
