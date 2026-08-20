@@ -32,7 +32,7 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getTasks() async {
+  Future<void> getTasks() async {
     tasks.clear();
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
@@ -47,8 +47,18 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void deleteTask(Map<String, dynamic> data) async {
+    print("tasks length before delete ${tasks.length}");
     TaskModel task = TaskModel.toModel(data);
-    tasks.remove(task);
+    int index = 0;
+    for (final i in tasks) {
+      if (i.id == task.id) {
+        index = tasks.indexOf(i);
+      }
+    }
+    print(index);
+    print(tasks[index].taskTitle);
+    tasks.removeAt(index);
+    print("tasks length after delete ${tasks.length}");
     await FirebaseServices().deleteTaskFromFirebase(data);
     taskCalculation();
     calculateCompletedTasks();
@@ -57,16 +67,28 @@ class TaskProvider extends ChangeNotifier {
 
   void updateTask(Map<String, dynamic> data) async {
     await FirebaseServices().updateTaskFromFirebase(data);
-  }
-
-  void taskCalculation() async {
-    totalTasks = await FirebaseServices().gettingDataInfoFromFirebase();
+    await getTasks();
+    tasks.map((item) {
+      print("item count in update :  ${item.isCompleted}");
+    }).toList();
+    calculateCompletedTasks();
     notifyListeners();
   }
 
-  void calculateCompletedTasks() async {
-    completedTasks = await FirebaseServices()
-        .gettingDataForMarkAsCompletedFromFirebase();
+  void taskCalculation() async {
+    totalTasks = tasks.length;
+    calculateCompletedTasks();
+    notifyListeners();
+  }
+
+  Future<void> calculateCompletedTasks() async {
+    print("calculatecompletetasks count runner");
+    completedTasks = 0;
+    tasks.map((items) {
+      print(items.isCompleted);
+      return items.isCompleted == true ? completedTasks++ : 0;
+    }).toList();
+    print("completed task count : $completedTasks");
     calculateCompletedTasksPercentage();
     notifyListeners();
   }

@@ -44,22 +44,4 @@ class FirebaseServices {
         .doc(data["id"])
         .update(data);
   }
-
-  Future<int> gettingDataInfoFromFirebase() async {
-    final data = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("tasks")
-        .get();
-    return data.docs.length;
-  }
-
-  Future<int> gettingDataForMarkAsCompletedFromFirebase() async {
-    final data = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("tasks").where("isCompleted", isEqualTo: true)
-        .get();
-    return data.docs.length;
-  }
 }

@@ -22,11 +22,13 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskProvider>().taskCalculation();
-      context.read<TaskProvider>().calculateCompletedTasks();
-      context.read<TaskProvider>().calculateCompletedTasksPercentage();
-    });
+    initializeApp();
+  }
+
+  Future<void> initializeApp() async {
+    print("intilization run");
+    context.read<TaskProvider>().taskCalculation();
+    context.read<TaskProvider>().calculateCompletedTasks();
   }
 
   @override
@@ -109,15 +111,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (!snapshot.hasData) {
+                              if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
                               } else {
                                 return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: data?.length,
                                   itemBuilder: (context, index) {
@@ -140,6 +138,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                               }
                             },
                           ),
+                    SizedBox(height: 30),
                   ],
                 ),
               ),
