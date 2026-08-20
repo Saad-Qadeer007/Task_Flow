@@ -208,7 +208,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
                                   widget.data.data()["isCompleted"] == true
                                       ? SuccessSnackBar.showSuccessSnackBar(
                                           context,
@@ -220,6 +220,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                               "id": widget.data.data()["id"],
                                               "isCompleted": true,
                                             });
+                                  context
+                                      .read<TaskProvider>()
+                                      .calculateCompletedTasks();
                                   widget.data.data()["isCompleted"] == true
                                       ? Navigator.pop(context)
                                       : Navigator.pop(context);

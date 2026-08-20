@@ -34,7 +34,6 @@ class TaskProvider extends ChangeNotifier {
 
   void getTasks() async {
     tasks.clear();
-    print("run");
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
       data.docs.map((items) {
@@ -51,6 +50,8 @@ class TaskProvider extends ChangeNotifier {
     TaskModel task = TaskModel.toModel(data);
     tasks.remove(task);
     await FirebaseServices().deleteTaskFromFirebase(data);
+    taskCalculation();
+    calculateCompletedTasks();
     notifyListeners();
   }
 
@@ -58,19 +59,25 @@ class TaskProvider extends ChangeNotifier {
     await FirebaseServices().updateTaskFromFirebase(data);
   }
 
-  void taskCalculation() {
-    totalTasks = tasks.length;
+  void taskCalculation() async {
+    totalTasks = await FirebaseServices().gettingDataInfoFromFirebase();
     notifyListeners();
   }
 
-  void calculateCompletedTasks() {
-    completedTasks = tasks
-        .where((element) => element.isCompleted == true)
-        .length;
+  void calculateCompletedTasks() async {
+    completedTasks = await FirebaseServices()
+        .gettingDataForMarkAsCompletedFromFirebase();
+    calculateCompletedTasksPercentage();
     notifyListeners();
   }
 
   void calculateCompletedTasksPercentage() {
+    if (totalTasks == 0) {
+      print("function run");
+      completedTaskByPercentage = 0.0;
+      notifyListeners();
+      return;
+    }
     completedTaskByPercentage = completedTasks / totalTasks * 100;
     notifyListeners();
   }
