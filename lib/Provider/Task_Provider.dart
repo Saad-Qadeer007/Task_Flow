@@ -12,6 +12,7 @@ class TaskProvider extends ChangeNotifier {
   double completedTaskByPercentage = 0.0;
   int notNullTodayTaskCount = 0;
   int notNullUpcomingTaskCount = 0;
+  int notNullOverDueTaskCount = 0;
 
   void setEditModeToOn() {
     editMode = true;
@@ -60,6 +61,26 @@ class TaskProvider extends ChangeNotifier {
       }
     }
     print(notNullUpcomingTaskCount);
+    notifyListeners();
+  }
+
+  void overDueTasks() {
+    notNullOverDueTaskCount = 0;
+    final now = DateTime.now();
+    late final startOfDay = DateTime(now.year, now.month, now.day);
+    final todayTasks = tasks.map((element) {
+      if (element.taskDueDate!.isBefore(startOfDay) &&
+          element.isCompleted == false) {
+        return element;
+      }
+    }).toList();
+    for (final i in todayTasks) {
+      if (i != null) {
+        print("OverDue");
+        notNullOverDueTaskCount++;
+      }
+    }
+    print(notNullOverDueTaskCount);
     notifyListeners();
   }
 

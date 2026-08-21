@@ -22,7 +22,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void initializeApp() async {
-    context.read<TaskProvider>().getTasks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TaskProvider>().getTasks();
+    });
     Future.delayed(Duration(seconds: 3), () {
       print(FirebaseAuth.instance.currentUser?.displayName);
       if (FirebaseAuth.instance.currentUser != null) {
@@ -38,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {

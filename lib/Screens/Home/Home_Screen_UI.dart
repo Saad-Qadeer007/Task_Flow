@@ -32,6 +32,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
       context.read<TaskProvider>().upcomingTasks();
       context.read<TaskProvider>().taskCalculation();
       context.read<TaskProvider>().calculateCompletedTasks();
+      context.read<TaskProvider>().overDueTasks();
     });
   }
 
@@ -84,6 +85,71 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                     SizedBox(height: 10),
                     ProgressCard(),
                     SizedBox(height: 20),
+                    // Handling Due Tasks
+                    provider.notNullOverDueTaskCount == 0
+                        ? Container()
+                        : Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Due Tasks",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                //   StreamBuilder to get the due tasks data from the firebase
+                                StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection("users")
+                                      .doc(
+                                        FirebaseAuth.instance.currentUser?.uid,
+                                      )
+                                      .collection("tasks")
+                                      .where(
+                                        "taskDueDate",
+                                        isGreaterThan: startOfDay,
+                                      )
+                                      .where("isCompleted", isEqualTo: false)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    final data = snapshot.data?.docs;
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text("No Data Found"),
+                                      );
+                                    } else {
+                                      return ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: data?.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TasksDetailScreen(
+                                                        data: data[index],
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            child: TaskCards(
+                                              data: data![index],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
                     Row(
                       children: [
                         Text(
@@ -96,7 +162,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                         Spacer(),
                         InkWell(
                           onTap: () {
-                            context.read<TaskProvider>().upcomingTasks();
+                            context.read<TaskProvider>().overDueTasks();
                           },
                           child: Text(
                             "View All",
@@ -188,10 +254,8 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .collection("users")
                                 .doc(FirebaseAuth.instance.currentUser?.uid)
                                 .collection("tasks")
-                                .where(
-                                  "taskDueDate",
-                                  isGreaterThan : endOfDay,
-                                )
+                                .where("taskDueDate", isGreaterThan: endOfDay)
+                                .limit(3)
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
