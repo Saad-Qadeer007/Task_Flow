@@ -136,6 +136,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           builder: (context) =>
                                               TasksDetailScreen(
                                                 data: data[index],
+                                                upcoming : false,
                                               ),
                                         ),
                                       );

@@ -10,8 +10,13 @@ import '../../Widgets/Task_Summary_Card.dart';
 
 class TasksDetailScreen extends StatefulWidget {
   final QueryDocumentSnapshot<Map<String, dynamic>> data;
+  final bool upcoming;
 
-  const TasksDetailScreen({super.key, required this.data});
+  const TasksDetailScreen({
+    super.key,
+    required this.data,
+    required this.upcoming,
+  });
 
   @override
   State<TasksDetailScreen> createState() => _TasksDetailScreenState();
@@ -46,22 +51,24 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         ),
                         Spacer(),
                         widget.data.data()["isCompleted"] == true
-                            ? Container() : InkWell(
-                          onTap: () {
-                            provider.setEditModeToOn();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddTaskScreen(data: widget.data.data()),
-                              ),
-                            );
-                          },
-                          child: FaIcon(
+                            ? Container()
+                            : InkWell(
+                                onTap: () {
+                                  provider.setEditModeToOn();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddTaskScreen(
+                                        data: widget.data.data(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: FaIcon(
                                   FontAwesomeIcons.penToSquare,
                                   color: AppColors.lightColor,
                                 ),
-                        ),
+                              ),
                         SizedBox(width: 15),
                         Icon(
                           Icons.menu_rounded,
@@ -209,26 +216,31 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                onPressed: () {
-                                  widget.data.data()["isCompleted"] == true
-                                      ? SuccessSnackBar.showSuccessSnackBar(
-                                          context,
-                                          "Task Already Completed",
-                                        )
-                                      : context
-                                            .read<TaskProvider>()
-                                            .updateTask({
-                                              "id": widget.data.data()["id"],
-                                              "isCompleted": true,
-                                            });
-                                  Navigator.pop(context);
-                                  widget.data.data()["isCompleted"] == false
-                                      ? SuccessSnackBar.showSuccessSnackBar(
-                                          context,
-                                          "Task Completed Successfully",
-                                        )
-                                      : null;
-                                },
+                                onPressed: widget.upcoming == true
+                                    ? null
+                                    : () {
+                                        widget.data.data()["isCompleted"] ==
+                                                true
+                                            ? SuccessSnackBar.showSuccessSnackBar(
+                                                context,
+                                                "Task Already Completed",
+                                              )
+                                            : context
+                                                  .read<TaskProvider>()
+                                                  .updateTask({
+                                                    "id": widget.data
+                                                        .data()["id"],
+                                                    "isCompleted": true,
+                                                  });
+                                        Navigator.pop(context);
+                                        widget.data.data()["isCompleted"] ==
+                                                false
+                                            ? SuccessSnackBar.showSuccessSnackBar(
+                                                context,
+                                                "Task Completed Successfully",
+                                              )
+                                            : null;
+                                      },
                                 child: Text(
                                   "Mark as Completed",
                                   style: TextStyle(

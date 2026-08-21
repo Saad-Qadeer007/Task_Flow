@@ -133,6 +133,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                   builder: (context) =>
                                                       TasksDetailScreen(
                                                         data: data[index],
+                                                        upcoming: false,
                                                       ),
                                                 ),
                                               );
@@ -218,6 +219,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                             builder: (context) =>
                                                 TasksDetailScreen(
                                                   data: data[index],
+                                                  upcoming: false,
                                                 ),
                                           ),
                                         );
@@ -275,6 +277,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                             builder: (context) =>
                                                 TasksDetailScreen(
                                                   data: data[index],
+                                                  upcoming: true,
                                                 ),
                                           ),
                                         );
