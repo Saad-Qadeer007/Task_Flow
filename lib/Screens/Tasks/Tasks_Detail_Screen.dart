@@ -45,7 +45,8 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           ),
                         ),
                         Spacer(),
-                        InkWell(
+                        widget.data.data()["isCompleted"] == true
+                            ? Container() : InkWell(
                           onTap: () {
                             provider.setEditModeToOn();
                             Navigator.push(
@@ -57,9 +58,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                             );
                           },
                           child: FaIcon(
-                            FontAwesomeIcons.penToSquare,
-                            color: AppColors.lightColor,
-                          ),
+                                  FontAwesomeIcons.penToSquare,
+                                  color: AppColors.lightColor,
+                                ),
                         ),
                         SizedBox(width: 15),
                         Icon(

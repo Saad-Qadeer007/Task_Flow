@@ -28,7 +28,9 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void filterTodayTasks() {
+  Future<void> filterTodayTasks() async {
+    notNullTodayTaskCount = 0;
+    print("Filter For Today Run");
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate?.day == DateTime.now().day &&
           element.taskDueDate?.month == DateTime.now().month &&
@@ -46,6 +48,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void upcomingTasks() {
+    notNullUpcomingTaskCount = 0;
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate!.isAfter(DateTime.now())) {
         return element;
@@ -96,8 +99,8 @@ class TaskProvider extends ChangeNotifier {
     tasks.removeAt(index);
     print("tasks length after delete ${tasks.length}");
     await FirebaseServices().deleteTaskFromFirebase(data);
+    await filterTodayTasks();
     taskCalculation();
-    calculateCompletedTasks();
     notifyListeners();
   }
 
@@ -112,7 +115,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void taskCalculation() async {
-    totalTasks = tasks.length;
+    totalTasks = notNullTodayTaskCount;
     calculateCompletedTasks();
     notifyListeners();
   }
@@ -122,7 +125,12 @@ class TaskProvider extends ChangeNotifier {
     completedTasks = 0;
     tasks.map((items) {
       print(items.isCompleted);
-      return items.isCompleted == true ? completedTasks++ : 0;
+      return items.isCompleted == true &&
+              items.taskDueDate?.day == DateTime.now().day &&
+              items.taskDueDate?.month == DateTime.now().month &&
+              items.taskDueDate?.year == DateTime.now().year
+          ? completedTasks++
+          : 0;
     }).toList();
     print("completed task count : $completedTasks");
     calculateCompletedTasksPercentage();
