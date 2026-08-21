@@ -49,9 +49,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void upcomingTasks() {
+    final now = DateTime.now();
+    late final startOfDay = DateTime(now.year, now.month, now.day);
+    late final endOfDay = startOfDay.add(const Duration(days: 1));
     notNullUpcomingTaskCount = 0;
     final todayTasks = tasks.map((element) {
-      if (element.taskDueDate!.isAfter(DateTime.now())) {
+      if (element.taskDueDate!.isAfter(endOfDay)) {
         return element;
       }
     }).toList();
@@ -131,7 +134,8 @@ class TaskProvider extends ChangeNotifier {
     tasks.map((item) {
       print("item count in update :  ${item.isCompleted}");
     }).toList();
-    calculateCompletedTasks();
+    filterTodayTasks();
+    taskCalculation();
     notifyListeners();
   }
 

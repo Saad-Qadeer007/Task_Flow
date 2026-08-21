@@ -20,6 +20,12 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
   List<String> dateChipList = ["All", "Today", "Upcoming", "Completed"];
   String activeDateChip = "All";
 
+  final now = DateTime.now();
+
+  late final startOfDay = DateTime(now.year, now.month, now.day);
+
+  late final endOfDay = startOfDay.add(const Duration(days: 1));
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
@@ -112,11 +118,170 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                             ),
                           ),
                         )
-                      : StreamBuilder(
+                      : activeDateChip == "All"
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Today's Tasks",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            //   Showing the data from the firebase
+                            StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .collection("tasks")
+                                  .where(
+                                    'taskDueDate',
+                                    isGreaterThanOrEqualTo: startOfDay,
+                                  )
+                                  .where(
+                                    'taskDueDate',
+                                    isLessThanOrEqualTo: endOfDay,
+                                  )
+                                  .where("isCompleted", isEqualTo: false)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                final data = snapshot.data?.docs;
+                                if (!snapshot.hasData) {
+                                  return Center(child: Text("No Data Found"));
+                                } else {
+                                  return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: data?.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TasksDetailScreen(
+                                                    data: data[index],
+                                                    upcoming: false,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        child: TaskCards(data: data![index]),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                            Text(
+                              "Upcoming Tasks",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            //   Showing the data from the firebase
+                            StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .collection("tasks")
+                                  .where('taskDueDate', isGreaterThan: endOfDay)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                final data = snapshot.data?.docs;
+                                if (!snapshot.hasData) {
+                                  return Center(child: Text("No Data Found"));
+                                } else {
+                                  return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: data?.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TasksDetailScreen(
+                                                    data: data[index],
+                                                    upcoming: false,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        child: TaskCards(data: data![index]),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                            Text(
+                              "Completed Tasks",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            //   Showing the data from the firebase
+                            StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                  .collection("tasks")
+                                  .where('isCompleted', isEqualTo: true)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                final data = snapshot.data?.docs;
+                                if (!snapshot.hasData) {
+                                  return Center(child: Text("No Data Found"));
+                                } else {
+                                  return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: data?.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TasksDetailScreen(
+                                                    data: data[index],
+                                                    upcoming: false,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                        child: TaskCards(data: data![index]),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        )
+                      : activeDateChip == "Today"
+                      ? StreamBuilder(
                           stream: FirebaseFirestore.instance
                               .collection("users")
                               .doc(FirebaseAuth.instance.currentUser?.uid)
                               .collection("tasks")
+                              .where(
+                                'taskDueDate',
+                                isGreaterThanOrEqualTo: startOfDay,
+                              )
+                              .where(
+                                'taskDueDate',
+                                isLessThanOrEqualTo: endOfDay,
+                              )
+                              .where("isCompleted", isEqualTo: false)
                               .snapshots(),
                           builder: (context, snapshot) {
                             final data = snapshot.data?.docs;
@@ -136,7 +301,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           builder: (context) =>
                                               TasksDetailScreen(
                                                 data: data[index],
-                                                upcoming : false,
+                                                upcoming: false,
                                               ),
                                         ),
                                       );
@@ -147,7 +312,84 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                               );
                             }
                           },
-                        ),
+                        )
+                      : activeDateChip == "Upcoming"
+                      ? StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(FirebaseAuth.instance.currentUser?.uid)
+                              .collection("tasks")
+                              .where('taskDueDate', isGreaterThan: endOfDay)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            final data = snapshot.data?.docs;
+                            if (!snapshot.hasData) {
+                              return Center(child: Text("No Data Found"));
+                            } else {
+                              return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: data?.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TasksDetailScreen(
+                                                data: data[index],
+                                                upcoming: false,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: TaskCards(data: data![index]),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        )
+                      : activeDateChip == "Completed"
+                      ? StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(FirebaseAuth.instance.currentUser?.uid)
+                              .collection("tasks")
+                              .where('isCompleted', isEqualTo: true)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            final data = snapshot.data?.docs;
+                            if (!snapshot.hasData) {
+                              return Center(child: Text("No Data Found"));
+                            } else {
+                              return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: data?.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TasksDetailScreen(
+                                                data: data[index],
+                                                upcoming: false,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: TaskCards(data: data![index]),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        )
+                      : Container(),
                   SizedBox(height: 30),
                 ],
               ),
