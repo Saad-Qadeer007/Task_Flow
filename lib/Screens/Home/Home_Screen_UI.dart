@@ -27,9 +27,19 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
   Future<void> initializeApp() async {
     print("intilization run");
-    context.read<TaskProvider>().taskCalculation();
-    context.read<TaskProvider>().calculateCompletedTasks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TaskProvider>().filterTodayTasks();
+      context.read<TaskProvider>().upcomingTasks();
+      context.read<TaskProvider>().taskCalculation();
+      context.read<TaskProvider>().calculateCompletedTasks();
+    });
   }
+
+  final now = DateTime.now();
+
+  late final startOfDay = DateTime(now.year, now.month, now.day);
+
+  late final endOfDay = startOfDay.add(const Duration(days: 1));
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +78,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
               child: Container(
                 padding: EdgeInsets.all(15.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GreetingCard(),
                     SizedBox(height: 10),
@@ -83,22 +94,28 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "View All",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.primaryColor,
+                        InkWell(
+                          onTap: () {
+                            context.read<TaskProvider>().upcomingTasks();
+                          },
+                          child: Text(
+                            "View All",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.primaryColor,
+                            ),
                           ),
                         ),
                       ],
                     ),
                     //   Showing the data from the firebase
-                    provider.tasks.isEmpty
+                    provider.tasks.isEmpty ||
+                            provider.notNullTodayTaskCount == 0
                         ? Container(
                             height: 400,
                             child: Center(
                               child: Text(
-                                "No Task Yet",
+                                "No Upcoming Task Yet",
                                 style: TextStyle(color: AppColors.moderateGrey),
                               ),
                             ),
@@ -108,6 +125,14 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .collection("users")
                                 .doc(FirebaseAuth.instance.currentUser?.uid)
                                 .collection("tasks")
+                                .where(
+                                  "taskDueDate",
+                                  isGreaterThanOrEqualTo: startOfDay,
+                                )
+                                .where(
+                                  "taskDueDate",
+                                  isLessThanOrEqualTo: endOfDay,
+                                )
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
@@ -138,7 +163,65 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                               }
                             },
                           ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
+                    Text(
+                      "Upcoming Tasks",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    //   Showing the data from the firebase
+                    provider.tasks.isEmpty ||
+                            provider.notNullUpcomingTaskCount == 0
+                        ? Container(
+                            height: 400,
+                            child: Center(
+                              child: Text(
+                                "No Upcoming Task Yet",
+                                style: TextStyle(color: AppColors.moderateGrey),
+                              ),
+                            ),
+                          )
+                        : StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(FirebaseAuth.instance.currentUser?.uid)
+                                .collection("tasks")
+                                .where(
+                                  "taskDueDate",
+                                  isGreaterThan : endOfDay,
+                                )
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              final data = snapshot.data?.docs;
+                              if (!snapshot.hasData) {
+                                return Center(child: Text("No Data Found"));
+                              } else {
+                                return ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: data?.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TasksDetailScreen(
+                                                  data: data[index],
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      child: TaskCards(data: data![index]),
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                          ),
                   ],
                 ),
               ),

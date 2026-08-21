@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../Screens/Auth/Login_Screen.dart';
 import '../Utilties/App_Colors.dart';
 
 class GreetingCard extends StatefulWidget {
@@ -45,7 +46,20 @@ class _GreetingCardState extends State<GreetingCard> {
           ],
         ),
         Spacer(),
-        Icon(Icons.notifications_none, size: 35, color: AppColors.moderateGrey),
+        InkWell(
+          onTap: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          },
+          child: Icon(
+            Icons.notifications_none,
+            size: 35,
+            color: AppColors.moderateGrey,
+          ),
+        ),
       ],
     );
   }

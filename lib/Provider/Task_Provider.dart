@@ -10,6 +10,8 @@ class TaskProvider extends ChangeNotifier {
   int totalTasks = 0;
   int completedTasks = 0;
   double completedTaskByPercentage = 0.0;
+  int notNullTodayTaskCount = 0;
+  int notNullUpcomingTaskCount = 0;
 
   void setEditModeToOn() {
     editMode = true;
@@ -26,9 +28,43 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterTodayTasks() {
+    final todayTasks = tasks.map((element) {
+      if (element.taskDueDate?.day == DateTime.now().day &&
+          element.taskDueDate?.month == DateTime.now().month &&
+          element.taskDueDate?.year == DateTime.now().year) {
+        return element;
+      }
+    }).toList();
+    for (final i in todayTasks) {
+      if (i != null) {
+        notNullTodayTaskCount++;
+      }
+    }
+    print(notNullTodayTaskCount);
+    notifyListeners();
+  }
+
+  void upcomingTasks() {
+    final todayTasks = tasks.map((element) {
+      if (element.taskDueDate!.isAfter(DateTime.now())) {
+        return element;
+      }
+    }).toList();
+    for (final i in todayTasks) {
+      if (i != null) {
+        notNullUpcomingTaskCount++;
+      }
+    }
+    print(notNullUpcomingTaskCount);
+    notifyListeners();
+  }
+
   void addTask(TaskModel task) async {
     tasks.add(task);
     await FirebaseServices().addTaskToFirebase(task);
+    filterTodayTasks();
+    upcomingTasks();
     notifyListeners();
   }
 
