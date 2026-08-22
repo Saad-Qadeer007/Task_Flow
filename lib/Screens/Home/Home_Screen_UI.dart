@@ -110,7 +110,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                       .collection("tasks")
                                       .where(
                                         "taskDueDate",
-                                        isGreaterThan: startOfDay,
+                                        isLessThan : startOfDay,
                                       )
                                       .where("isCompleted", isEqualTo: false)
                                       .snapshots(),
@@ -181,7 +181,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                     //   Showing the data from the firebase
                     provider.tasks.isEmpty ||
                             provider.notNullTodayTaskCount == 0
-                        ? Container(
+                        ? SizedBox(
                             height: 400,
                             child: Center(
                               child: Text(
@@ -249,7 +249,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                     //   Showing the data from the firebase
                     provider.tasks.isEmpty ||
                             provider.notNullUpcomingTaskCount == 0
-                        ? Container(
+                        ? SizedBox(
                             height: 400,
                             child: Center(
                               child: Text(

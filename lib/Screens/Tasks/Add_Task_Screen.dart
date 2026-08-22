@@ -413,7 +413,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           ),
                           SizedBox(height: 20),
 
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(

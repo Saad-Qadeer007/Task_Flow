@@ -21,7 +21,7 @@ class TaskSummaryCard extends StatefulWidget {
 class _TaskSummaryCardState extends State<TaskSummaryCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Card(
         elevation: 0,

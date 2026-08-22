@@ -4,7 +4,7 @@ import 'package:task_flow/Models/Task_Model.dart';
 import '../Services/Firebase_Services.dart';
 
 class TaskProvider extends ChangeNotifier {
-  String priority = "Low";
+  String priority = "High";
   List<TaskModel> tasks = [];
   bool editMode = false;
   int totalTasks = 0;
@@ -27,6 +27,7 @@ class TaskProvider extends ChangeNotifier {
     'Projects',
     'Other',
   ];
+  List<String> taskPriority = ["Low", "Medium", "High"];
   late String selectedCatagory = "";
 
   void categorySelectionHandler(String value) {
@@ -37,6 +38,7 @@ class TaskProvider extends ChangeNotifier {
 
   void setSearchModeByTextField() {
     searchModeByTextField = !searchModeByTextField;
+    print(searchModeByTextField);
     notifyListeners();
   }
 
@@ -218,8 +220,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void applyFilter() {
+    print("function run for $searchText");
     if (searchText == "") {
       searchModeByTextField = false;
+      filteredList.clear();
+      notifyListeners();
+      return;
     }
     print("apply filter run");
     final task = List.from(tasks);
@@ -229,7 +235,7 @@ class TaskProvider extends ChangeNotifier {
     bool getDataWithCategory = true;
 
     for (final i in task) {
-      if (searchModeByTextField) {
+      if (searchModeByTextField && searchText != "") {
         getDataWithSearchField =
             i.taskTitle.toLowerCase().contains(searchText.toLowerCase()) ||
             i.taskDescription.toLowerCase().contains(searchText.toLowerCase());

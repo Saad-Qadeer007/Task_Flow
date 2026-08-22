@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Widgets/Task_Catagory_Chip.dart';
+import 'package:task_flow/Widgets/Task_Priority_Chips.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Cards.dart';
 import '../Home/Home_Screen.dart';
@@ -71,11 +72,16 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "All Tasks",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight(600),
+                        InkWell(
+                          onTap: () {
+                            print(provider.priority);
+                          },
+                          child: Text(
+                            "All Tasks",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight(600),
+                            ),
                           ),
                         ),
                         Spacer(),
@@ -94,12 +100,12 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                         SizedBox(width: 10),
                         InkWell(
                           onTap: () async {
-                            SingleChildScrollView(
-                              child: SafeArea(
-                                child: await showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
+                            SafeArea(
+                              child: await showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return SingleChildScrollView(
+                                    child: Container(
                                       padding: EdgeInsets.all(15.0),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -108,7 +114,6 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           topRight: Radius.circular(20),
                                         ),
                                       ),
-                                      height: 400,
                                       width: MediaQuery.of(context).size.width,
                                       child: Column(
                                         crossAxisAlignment:
@@ -124,7 +129,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           ),
                                           SizedBox(height: 20),
                                           Text(
-                                            "Filter By Category",
+                                            "Filter For Category",
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -143,7 +148,40 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                             }).toList(),
                                           ),
                                           SizedBox(height: 20),
-                                          Container(
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Filter For Priority",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.darkGrey,
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                provider.priority,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.moderateGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 15),
+                                          Wrap(
+                                            spacing: 10,
+                                            children: provider.taskPriority.map(
+                                              (item) {
+                                                return TaskPriorityChips(
+                                                  item: item,
+                                                );
+                                              },
+                                            ).toList(),
+                                          ),
+                                          SizedBox(height: 20),
+                                          SizedBox(
                                             width: MediaQuery.of(
                                               context,
                                             ).size.width,
@@ -174,7 +212,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           ),
 
                                           SizedBox(height: 10),
-                                          Container(
+                                          SizedBox(
                                             width: MediaQuery.of(
                                               context,
                                             ).size.width,
@@ -205,9 +243,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           ),
                                         ],
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
@@ -285,7 +323,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                             child: Column(
                               children: [
                                 provider.tasks.isEmpty
-                                    ? Container(
+                                    ? SizedBox(
                                         height: 400,
                                         child: Center(
                                           child: Text(

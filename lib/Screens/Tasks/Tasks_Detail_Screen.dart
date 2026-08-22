@@ -198,7 +198,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                               : "Pending",
                         ),
                         Spacer(),
-                        Container(
+                        SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Wrap(
                             alignment: WrapAlignment.spaceBetween,
