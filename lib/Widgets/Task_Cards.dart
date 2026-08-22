@@ -80,7 +80,7 @@ class _TaskCardsState extends State<TaskCards> {
                           .toLowerCase() ==
                           "medium"
                           ? Colors.orange.shade600
-                          : Colors.red,
+                          : Colors.red
                     ),
                   ),
                 ],
