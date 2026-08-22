@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Tasks/Tasks_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
@@ -139,7 +140,9 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                               );
                                             },
                                             child: TaskCards(
-                                              data: data![index],
+                                              data: TaskModel.toModel(
+                                                data![index].data(),
+                                              ),
                                             ),
                                           );
                                         },
@@ -182,7 +185,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                             height: 400,
                             child: Center(
                               child: Text(
-                                "No Upcoming Task Yet",
+                                "No Task Yet",
                                 style: TextStyle(color: AppColors.moderateGrey),
                               ),
                             ),
@@ -224,7 +227,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                           ),
                                         );
                                       },
-                                      child: TaskCards(data: data![index]),
+                                      child: TaskCards(
+                                        data: TaskModel.toModel(
+                                          data![index].data(),
+                                        ),
+                                      ),
                                     );
                                   },
                                 );
@@ -282,7 +289,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                           ),
                                         );
                                       },
-                                      child: TaskCards(data: data![index]),
+                                      child: TaskCards(
+                                        data: TaskModel.toModel(
+                                          data![index].data(),
+                                        ),
+                                      ),
                                     );
                                   },
                                 );

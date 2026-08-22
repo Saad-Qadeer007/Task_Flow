@@ -13,6 +13,32 @@ class TaskProvider extends ChangeNotifier {
   int notNullTodayTaskCount = 0;
   int notNullUpcomingTaskCount = 0;
   int notNullOverDueTaskCount = 0;
+  bool searchModeByTextField = false;
+  bool searchModeByCategory = false;
+  String searchText = "";
+  late var filteredList = [];
+  List<String> taskCategories = [
+    'Study',
+    'Work',
+    'Personal',
+    'Health',
+    'Shopping',
+    'Finance',
+    'Projects',
+    'Other',
+  ];
+  late String selectedCatagory = "";
+
+  void categorySelectionHandler(String value) {
+    selectedCatagory = value;
+    searchModeByCategory = true;
+    notifyListeners();
+  }
+
+  void setSearchModeByTextField() {
+    searchModeByTextField = !searchModeByTextField;
+    notifyListeners();
+  }
 
   void setEditModeToOn() {
     editMode = true;
@@ -80,6 +106,9 @@ class TaskProvider extends ChangeNotifier {
     for (final i in todayTasks) {
       if (i != null) {
         print("OverDue");
+        print(i.taskTitle);
+        print(i.taskDueDate);
+        print(tasks.length);
         notNullOverDueTaskCount++;
       }
     }
@@ -136,6 +165,7 @@ class TaskProvider extends ChangeNotifier {
     }).toList();
     filterTodayTasks();
     taskCalculation();
+    overDueTasks();
     notifyListeners();
   }
 
@@ -170,6 +200,50 @@ class TaskProvider extends ChangeNotifier {
       return;
     }
     completedTaskByPercentage = completedTasks / totalTasks * 100;
+    notifyListeners();
+  }
+
+  //   Functions for handling searching
+
+  void searchByTextField(String value) {
+    searchText = value;
+    applyFilter();
+    notifyListeners();
+  }
+
+  void searchWithCatagory() {
+    applyFilter();
+    searchModeByCategory = true;
+    notifyListeners();
+  }
+
+  void applyFilter() {
+    if (searchText == "") {
+      searchModeByTextField = false;
+    }
+    print("apply filter run");
+    final task = List.from(tasks);
+    filteredList.clear();
+    final searchedResult = [];
+    bool getDataWithSearchField = true;
+    bool getDataWithCategory = true;
+
+    for (final i in task) {
+      if (searchModeByTextField) {
+        getDataWithSearchField =
+            i.taskTitle.toLowerCase().contains(searchText.toLowerCase()) ||
+            i.taskDescription.toLowerCase().contains(searchText.toLowerCase());
+      }
+
+      if (searchModeByCategory) {
+        getDataWithCategory = i.taskCategory == selectedCatagory;
+      }
+
+      if (getDataWithSearchField && getDataWithCategory) {
+        searchedResult.add(i);
+      }
+    }
+    filteredList = searchedResult;
     notifyListeners();
   }
 }
