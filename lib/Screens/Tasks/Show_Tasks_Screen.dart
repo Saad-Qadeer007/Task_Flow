@@ -1,16 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Widgets/Task_Catagory_Chip.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Cards.dart';
+import '../../Widgets/Task_Priority_Chips.dart';
 import '../Home/Home_Screen.dart';
-import 'Tasks_Detail_Screen.dart';
 
 class ShowTasksScreen extends StatefulWidget {
   const ShowTasksScreen({super.key});
@@ -20,8 +17,16 @@ class ShowTasksScreen extends StatefulWidget {
 }
 
 class _ShowTasksScreenState extends State<ShowTasksScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TaskProvider>().getTasks();
+    });
+  }
+
   List<String> dateChipList = ["All", "Today", "Upcoming", "Completed"];
-  String activeDateChip = "All";
   final List<String> taskCategories = [
     'Study',
     'Work',
@@ -71,11 +76,17 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "All Tasks",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight(600),
+                        InkWell(
+                          onTap: () {
+                            print(provider.filteredList.length);
+                            print(provider.tasks.length);
+                          },
+                          child: Text(
+                            "All Tasks",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight(600),
+                            ),
                           ),
                         ),
                         Spacer(),
@@ -94,12 +105,12 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                         SizedBox(width: 10),
                         InkWell(
                           onTap: () async {
-                            SingleChildScrollView(
-                              child: SafeArea(
-                                child: await showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
+                            await showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                  child: SingleChildScrollView(
+                                    child: Container(
                                       padding: EdgeInsets.all(15.0),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -108,107 +119,148 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           topRight: Radius.circular(20),
                                         ),
                                       ),
-                                      height: 400,
                                       width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Filter Notes",
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              color: AppColors.darkGrey,
-                                              fontWeight: FontWeight(600),
-                                            ),
-                                          ),
-                                          SizedBox(height: 20),
-                                          Text(
-                                            "Filter By Category",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.darkGrey,
-                                            ),
-                                          ),
-                                          SizedBox(height: 15),
-                                          Wrap(
-                                            spacing: 10,
-                                            children: taskCategories.map((
-                                              item,
-                                            ) {
-                                              return TaskCategoryChip(
-                                                category: item,
-                                              );
-                                            }).toList(),
-                                          ),
-                                          SizedBox(height: 20),
-                                          Container(
-                                            width: MediaQuery.of(
-                                              context,
-                                            ).size.width,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.primaryColor,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        8.0,
-                                                      ),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                context
-                                                    .read<TaskProvider>()
-                                                    .searchWithCatagory();
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(
-                                                "Apply Filter",
+                                      child: Consumer<TaskProvider>(
+                                        builder: (context, provider, child) {
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Filter Notes",
                                                 style: TextStyle(
-                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                  color: AppColors.darkGrey,
+                                                  fontWeight: FontWeight(600),
                                                 ),
                                               ),
-                                            ),
-                                          ),
+                                              SizedBox(height: 20),
+                                              Text(
+                                                "Filter By Category",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.darkGrey,
+                                                ),
+                                              ),
+                                              SizedBox(height: 15),
+                                              Wrap(
+                                                spacing: 10,
+                                                children: taskCategories.map((
+                                                  item,
+                                                ) {
+                                                  return TaskCategoryChip(
+                                                    category: item,
+                                                  );
+                                                }).toList(),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "Filter For Priority",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.darkGrey,
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  Text(
+                                                    provider.priority,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors
+                                                          .moderateGrey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 15),
+                                              Wrap(
+                                                spacing: 10,
+                                                children: provider.taskPriority
+                                                    .map((item) {
+                                                      return TaskPriorityChips(
+                                                        item: item,
+                                                      );
+                                                    })
+                                                    .toList(),
+                                              ),
+                                              SizedBox(height: 20),
+                                              Container(
+                                                width: MediaQuery.of(
+                                                  context,
+                                                ).size.width,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.primaryColor,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8.0,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    context
+                                                        .read<TaskProvider>()
+                                                        .searchWithCatagory();
+                                                    context
+                                                        .read<TaskProvider>()
+                                                        .searchWithPriority();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    "Apply Filter",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
 
-                                          SizedBox(height: 10),
-                                          Container(
-                                            width: MediaQuery.of(
-                                              context,
-                                            ).size.width,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.primaryColor,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        8.0,
-                                                      ),
+                                              SizedBox(height: 10),
+                                              Container(
+                                                width: MediaQuery.of(
+                                                  context,
+                                                ).size.width,
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.primaryColor,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8.0,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    context
+                                                        .read<TaskProvider>()
+                                                        .clearFilter();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    "Clear Filter",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              onPressed: null,
-                                              // onPressed: () {
-                                              //   context
-                                              //       .read<TaskProvider>()
-                                              //       .changeCategoryToDefault();
-                                              // },
-                                              child: Text(
-                                                "Clear Filter",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                            ],
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
                           child: FaIcon(
@@ -255,18 +307,20 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                       children: dateChipList
                           .map(
                             (e) => ActionChip(
-                              backgroundColor: activeDateChip == e
+                              backgroundColor: provider.activeDateChip == e
                                   ? AppColors.primaryColor
                                   : AppColors.background,
                               onPressed: () {
                                 setState(() {
-                                  activeDateChip = e;
+                                  provider.activeDateChip = e;
+                                  print(provider.activeDateChip);
+                                  context.read<TaskProvider>().searchWithDate();
                                 });
                               },
                               label: Text(
                                 e,
                                 style: TextStyle(
-                                  color: activeDateChip == e
+                                  color: provider.activeDateChip == e
                                       ? AppColors.lightColor
                                       : AppColors.moderateGrey,
                                 ),
@@ -277,403 +331,44 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                     ),
                     SizedBox(height: 20),
                     //   Showing the data from the firebase
-                    provider.filteredList.isEmpty ||
-                            provider.filteredList.every((item) {
-                              return item == null;
-                            })
+                    provider.tasks.isEmpty
                         ? Container(
-                            child: Column(
-                              children: [
-                                provider.tasks.isEmpty
-                                    ? Container(
-                                        height: 400,
-                                        child: Center(
-                                          child: Text(
-                                            "No Task Yet",
-                                            style: TextStyle(
-                                              color: AppColors.moderateGrey,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : activeDateChip == "All"
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Today's Tasks",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          //   Showing the data from the firebase
-                                          StreamBuilder(
-                                            stream: FirebaseFirestore.instance
-                                                .collection("users")
-                                                .doc(
-                                                  FirebaseAuth
-                                                      .instance
-                                                      .currentUser
-                                                      ?.uid,
-                                                )
-                                                .collection("tasks")
-                                                .where(
-                                                  'taskDueDate',
-                                                  isGreaterThanOrEqualTo:
-                                                      startOfDay,
-                                                )
-                                                .where(
-                                                  'taskDueDate',
-                                                  isLessThanOrEqualTo: endOfDay,
-                                                )
-                                                .where(
-                                                  "isCompleted",
-                                                  isEqualTo: false,
-                                                )
-                                                .snapshots(),
-                                            builder: (context, snapshot) {
-                                              final data = snapshot.data?.docs;
-                                              if (!snapshot.hasData) {
-                                                return Center(
-                                                  child: Text("No Data Found"),
-                                                );
-                                              } else {
-                                                return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemCount: data?.length,
-                                                  itemBuilder: (context, index) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                TasksDetailScreen(
-                                                                  data:
-                                                                      data[index],
-                                                                  upcoming:
-                                                                      false,
-                                                                ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: TaskCards(
-                                                        data: TaskModel.toModel(
-                                                          data![index].data(),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                          ),
-                                          Text(
-                                            "Upcoming Tasks",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          //   Showing the data from the firebase
-                                          StreamBuilder(
-                                            stream: FirebaseFirestore.instance
-                                                .collection("users")
-                                                .doc(
-                                                  FirebaseAuth
-                                                      .instance
-                                                      .currentUser
-                                                      ?.uid,
-                                                )
-                                                .collection("tasks")
-                                                .where(
-                                                  'taskDueDate',
-                                                  isGreaterThan: endOfDay,
-                                                )
-                                                .snapshots(),
-                                            builder: (context, snapshot) {
-                                              final data = snapshot.data?.docs;
-                                              if (!snapshot.hasData) {
-                                                return Center(
-                                                  child: Text("No Data Found"),
-                                                );
-                                              } else {
-                                                return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemCount: data?.length,
-                                                  itemBuilder: (context, index) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                TasksDetailScreen(
-                                                                  data:
-                                                                      data[index],
-                                                                  upcoming:
-                                                                      false,
-                                                                ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: TaskCards(
-                                                        data: TaskModel.toModel(
-                                                          data![index].data(),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                          ),
-                                          Text(
-                                            "Completed Tasks",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          //   Showing the data from the firebase
-                                          StreamBuilder(
-                                            stream: FirebaseFirestore.instance
-                                                .collection("users")
-                                                .doc(
-                                                  FirebaseAuth
-                                                      .instance
-                                                      .currentUser
-                                                      ?.uid,
-                                                )
-                                                .collection("tasks")
-                                                .where(
-                                                  'isCompleted',
-                                                  isEqualTo: true,
-                                                )
-                                                .snapshots(),
-                                            builder: (context, snapshot) {
-                                              final data = snapshot.data?.docs;
-                                              if (!snapshot.hasData) {
-                                                return Center(
-                                                  child: Text("No Data Found"),
-                                                );
-                                              } else {
-                                                return ListView.builder(
-                                                  physics:
-                                                      NeverScrollableScrollPhysics(),
-                                                  shrinkWrap: true,
-                                                  itemCount: data?.length,
-                                                  itemBuilder: (context, index) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                TasksDetailScreen(
-                                                                  data:
-                                                                      data[index],
-                                                                  upcoming:
-                                                                      false,
-                                                                ),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: TaskCards(
-                                                        data: TaskModel.toModel(
-                                                          data![index].data(),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    : activeDateChip == "Today"
-                                    ? StreamBuilder(
-                                        stream: FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(
-                                              FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.uid,
-                                            )
-                                            .collection("tasks")
-                                            .where(
-                                              'taskDueDate',
-                                              isGreaterThanOrEqualTo:
-                                                  startOfDay,
-                                            )
-                                            .where(
-                                              'taskDueDate',
-                                              isLessThanOrEqualTo: endOfDay,
-                                            )
-                                            .where(
-                                              "isCompleted",
-                                              isEqualTo: false,
-                                            )
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          final data = snapshot.data?.docs;
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text("No Data Found"),
-                                            );
-                                          } else {
-                                            return ListView.builder(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: data?.length,
-                                              itemBuilder: (context, index) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            TasksDetailScreen(
-                                                              data: data[index],
-                                                              upcoming: false,
-                                                            ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: TaskCards(
-                                                    data: TaskModel.toModel(
-                                                      data![index].data(),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : activeDateChip == "Upcoming"
-                                    ? StreamBuilder(
-                                        stream: FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(
-                                              FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.uid,
-                                            )
-                                            .collection("tasks")
-                                            .where(
-                                              'taskDueDate',
-                                              isGreaterThan: endOfDay,
-                                            )
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          final data = snapshot.data?.docs;
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text("No Data Found"),
-                                            );
-                                          } else {
-                                            return ListView.builder(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: data?.length,
-                                              itemBuilder: (context, index) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            TasksDetailScreen(
-                                                              data: data[index],
-                                                              upcoming: false,
-                                                            ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: TaskCards(
-                                                    data: TaskModel.toModel(
-                                                      data![index].data(),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : activeDateChip == "Completed"
-                                    ? StreamBuilder(
-                                        stream: FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(
-                                              FirebaseAuth
-                                                  .instance
-                                                  .currentUser
-                                                  ?.uid,
-                                            )
-                                            .collection("tasks")
-                                            .where(
-                                              'isCompleted',
-                                              isEqualTo: true,
-                                            )
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          final data = snapshot.data?.docs;
-                                          if (!snapshot.hasData) {
-                                            return Center(
-                                              child: Text("No Data Found"),
-                                            );
-                                          } else {
-                                            return ListView.builder(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: data?.length,
-                                              itemBuilder: (context, index) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            TasksDetailScreen(
-                                                              data: data[index],
-                                                              upcoming: false,
-                                                            ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: TaskCards(
-                                                    data: TaskModel.toModel(
-                                                      data![index].data(),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : Container(),
-                                SizedBox(height: 30),
-                              ],
+                            height: 400,
+                            child: Center(
+                              child: Text(
+                                "No Task Yet",
+                                style: TextStyle(color: AppColors.moderateGrey),
+                              ),
+                            ),
+                          )
+                        : provider.filteredList.isEmpty
+                        ? Container(
+                            height: 400,
+                            child: Center(
+                              child: Text(
+                                "No Tasks Found",
+                                style: TextStyle(color: AppColors.moderateGrey),
+                              ),
                             ),
                           )
                         : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Hello"),
+                              Text(
+                                provider.activeDateChip == "All"
+                                    ? "All Tasks"
+                                    : provider.activeDateChip == "Today"
+                                    ? "Today's Tasks"
+                                    : provider.activeDateChip == "Upcoming"
+                                    ? "Upcoming Tasks"
+                                    : "Completed Tasks",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight(600),
+                                  color: AppColors.moderateGrey,
+                                ),
+                              ),
+                              SizedBox(height: 10),
                               ListView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),

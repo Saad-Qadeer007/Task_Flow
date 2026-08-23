@@ -4,7 +4,7 @@ import 'package:task_flow/Models/Task_Model.dart';
 import '../Services/Firebase_Services.dart';
 
 class TaskProvider extends ChangeNotifier {
-  String priority = "Low";
+  String priority = "High";
   List<TaskModel> tasks = [];
   bool editMode = false;
   int totalTasks = 0;
@@ -15,8 +15,10 @@ class TaskProvider extends ChangeNotifier {
   int notNullOverDueTaskCount = 0;
   bool searchModeByTextField = false;
   bool searchModeByCategory = false;
+  bool searchModeByPriority = false;
+  bool searchWithDateChips = false;
   String searchText = "";
-  late var filteredList = [];
+  late var filteredList = tasks;
   List<String> taskCategories = [
     'Study',
     'Work',
@@ -27,7 +29,15 @@ class TaskProvider extends ChangeNotifier {
     'Projects',
     'Other',
   ];
+  List<String> taskPriority = ["Low", "Medium", "High"];
   late String selectedCatagory = "";
+  String activeDateChip = "All";
+
+  final now = DateTime.now();
+
+  late final startOfDay = DateTime(now.year, now.month, now.day);
+
+  late final endOfDay = startOfDay.add(const Duration(days: 1));
 
   void categorySelectionHandler(String value) {
     selectedCatagory = value;
@@ -152,6 +162,7 @@ class TaskProvider extends ChangeNotifier {
     tasks.removeAt(index);
     print("tasks length after delete ${tasks.length}");
     await FirebaseServices().deleteTaskFromFirebase(data);
+    await getTasks();
     await filterTodayTasks();
     taskCalculation();
     notifyListeners();
@@ -212,38 +223,92 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void searchWithCatagory() {
-    applyFilter();
     searchModeByCategory = true;
+    applyFilter();
+  }
+
+  void searchWithPriority() {
+    searchModeByPriority = true;
+    applyFilter();
+  }
+
+  void searchWithDate() {
+    searchWithDateChips = true;
+    applyFilter();
+  }
+
+  void clearFilter() {
+    searchModeByTextField = false;
+    searchModeByCategory = false;
+    searchModeByPriority = false;
+    searchWithDateChips = false;
+    searchText = "";
+    selectedCatagory = "";
+    priority = "High";
+    activeDateChip = "All";
+    filteredList = tasks;
     notifyListeners();
   }
 
   void applyFilter() {
-    if (searchText == "") {
-      searchModeByTextField = false;
-    }
-    print("apply filter run");
-    final task = List.from(tasks);
-    filteredList.clear();
-    final searchedResult = [];
-    bool getDataWithSearchField = true;
-    bool getDataWithCategory = true;
+    final searchedResult = tasks.where((task) {
+      print("Search Filter Run");
+      bool matchesText = true;
+      bool matchesCategory = true;
+      bool matchesPriority = true;
+      bool matchDate = true;
 
-    for (final i in task) {
-      if (searchModeByTextField) {
-        getDataWithSearchField =
-            i.taskTitle.toLowerCase().contains(searchText.toLowerCase()) ||
-            i.taskDescription.toLowerCase().contains(searchText.toLowerCase());
+      // Text filter
+      if (searchModeByTextField && searchText.isNotEmpty) {
+        matchesText =
+            task.taskTitle!.toLowerCase().contains(searchText.toLowerCase()) ||
+            task.taskDescription!.toLowerCase().contains(
+              searchText.toLowerCase(),
+            );
       }
 
-      if (searchModeByCategory) {
-        getDataWithCategory = i.taskCategory == selectedCatagory;
+      // Category filter
+      if (searchModeByCategory && selectedCatagory.isNotEmpty) {
+        matchesCategory = task.taskCategory == selectedCatagory;
       }
 
-      if (getDataWithSearchField && getDataWithCategory) {
-        searchedResult.add(i);
+      // Priority filter
+      if (searchModeByPriority && priority.isNotEmpty) {
+        matchesPriority = task.taskPriority == priority;
       }
-    }
+
+      if (searchWithDateChips) {
+        print("Entered");
+        if (activeDateChip == "All") {
+          print("All");
+          filteredList = tasks;
+        } else if (activeDateChip == "Today") {
+          print("Today");
+          print(tasks.length);
+          matchDate =
+              task.taskDueDate?.day == DateTime.now().day &&
+              task.taskDueDate?.month == DateTime.now().month &&
+              task.taskDueDate?.year == DateTime.now().year;
+        } else if (activeDateChip == "Upcoming") {
+          print("Upcoming");
+          matchDate = task.taskDueDate!.isAfter(endOfDay) ? true : false;
+        } else if (activeDateChip == "Completed") {
+          print("Completed");
+          matchDate = task.isCompleted == true ? true : false;
+        } else {
+          print("Default");
+          filteredList = [];
+        }
+      }
+
+      // ALL active filters must match
+      return matchesText && matchesCategory && matchesPriority && matchDate;
+    }).toList();
+
     filteredList = searchedResult;
+
+    print("Filtered Result : ${filteredList.length}");
+    print("search with datechip : $searchWithDateChips");
     notifyListeners();
   }
 }
