@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SizedBox(height: 10),
                             // Forget Password
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: InkWell(
                                 onTap: () {
@@ -188,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ],
                                       ),
                                       actions: [
-                                        Container(
+                                        SizedBox(
                                           width: MediaQuery.of(
                                             context,
                                           ).size.width,
@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ),
                                           ),
                                         ),
-                                        Container(
+                                        SizedBox(
                                           width: MediaQuery.of(
                                             context,
                                           ).size.width,
@@ -304,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SizedBox(height: 40),
                             // Login Button
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: ElevatedButton(
                                 onPressed: () async {

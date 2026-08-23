@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../Utilties/App_Colors.dart';
 
 class SuccessSnackBar {
-  static showSuccessSnackBar(context, String message) =>
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSuccessSnackBar(context, String message) =>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           shape: RoundedRectangleBorder(

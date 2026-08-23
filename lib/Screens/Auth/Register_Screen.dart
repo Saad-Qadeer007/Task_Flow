@@ -59,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +201,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             SizedBox(height: 40),
                             // Create Account Button
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
