@@ -110,7 +110,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                       .collection("tasks")
                                       .where(
                                         "taskDueDate",
-                                        isLessThan : startOfDay,
+                                        isLessThan: startOfDay,
                                       )
                                       .where("isCompleted", isEqualTo: false)
                                       .snapshots(),
@@ -199,10 +199,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                   "taskDueDate",
                                   isGreaterThanOrEqualTo: startOfDay,
                                 )
-                                .where(
-                                  "taskDueDate",
-                                  isLessThanOrEqualTo: endOfDay,
-                                )
+                                .where("taskDueDate", isLessThan: endOfDay)
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
@@ -263,7 +260,10 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .collection("users")
                                 .doc(FirebaseAuth.instance.currentUser?.uid)
                                 .collection("tasks")
-                                .where("taskDueDate", isGreaterThan: endOfDay)
+                                .where(
+                                  "taskDueDate",
+                                  isGreaterThanOrEqualTo: endOfDay,
+                                )
                                 .limit(3)
                                 .snapshots(),
                             builder: (context, snapshot) {

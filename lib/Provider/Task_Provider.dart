@@ -218,6 +218,9 @@ class TaskProvider extends ChangeNotifier {
 
   void searchByTextField(String value) {
     searchText = value;
+    if(searchText == ""){
+     searchModeByTextField = false;
+    }
     applyFilter();
     notifyListeners();
   }
