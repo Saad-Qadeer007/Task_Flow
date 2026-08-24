@@ -59,16 +59,17 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddTaskScreen(
-                    data: {
-                      "id": "",
-                      "taskTitle": "",
-                      "taskDescription": "",
-                      "taskCategory": "",
-                      "taskPriority": "",
-                      "taskDueDate": "",
-                      "taskDueTime": {"hour": 0, "minute": 0},
-                      // "taskReminder": "",
-                    },
+                    data: TaskModel(
+                      id: "",
+                      taskTitle: "",
+                      taskDescription: "",
+                      taskCategory: "",
+                      taskPriority: "",
+                      taskDueDate: null,
+                      taskDueTime: null,
+                      taskReminder: "",
+                      taskRepeat: "",
+                    ),
                   ),
                 ),
               );
@@ -133,16 +134,16 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       TasksDetailScreen(
-                                                        data: data[index],
+                                                        tasks: provider.tasks,
+                                                        id: data[index].id,
                                                         upcoming: false,
                                                       ),
                                                 ),
                                               );
                                             },
                                             child: TaskCards(
-                                              data: TaskModel.toModel(
-                                                data![index].data(),
-                                              ),
+                                              id: data![index].id.toString(),
+                                              tasks: provider.tasks,
                                             ),
                                           );
                                         },
@@ -178,7 +179,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                         ),
                       ],
                     ),
-                    //   Showing the data from the firebase
+                    //   Showing the data from the firebase for today
                     provider.tasks.isEmpty ||
                             provider.notNullTodayTaskCount == 0
                         ? SizedBox(
@@ -218,16 +219,17 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 TasksDetailScreen(
-                                                  data: data[index],
+                                                  id: data[index].id
+                                                      .toString(),
+                                                  tasks: provider.tasks,
                                                   upcoming: false,
                                                 ),
                                           ),
                                         );
                                       },
                                       child: TaskCards(
-                                        data: TaskModel.toModel(
-                                          data![index].data(),
-                                        ),
+                                        id: data![index].id.toString(),
+                                        tasks: provider.tasks,
                                       ),
                                     );
                                   },
@@ -283,16 +285,17 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 TasksDetailScreen(
-                                                  data: data[index],
+                                                  tasks: provider.tasks,
+                                                  id: data[index].id
+                                                      .toString(),
                                                   upcoming: true,
                                                 ),
                                           ),
                                         );
                                       },
                                       child: TaskCards(
-                                        data: TaskModel.toModel(
-                                          data![index].data(),
-                                        ),
+                                        id: data![index].id.toString(),
+                                        tasks: provider.tasks,
                                       ),
                                     );
                                   },

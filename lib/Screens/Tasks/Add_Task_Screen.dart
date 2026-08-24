@@ -8,7 +8,7 @@ import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Priority_Chips.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  final Map<String, dynamic> data;
+  final TaskModel data;
 
   const AddTaskScreen({super.key, required this.data});
 
@@ -21,31 +21,33 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.data.isNotEmpty) {
-      titleController.text = widget.data["taskTitle"];
-      descriptionController.text = widget.data["taskDescription"];
-      selectedCategory = widget.data["taskCategory"] == ""
-          ? taskCategories[0]
-          : widget.data["taskCategory"];
-      gettedPriority = widget.data["taskPriority"];
-      selectedDate = widget.data["taskDueDate"] == ""
-          ? null
-          : widget.data["taskDueDate"].toDate();
-      dueDateController.text = selectedDate == null
-          ? "Please Select Date"
-          : "${selectedDate?.day}/${selectedDate?.month}/${selectedDate?.year}";
-      selectedTime = widget.data["taskDueTime"] == ""
-          ? null
-          : TimeOfDay(
-              hour: widget.data["taskDueTime"]["hour"],
-              minute: widget.data["taskDueTime"]["minute"],
-            );
-      dueTimeController.text =
-          selectedTime?.hour == 0 || selectedTime?.minute == 0
-          ? "Please Select Time"
-          : "${selectedTime?.hour}:${selectedTime?.minute}";
-      // defaultReminder = widget.data["taskReminder"] == "" ? defaultReminder : widget.data["taskReminder"];
-    }
+    titleController.text = widget.data.taskTitle!;
+    descriptionController.text = widget.data.taskDescription!;
+    selectedCategory = widget.data.taskCategory == ""
+        ? taskCategories[0]
+        : widget.data.taskCategory!;
+    gettedPriority = widget.data.taskPriority;
+    selectedDate = widget.data.taskDueDate == ""
+        ? null
+        : widget.data.taskDueDate;
+    dueDateController.text = selectedDate == null
+        ? "Please Select Date"
+        : "${selectedDate?.day}/${selectedDate?.month}/${selectedDate?.year}";
+    selectedTime = widget.data.taskDueTime == ""
+        ? null
+        : TimeOfDay(
+            hour: widget.data.taskDueTime != null
+                ? widget.data.taskDueTime!.hour
+                : 0,
+            minute: widget.data.taskDueTime != null
+                ? widget.data.taskDueTime!.minute
+                : 0,
+          );
+    dueTimeController.text =
+        selectedTime?.hour == 0 || selectedTime?.minute == 0
+        ? "Please Select Time"
+        : "${selectedTime?.hour}:${selectedTime?.minute}";
+    // defaultReminder = widget.data["taskReminder"] == "" ? defaultReminder : widget.data["taskReminder"];
   }
 
   final List<String> taskCategories = [
@@ -448,7 +450,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                         )
                                       : context.read<TaskProvider>().updateTask(
                                           {
-                                            "id": widget.data["id"],
+                                            "id": widget.data.id,
                                             "taskTitle": titleController.text
                                                 .trim(),
                                             "taskDescription":

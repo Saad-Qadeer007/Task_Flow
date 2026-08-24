@@ -127,8 +127,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void addTask(TaskModel task) async {
-    tasks.add(task);
+    print("loading data in to firebase");
     await FirebaseServices().addTaskToFirebase(task);
+    print("data added to firebase");
+    tasks.add(task);
+    print("task added ${task.id}");
+    print("task added ${task.id}");
     filterTodayTasks();
     upcomingTasks();
     notifyListeners();
@@ -148,21 +152,16 @@ class TaskProvider extends ChangeNotifier {
     print(tasks.length);
   }
 
-  void deleteTask(Map<String, dynamic> data) async {
-    print("tasks length before delete ${tasks.length}");
-    TaskModel task = TaskModel.toModel(data);
-    int index = 0;
-    for (final i in tasks) {
-      if (i.id == task.id) {
-        index = tasks.indexOf(i);
-      }
-    }
+  void deleteTask(String id) async {
+    int index = tasks.indexWhere((element) => element.id == id);
     print(index);
     print(tasks[index].taskTitle);
     tasks.removeAt(index);
     print("tasks length after delete ${tasks.length}");
-    await FirebaseServices().deleteTaskFromFirebase(data);
+    await FirebaseServices().deleteTaskFromFirebase(id);
+    print("items in the provider beofore delection : ${tasks.length}");
     await getTasks();
+    print("items in the provider after delection : ${tasks.length}");
     await filterTodayTasks();
     taskCalculation();
     notifyListeners();

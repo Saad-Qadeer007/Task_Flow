@@ -3,15 +3,20 @@ import 'package:task_flow/Models/Task_Model.dart';
 import '../Utilties/App_Colors.dart';
 
 class TaskCards extends StatefulWidget {
-  final TaskModel data;
+  final List<TaskModel> tasks;
+  final String id;
 
-  const TaskCards({super.key, required this.data});
+  const TaskCards({super.key, required this.id, required this.tasks});
 
   @override
   State<TaskCards> createState() => _TaskCardsState();
 }
 
 class _TaskCardsState extends State<TaskCards> {
+  late final data = widget.tasks.firstWhere(
+    (element) => element.id == widget.id,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,30 +32,28 @@ class _TaskCardsState extends State<TaskCards> {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey.shade200,
-                child: widget.data.isCompleted == true
+                child: data.isCompleted == true
                     ? Icon(Icons.done_rounded, color: Colors.green)
                     : Icon(
-                  Icons.circle_rounded,
-                  color: widget.data.taskPriority == "Low"
-                      ? Colors.cyan.shade800
-                      : widget.data.taskPriority == "Medium"
-                      ? Colors.orange.shade600
-                      : Colors.red,
-                ),
+                        Icons.circle_rounded,
+                        color: data.taskPriority == "Low"
+                            ? Colors.cyan.shade800
+                            : data.taskPriority == "Medium"
+                            ? Colors.orange.shade600
+                            : Colors.red,
+                      ),
               ),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.data.taskTitle.toString(),
+                    data.taskTitle.toString(),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 5),
                   Text(
-                    (widget.data.createdAt)
-                        .toString()
-                        .substring(0, 19),
+                    (data.createdAt).toString().substring(0, 19),
                     style: TextStyle(color: AppColors.moderateGrey),
                   ),
                 ],
@@ -66,21 +69,13 @@ class _TaskCardsState extends State<TaskCards> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    widget.data.taskPriority.toString(),
+                    data.taskPriority.toString(),
                     style: TextStyle(
-                      color:
-                      widget.data
-                          .taskPriority
-                          .toString()
-                          .toLowerCase() ==
-                          "low"
+                      color: data.taskPriority.toString().toLowerCase() == "low"
                           ? Colors.cyan.shade800
-                          : widget.data
-                          .toString()
-                          .toLowerCase() ==
-                          "medium"
+                          : data.toString().toLowerCase() == "medium"
                           ? Colors.orange.shade600
-                          : Colors.red
+                          : Colors.red,
                     ),
                   ),
                 ],

@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Tasks/Add_Task_Screen.dart';
 import 'package:task_flow/Widgets/Success_SnackBar.dart';
@@ -9,12 +9,14 @@ import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Summary_Card.dart';
 
 class TasksDetailScreen extends StatefulWidget {
-  final QueryDocumentSnapshot<Map<String, dynamic>> data;
+  final String id;
+  final List<TaskModel> tasks;
   final bool upcoming;
 
   const TasksDetailScreen({
     super.key,
-    required this.data,
+    required this.id,
+    required this.tasks,
     required this.upcoming,
   });
 
@@ -23,6 +25,10 @@ class TasksDetailScreen extends StatefulWidget {
 }
 
 class _TasksDetailScreenState extends State<TasksDetailScreen> {
+  late TaskModel data = widget.tasks.firstWhere(
+    (element) => element.id == widget.id,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskProvider>(
@@ -50,7 +56,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           ),
                         ),
                         Spacer(),
-                        widget.data.data()["isCompleted"] == true
+                        data.isCompleted == true
                             ? Container()
                             : InkWell(
                                 onTap: () {
@@ -58,9 +64,8 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => AddTaskScreen(
-                                        data: widget.data.data(),
-                                      ),
+                                      builder: (context) =>
+                                          AddTaskScreen(data: data),
                                     ),
                                   );
                                 },
@@ -95,7 +100,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.data.data()["taskTitle"],
+                          data.taskTitle.toString(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -107,19 +112,17 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                             Icon(Icons.circle_rounded, color: Colors.red),
                             SizedBox(width: 10),
                             Text(
-                              widget.data.data()["taskPriority"],
+                              data.taskPriority.toString(),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color:
-                                    widget.data
-                                            .data()["taskPriority"]
+                                    data.taskPriority
                                             .toString()
                                             .toLowerCase() ==
                                         "low"
                                     ? Colors.cyan.shade800
-                                    : widget.data
-                                              .data()["taskPriority"]
+                                    : data.taskPriority
                                               .toString()
                                               .toLowerCase() ==
                                           "medium"
@@ -140,7 +143,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         ),
                         SizedBox(height: 15),
                         Text(
-                          widget.data.data()["taskDescription"],
+                          data.taskDescription.toString(),
                           style: TextStyle(
                             color: AppColors.moderateGrey,
                             fontSize: 16,
@@ -151,15 +154,13 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         TaskSummaryCard(
                           icon: Icons.keyboard_option_key,
                           taskOption: "Category",
-                          taskOptionsData: widget.data.data()["taskCategory"],
+                          taskOptionsData: data.taskCategory.toString(),
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.lock_clock,
                           taskOption: "Due Date",
-                          taskOptionsData: widget.data
-                              .data()["taskDueDate"]
-                              .toDate()
+                          taskOptionsData: data.taskDueDate
                               .toString()
                               .substring(0, 10),
                         ),
@@ -168,32 +169,29 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                           icon: Icons.timeline,
                           taskOption: "Due Time",
                           taskOptionsData:
-                              "${widget.data.data()["taskDueTime"]["hour"]}:${widget.data.data()["taskDueTime"]["minute"]}",
+                              "${data.taskDueTime?.hour}:${data.taskDueTime?.minute}",
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.notifications_none,
                           taskOption: "Reminder",
-                          taskOptionsData:
-                              widget.data.data()["taskReminder"] == ""
+                          taskOptionsData: data.taskReminder == ""
                               ? "No Data"
-                              : widget.data.data()["taskReminder"],
+                              : data.taskReminder.toString(),
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.timer_rounded,
                           taskOption: "Repeat",
-                          taskOptionsData:
-                              widget.data.data()["taskReminder"] == ""
+                          taskOptionsData: data.taskReminder == ""
                               ? "No Data"
-                              : widget.data.data()["taskRepeat"],
+                              : data.taskRepeat.toString(),
                         ),
                         SizedBox(height: 5),
                         TaskSummaryCard(
                           icon: Icons.check_circle_outline_rounded,
                           taskOption: "Status",
-                          taskOptionsData:
-                              widget.data.data()["isCompleted"] == true
+                          taskOptionsData: data.isCompleted == true
                               ? "Completed"
                               : "Pending",
                         ),
@@ -207,8 +205,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                             children: [
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      widget.data.data()["isCompleted"] == true
+                                  backgroundColor: data.isCompleted == true
                                       ? Colors.green
                                       : AppColors.background,
                                   foregroundColor: AppColors.lightColor,
@@ -219,8 +216,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                 onPressed: widget.upcoming == true
                                     ? null
                                     : () {
-                                        widget.data.data()["isCompleted"] ==
-                                                true
+                                        data.isCompleted == true
                                             ? SuccessSnackBar.showSuccessSnackBar(
                                                 context,
                                                 "Task Already Completed",
@@ -228,13 +224,11 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                             : context
                                                   .read<TaskProvider>()
                                                   .updateTask({
-                                                    "id": widget.data
-                                                        .data()["id"],
+                                                    "id": data.id,
                                                     "isCompleted": true,
                                                   });
                                         Navigator.pop(context);
-                                        widget.data.data()["isCompleted"] ==
-                                                false
+                                        data.isCompleted == false
                                             ? SuccessSnackBar.showSuccessSnackBar(
                                                 context,
                                                 "Task Completed Successfully",
@@ -244,9 +238,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                 child: Text(
                                   "Mark as Completed",
                                   style: TextStyle(
-                                    color:
-                                        widget.data.data()["isCompleted"] ==
-                                            true
+                                    color: data.isCompleted == true
                                         ? AppColors.lightColor
                                         : Colors.green,
                                     fontSize: 15,
@@ -305,7 +297,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                           onPressed: () {
                                             context
                                                 .read<TaskProvider>()
-                                                .deleteTask(widget.data.data());
+                                                .deleteTask(data.id.toString());
                                             Navigator.pop(context);
                                             Navigator.pop(context);
                                             SuccessSnackBar.showSuccessSnackBar(

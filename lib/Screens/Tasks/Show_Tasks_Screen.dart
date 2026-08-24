@@ -8,6 +8,7 @@ import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Task_Cards.dart';
 import '../../Widgets/Task_Priority_Chips.dart';
 import '../Home/Home_Screen.dart';
+import 'Tasks_Detail_Screen.dart';
 
 class ShowTasksScreen extends StatefulWidget {
   const ShowTasksScreen({super.key});
@@ -374,8 +375,37 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: provider.filteredList.length,
                                 itemBuilder: (context, index) {
-                                  return TaskCards(
-                                    data: provider.filteredList[index],
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TasksDetailScreen(
+                                            id: provider.filteredList[index].id
+                                                .toString(),
+                                            tasks: provider.filteredList,
+                                            upcoming:
+                                                provider.filteredList
+                                                        .firstWhere(
+                                                          (element) =>
+                                                              element.id ==
+                                                              provider
+                                                                  .filteredList[index]
+                                                                  .id,
+                                                        )
+                                                        .isCompleted ==
+                                                    false
+                                                ? false
+                                                : true,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: TaskCards(
+                                      id: provider.filteredList[index].id
+                                          .toString(),
+                                      tasks: provider.tasks,
+                                    ),
                                   );
                                 },
                               ),
