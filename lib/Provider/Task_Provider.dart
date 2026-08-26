@@ -19,6 +19,7 @@ class TaskProvider extends ChangeNotifier {
   bool searchWithDateChips = false;
   String searchText = "";
   late var filteredList = tasks;
+  bool isUpcoming = false;
   List<String> taskCategories = [
     'Study',
     'Work',
@@ -311,6 +312,17 @@ class TaskProvider extends ChangeNotifier {
 
     print("Filtered Result : ${filteredList.length}");
     print("search with datechip : $searchWithDateChips");
+    notifyListeners();
+  }
+
+
+
+  void upcomingTaskTracker (String id) {
+    final upcoming = filteredList
+        .firstWhere((item)
+        => item.id == id);
+    isUpcoming = upcoming.taskDueDate!.isAfter(endOfDay) ? true : false;
+    print(isUpcoming);
     notifyListeners();
   }
 }

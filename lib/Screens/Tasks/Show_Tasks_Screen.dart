@@ -79,7 +79,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                         Spacer(),
                         InkWell(
                           onTap: () {
-                            print("Filtered List : ${provider.filteredList.length}");
+                            print(
+                              "Filtered List : ${provider.filteredList.length}",
+                            );
                             print(provider.tasks.length);
                             print("End Date : ${provider.endOfDay}");
                           },
@@ -378,20 +380,30 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
+                                      context
+                                          .read<TaskProvider>()
+                                          .upcomingTaskTracker(provider
+                                          .filteredList[index]
+                                          .id
+                                          .toString());
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => TasksDetailScreen(
-                                            id: provider.filteredList[index].id
-                                                .toString(),
-                                            tasks: provider.filteredList,
-                                            upcoming: true,
-                                          ),
+                                          builder: (context) =>
+                                              TasksDetailScreen(
+                                                id: provider
+                                                    .filteredList[index]
+                                                    .id
+                                                    .toString(),
+                                                tasks: provider.filteredList,
+                                                upcoming: provider.isUpcoming,
+                                              ),
                                         ),
                                       );
                                     },
                                     child: TaskCards(
-                                      id: provider.filteredList[index].id.toString(),
+                                      id: provider.filteredList[index].id
+                                          .toString(),
                                       tasks: provider.filteredList,
                                     ),
                                   );
