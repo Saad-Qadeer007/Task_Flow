@@ -162,6 +162,9 @@ class TaskProvider extends ChangeNotifier {
     print("items in the provider beofore delection : ${tasks.length}");
     await getTasks();
     print("items in the provider after delection : ${tasks.length}");
+    print("Filtered Before ${filteredList.length}");
+    searchWithDate();
+    print("Filtered After ${filteredList.length}");
     await filterTodayTasks();
     taskCalculation();
     notifyListeners();
@@ -217,8 +220,8 @@ class TaskProvider extends ChangeNotifier {
 
   void searchByTextField(String value) {
     searchText = value;
-    if(searchText == ""){
-     searchModeByTextField = false;
+    if (searchText == "") {
+      searchModeByTextField = false;
     }
     applyFilter();
     notifyListeners();
@@ -297,9 +300,6 @@ class TaskProvider extends ChangeNotifier {
         } else if (activeDateChip == "Completed") {
           print("Completed");
           matchDate = task.isCompleted == true ? true : false;
-        } else {
-          print("Default");
-          filteredList = [];
         }
       }
 

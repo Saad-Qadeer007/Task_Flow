@@ -79,8 +79,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                         Spacer(),
                         InkWell(
                           onTap: () {
-                            print(provider.filteredList.length);
+                            print("Filtered List : ${provider.filteredList.length}");
                             print(provider.tasks.length);
+                            print("End Date : ${provider.endOfDay}");
                           },
                           child: Text(
                             "All Tasks",
@@ -384,27 +385,14 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                             id: provider.filteredList[index].id
                                                 .toString(),
                                             tasks: provider.filteredList,
-                                            upcoming:
-                                                provider.filteredList
-                                                        .firstWhere(
-                                                          (element) =>
-                                                              element.id ==
-                                                              provider
-                                                                  .filteredList[index]
-                                                                  .id,
-                                                        )
-                                                        .isCompleted ==
-                                                    false
-                                                ? false
-                                                : true,
+                                            upcoming: true,
                                           ),
                                         ),
                                       );
                                     },
                                     child: TaskCards(
-                                      id: provider.filteredList[index].id
-                                          .toString(),
-                                      tasks: provider.tasks,
+                                      id: provider.filteredList[index].id.toString(),
+                                      tasks: provider.filteredList,
                                     ),
                                   );
                                 },
