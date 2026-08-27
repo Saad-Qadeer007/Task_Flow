@@ -47,7 +47,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         selectedTime?.hour == 0 || selectedTime?.minute == 0
         ? "Please Select Time"
         : "${selectedTime?.hour}:${selectedTime?.minute}";
-    // defaultReminder = widget.data["taskReminder"] == "" ? defaultReminder : widget.data["taskReminder"];
+    defaultReminder = (widget.data.taskRepeat == "" ? defaultReminder : widget.data.taskReminder)!;
   }
 
   final List<String> taskCategories = [

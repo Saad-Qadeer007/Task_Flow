@@ -270,6 +270,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
+                              print(data?.length);
                               if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
                               } else {

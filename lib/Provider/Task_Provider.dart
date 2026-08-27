@@ -87,20 +87,32 @@ class TaskProvider extends ChangeNotifier {
 
   void upcomingTasks() {
     final now = DateTime.now();
-    late final startOfDay = DateTime(now.year, now.month, now.day);
-    late final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    final startOfDay = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
+    final endOfDay = startOfDay.add(
+      const Duration(days: 1),
+    );
+
     notNullUpcomingTaskCount = 0;
-    final todayTasks = tasks.map((element) {
-      if (element.taskDueDate!.isAfter(endOfDay)) {
+
+    final upcoming = tasks.map((element) {
+      if (element.taskDueDate != null &&
+          !element.taskDueDate!.isBefore(endOfDay)) {
         return element;
       }
     }).toList();
-    for (final i in todayTasks) {
-      if (i != null) {
+
+    for (final task in upcoming) {
+      if (task != null) {
         notNullUpcomingTaskCount++;
       }
     }
-    print(notNullUpcomingTaskCount);
+
     notifyListeners();
   }
 
@@ -315,13 +327,10 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-
-  void upcomingTaskTracker (String id) {
-    final upcoming = filteredList
-        .firstWhere((item)
-        => item.id == id);
-    isUpcoming = upcoming.taskDueDate!.isAfter(endOfDay) ? true : false;
+  void upcomingTaskTracker(String id) {
+    print(id);
+    final upcoming = filteredList.firstWhere((item) => item.id == id);
+    isUpcoming = upcoming.taskDueDate!.isBefore(endOfDay) ? false : true;
     print(isUpcoming);
     notifyListeners();
   }
