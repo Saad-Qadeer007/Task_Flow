@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_flow/Models/Task_Model.dart';
+import 'package:task_flow/Services/Notification_Service.dart';
 
 class FirebaseServices {
   Future<void> addTaskToFirebase(TaskModel model) async {
@@ -13,6 +14,13 @@ class FirebaseServices {
           .add(data);
       model.id = document.id;
       await document.update({"id": document.id});
+
+      await NotificationService().scheduleNotification(
+        document.id,
+        model.taskTitle.toString(),
+        model.taskDueDate!,
+        model.taskDueTime!,
+      );
     } catch (e) {
       print(e);
     }

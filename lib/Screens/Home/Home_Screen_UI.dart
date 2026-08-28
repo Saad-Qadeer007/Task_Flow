@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Tasks/Tasks_Detail_Screen.dart';
+import 'package:task_flow/Services/Notification_Service.dart';
 import 'package:task_flow/Widgets/Greeting_Card.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Progress_Card.dart';
@@ -29,6 +30,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
   Future<void> initializeApp() async {
     print("intilization run");
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationService().initialize();
       context.read<TaskProvider>().filterTodayTasks();
       context.read<TaskProvider>().upcomingTasks();
       context.read<TaskProvider>().taskCalculation();
