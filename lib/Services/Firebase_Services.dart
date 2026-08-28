@@ -21,6 +21,15 @@ class FirebaseServices {
         model.taskTitle.toString(),
         model.taskDueDate!,
         model.taskDueTime!,
+        model.taskReminder == "5 Minutes Before"
+            ? 5
+            : model.taskReminder == "10 Minutes Before"
+            ? 10
+            : model.taskReminder == "30 Minutes Before"
+            ? 30
+            : model.taskReminder == "1 Hour Before"
+            ? 60
+            : null,
       );
     } catch (e) {
       print(e);
@@ -55,6 +64,10 @@ class FirebaseServices {
         .collection("tasks")
         .doc(data["id"])
         .update(data);
+    if (data["isCompleted"] == true) {
+      await NotificationService().cancelNotification(data["id"]);
+      return;
+    }
     await NotificationService().cancelNotification(data["id"]);
     await NotificationService().scheduleNotification(
       data["id"],
@@ -64,6 +77,15 @@ class FirebaseServices {
         hour: data["taskDueTime"]["hour"],
         minute: data["taskDueTime"]["minute"],
       ),
+      data["taskReminder"] == "5 Minutes Before"
+          ? 5
+          : data["taskReminder"] == "10 Minutes Before"
+          ? 10
+          : data["taskReminder"] == "30 Minutes Before"
+          ? 30
+          : data["taskReminder"] == "1 Hour Before"
+          ? 60
+          : null,
     );
   }
 }

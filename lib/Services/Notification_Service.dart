@@ -61,7 +61,19 @@ class NotificationService {
     String title,
     DateTime date,
     TimeOfDay time,
+    int? reminder,
   ) async {
+    final dueDate = tz.TZDateTime(
+      tz.local,
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
+    final reminderDate = dueDate.subtract(Duration(minutes: reminder!));
+
     print("Notification Function");
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -80,17 +92,19 @@ class NotificationService {
     print("Current time: ${tz.TZDateTime.now(tz.local)}");
 
     await notifications.zonedSchedule(
-      id: id.hashCode,
+      id: ('reminder_$id').hashCode,
+      title: 'Task Reminder 🔔',
+      body: 'Your task "$title" is due in $reminder minutes',
+      scheduledDate: reminderDate,
+      notificationDetails: details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+
+    await notifications.zonedSchedule(
+      id: ('due_$id').hashCode,
       title: 'Task Reminder 🔔',
       body: 'Your task "$title" is due',
-      scheduledDate: tz.TZDateTime(
-        tz.local,
-        date.year,
-        date.month,
-        date.day,
-        time.hour,
-        time.minute,
-      ),
+      scheduledDate: dueDate,
       notificationDetails: details,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
@@ -103,8 +117,9 @@ class NotificationService {
     print(pending);
   }
 
-  Future<void> cancelNotification (String id) async {
-    await notifications.cancel(id: id.hashCode);
+  Future<void> cancelNotification(String id) async {
+    await notifications.cancel(id: ('reminder_$id').hashCode);
+    await notifications.cancel(id: ('due_$id').hashCode);
     print("Notification Cancelled");
   }
 }
