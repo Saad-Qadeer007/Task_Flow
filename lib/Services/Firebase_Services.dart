@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Services/Notification_Service.dart';
 
@@ -54,5 +55,15 @@ class FirebaseServices {
         .collection("tasks")
         .doc(data["id"])
         .update(data);
+    await NotificationService().cancelNotification(data["id"]);
+    await NotificationService().scheduleNotification(
+      data["id"],
+      data["taskTitle"],
+      data["taskDueDate"],
+      TimeOfDay(
+        hour: data["taskDueTime"]["hour"],
+        minute: data["taskDueTime"]["minute"],
+      ),
+    );
   }
 }
