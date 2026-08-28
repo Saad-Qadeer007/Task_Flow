@@ -102,4 +102,9 @@ class NotificationService {
     print("Pending notifications: ${pending.length}");
     print(pending);
   }
+
+  Future<void> cancelNotification (String id) async {
+    await notifications.cancel(id: id.hashCode);
+    print("Notification Cancelled");
+  }
 }

@@ -43,6 +43,8 @@ class FirebaseServices {
         .collection("tasks")
         .doc(id)
         .delete();
+
+    await NotificationService().cancelNotification(id);
   }
 
   Future<void> updateTaskFromFirebase(Map<String, dynamic> data) async {
