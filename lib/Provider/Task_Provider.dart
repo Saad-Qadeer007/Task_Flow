@@ -68,7 +68,6 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> filterTodayTasks() async {
     notNullTodayTaskCount = 0;
-    print("Filter For Today Run");
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate?.day == DateTime.now().day &&
           element.taskDueDate?.month == DateTime.now().month &&
@@ -84,7 +83,6 @@ class TaskProvider extends ChangeNotifier {
         notNullTodayTaskCount++;
       }
     }
-    print(notNullTodayTaskCount);
     notifyListeners();
   }
 
@@ -118,40 +116,25 @@ class TaskProvider extends ChangeNotifier {
     final now = DateTime.now();
     late final startOfDay = DateTime(now.year, now.month, now.day);
     final todayTasks = tasks.map((element) {
-      print(startOfDay);
       if (element.taskDueTime!.isBefore(
             TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
           ) &&
           element.isCompleted == false &&
           !element.taskDueDate!.isAfter(startOfDay)) {
-        print(
-          element.taskDueTime!.isBefore(
-            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
-          ),
-        );
         return element;
       }
     }).toList();
     for (final i in todayTasks) {
       if (i != null) {
-        print("OverDue");
-        print(i.taskTitle);
-        print(i.taskDueDate);
-        print(tasks.length);
         notNullOverDueTaskCount++;
       }
     }
-    print("Over Due Count : $notNullOverDueTaskCount");
     notifyListeners();
   }
 
   void addTask(TaskModel task) async {
-    print("loading data in to firebase");
-    await FirebaseServices().addTaskToFirebase(task);
-    print("data added to firebase");
-    tasks.add(task);
-    print("task added ${task.id}");
-    print("task added ${task.id}");
+    TaskModel model = await FirebaseServices().addTaskToFirebase(task);
+    tasks.add(model);
     filterTodayTasks();
     upcomingTasks();
     notifyListeners();
@@ -168,22 +151,14 @@ class TaskProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    print(tasks.length);
   }
 
   void deleteTask(String id) async {
     int index = tasks.indexWhere((element) => element.id == id);
-    print(index);
-    print(tasks[index].taskTitle);
     tasks.removeAt(index);
-    print("tasks length after delete ${tasks.length}");
     await FirebaseServices().deleteTaskFromFirebase(id);
-    print("items in the provider beofore delection : ${tasks.length}");
     await getTasks();
-    print("items in the provider after delection : ${tasks.length}");
-    print("Filtered Before ${filteredList.length}");
     searchWithDate();
-    print("Filtered After ${filteredList.length}");
     await filterTodayTasks();
     taskCalculation();
     notifyListeners();
@@ -192,9 +167,6 @@ class TaskProvider extends ChangeNotifier {
   void updateTask(Map<String, dynamic> data) async {
     await FirebaseServices().updateTaskFromFirebase(data);
     await getTasks();
-    tasks.map((item) {
-      print("item count in update :  ${item.isCompleted}");
-    }).toList();
     filterTodayTasks();
     taskCalculation();
     overDueTasks();
@@ -208,10 +180,8 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> calculateCompletedTasks() async {
-    print("calculatecompletetasks count runner");
     completedTasks = 0;
     tasks.map((items) {
-      print(items.isCompleted);
       return items.isCompleted == true &&
               items.taskDueDate?.day == DateTime.now().day &&
               items.taskDueDate?.month == DateTime.now().month &&
@@ -219,14 +189,12 @@ class TaskProvider extends ChangeNotifier {
           ? completedTasks++
           : 0;
     }).toList();
-    print("completed task count : $completedTasks");
     calculateCompletedTasksPercentage();
     notifyListeners();
   }
 
   void calculateCompletedTasksPercentage() {
     if (totalTasks == 0) {
-      print("function run");
       completedTaskByPercentage = 0.0;
       notifyListeners();
       return;
@@ -276,7 +244,6 @@ class TaskProvider extends ChangeNotifier {
 
   void applyFilter() {
     final searchedResult = tasks.where((task) {
-      print("Search Filter Run");
       bool matchesText = true;
       bool matchesCategory = true;
       bool matchesPriority = true;
@@ -302,22 +269,22 @@ class TaskProvider extends ChangeNotifier {
       }
 
       if (searchWithDateChips) {
-        print("Entered");
         if (activeDateChip == "All") {
-          print("All");
           filteredList = tasks;
         } else if (activeDateChip == "Today") {
-          print("Today");
-          print(tasks.length);
           matchDate =
               task.taskDueDate?.day == DateTime.now().day &&
               task.taskDueDate?.month == DateTime.now().month &&
-              task.taskDueDate?.year == DateTime.now().year;
+              task.taskDueDate?.year == DateTime.now().year &&
+              task.taskDueTime!.isAfter(
+                TimeOfDay(
+                  hour: DateTime.now().hour,
+                  minute: DateTime.now().minute,
+                ),
+              );
         } else if (activeDateChip == "Upcoming") {
-          print("Upcoming");
           matchDate = task.taskDueDate!.isAfter(endOfDay) ? true : false;
         } else if (activeDateChip == "Completed") {
-          print("Completed");
           matchDate = task.isCompleted == true ? true : false;
         }
       }
@@ -328,16 +295,12 @@ class TaskProvider extends ChangeNotifier {
 
     filteredList = searchedResult;
 
-    print("Filtered Result : ${filteredList.length}");
-    print("search with datechip : $searchWithDateChips");
     notifyListeners();
   }
 
   void upcomingTaskTracker(String id) {
-    print(id);
     final upcoming = filteredList.firstWhere((item) => item.id == id);
     isUpcoming = upcoming.taskDueDate!.isBefore(endOfDay) ? false : true;
-    print(isUpcoming);
     notifyListeners();
   }
 }

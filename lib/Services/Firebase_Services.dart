@@ -5,7 +5,7 @@ import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Services/Notification_Service.dart';
 
 class FirebaseServices {
-  Future<void> addTaskToFirebase(TaskModel model) async {
+  Future<TaskModel> addTaskToFirebase(TaskModel model) async {
     Map<String, dynamic> data = TaskModel.toMap(model);
     try {
       final document = await FirebaseFirestore.instance
@@ -31,10 +31,11 @@ class FirebaseServices {
             ? 60
             : null,
       );
+      return model;
     } catch (e) {
       print(e);
+      return model;
     }
-    print("Task Added Successfully");
   }
 
   Future<QuerySnapshot> getTasksFromFirebase() async {

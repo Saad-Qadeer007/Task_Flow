@@ -47,7 +47,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         selectedTime?.hour == 0 || selectedTime?.minute == 0
         ? "Please Select Time"
         : "${selectedTime?.hour}:${selectedTime?.minute}";
-    defaultReminder = (widget.data.taskRepeat == "" ? defaultReminder : widget.data.taskReminder)!;
+    defaultReminder = (widget.data.taskRepeat == ""
+        ? defaultReminder
+        : widget.data.taskReminder)!;
   }
 
   final List<String> taskCategories = [
@@ -320,7 +322,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           SizedBox(height: 10),
                           TextFormField(
                             validator: (value) {
-                              if (selectedDate == null) {
+                              print("Validator for the time runs");
+                              print("Selcted Time : $selectedTime");
+                              if (selectedTime == null ||
+                                  selectedTime ==
+                                      TimeOfDay(hour: 00, minute: 00)) {
                                 return "Please Select Due Time";
                               } else {
                                 return null;
@@ -429,6 +435,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 print(provider.priority);
                                 if (addTaskScreenFormKey.currentState!
                                     .validate()) {
+                                  print(
+                                    "Validated Successfully -------------------------------------------------------------------------------------------------------",
+                                  );
                                   provider.editMode == false
                                       ? context.read<TaskProvider>().addTask(
                                           TaskModel(

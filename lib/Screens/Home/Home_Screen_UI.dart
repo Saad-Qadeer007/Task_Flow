@@ -31,7 +31,6 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
       _timer = Timer.periodic(const Duration(minutes: 1), (_) {
         if (mounted) {
-          print("recreated");
           setState(() {});
         }
       });
@@ -44,7 +43,6 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
     }
 
   Future<void> initializeApp() async {
-    print("intilization run");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NotificationService().initialize();
       context.read<TaskProvider>().filterTodayTasks();
@@ -108,106 +106,97 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                     // Handling Due Tasks
                     provider.notNullOverDueTaskCount == 0
                         ? Container()
-                        : Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Due Tasks",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                //   StreamBuilder to get the due tasks data from the firebase
-                                StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection("users")
-                                      .doc(
-                                        FirebaseAuth.instance.currentUser?.uid,
-                                      )
-                                      .collection("tasks")
-                                      .where(
-                                        "taskDueDate",
-                                        isLessThanOrEqualTo: startOfDay,
-                                      )
-                                      .where("isCompleted", isEqualTo: false)
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    final data = snapshot.data?.docs;
-                                    print("Due Tasks Data: ${data?.length}");
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: Text("No Data Found"),
-                                      );
-                                    } else {
-                                      final now = DateTime.now();
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Due Tasks",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            //   StreamBuilder to get the due tasks data from the firebase
+                            StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(
+                                    FirebaseAuth.instance.currentUser?.uid,
+                                  )
+                                  .collection("tasks")
+                                  .where(
+                                    "taskDueDate",
+                                    isLessThanOrEqualTo: startOfDay,
+                                  )
+                                  .where("isCompleted", isEqualTo: false)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: Text("No Data Found"),
+                                  );
+                                } else {
+                                  final now = DateTime.now();
 
-                                      final filteredDocs = snapshot.data!.docs
-                                          .where((doc) {
-                                            final data = doc.data();
+                                  final filteredDocs = snapshot.data!.docs
+                                      .where((doc) {
+                                        final data = doc.data();
 
-                                            final dueDate =
-                                                (data["taskDueDate"]
-                                                        as Timestamp)
-                                                    .toDate();
+                                        final dueDate =
+                                            (data["taskDueDate"]
+                                                    as Timestamp)
+                                                .toDate();
 
-                                            final dueTime = data["taskDueTime"];
+                                        final dueTime = data["taskDueTime"];
 
-                                            print(dueTime);
-                                            if (dueTime == null) {
-                                              print("Due Time is null");
-                                              return false;
-                                            }
+                                        if (dueTime == null) {
+                                          return false;
+                                        }
 
-                                            final dueDateTime = DateTime(
-                                              dueDate.year,
-                                              dueDate.month,
-                                              dueDate.day,
-                                              dueTime["hour"],
-                                              dueTime["minute"],
-                                            );
+                                        final dueDateTime = DateTime(
+                                          dueDate.year,
+                                          dueDate.month,
+                                          dueDate.day,
+                                          dueTime["hour"],
+                                          dueTime["minute"],
+                                        );
 
-                                            return dueDateTime.isBefore(now);
-                                          })
-                                          .toList();
-                                      print(
-                                        "Filtered Docs Length : ${filteredDocs.length}",
-                                      );
-                                      return ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: filteredDocs.length,
-                                        itemBuilder: (context, index) {
-                                          return InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TasksDetailScreen(
-                                                        tasks: provider.tasks,
-                                                        id: filteredDocs[index]
-                                                            .id,
-                                                        upcoming: false,
-                                                      ),
-                                                ),
-                                              );
-                                            },
-                                            child: TaskCards(
-                                              id: filteredDocs[index].id
-                                                  .toString(),
-                                              tasks: provider.tasks,
+                                        return dueDateTime.isBefore(now);
+                                      })
+                                      .toList();
+                                  return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: filteredDocs.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TasksDetailScreen(
+                                                    tasks: provider.tasks,
+                                                    id: filteredDocs[index]
+                                                        .id,
+                                                    upcoming: false,
+                                                  ),
                                             ),
                                           );
                                         },
+                                        child: TaskCards(
+                                          id: filteredDocs[index].id
+                                              .toString(),
+                                          tasks: provider.tasks,
+                                        ),
                                       );
-                                    }
-                                  },
-                                ),
-                              ],
+                                    },
+                                  );
+                                }
+                              },
                             ),
-                          ),
+                          ],
+                        ),
 
                     Row(
                       children: [
@@ -273,9 +262,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
                                   final dueTime = data["taskDueTime"];
 
-                                  print(dueTime);
                                   if (dueTime == null) {
-                                    print("Due Time is null");
                                     return false;
                                   }
 
@@ -289,9 +276,6 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
                                   return dueDateTime.isAfter(now);
                                 }).toList();
-                                print(
-                                  "Filtered Docs Length : ${filteredDocs.length}",
-                                );
 
                                 return filteredDocs.isEmpty
                                     ? SizedBox(
@@ -370,7 +354,6 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .snapshots(),
                             builder: (context, snapshot) {
                               final data = snapshot.data?.docs;
-                              print(data?.length);
                               if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
                               } else {
