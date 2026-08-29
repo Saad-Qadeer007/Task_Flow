@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +22,26 @@ class HomeScreenUi extends StatefulWidget {
 }
 
 class _HomeScreenUiState extends State<HomeScreenUi> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initializeApp();
-  }
+   Timer? _timer;
+    @override
+    void initState() {
+      super.initState();
+
+      initializeApp();
+
+      _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+        if (mounted) {
+          print("recreated");
+          setState(() {});
+        }
+      });
+    }
+
+    @override
+    void dispose() {
+      _timer?.cancel();
+      super.dispose();
+    }
 
   Future<void> initializeApp() async {
     print("intilization run");
@@ -39,14 +55,14 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
     });
   }
 
-  final now = DateTime.now();
-
-  late final startOfDay = DateTime(now.year, now.month, now.day);
-
-  late final endOfDay = startOfDay.add(const Duration(days: 1));
-
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+
+    late final startOfDay = DateTime(now.year, now.month, now.day);
+
+    late final endOfDay = startOfDay.add(const Duration(days: 1));
+
     return Consumer<TaskProvider>(
       builder: (context, provider, child) {
         return Scaffold(
@@ -113,21 +129,55 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                       .collection("tasks")
                                       .where(
                                         "taskDueDate",
-                                        isLessThan: startOfDay,
+                                        isLessThanOrEqualTo: startOfDay,
                                       )
                                       .where("isCompleted", isEqualTo: false)
                                       .snapshots(),
                                   builder: (context, snapshot) {
                                     final data = snapshot.data?.docs;
+                                    print("Due Tasks Data: ${data?.length}");
                                     if (!snapshot.hasData) {
                                       return Center(
                                         child: Text("No Data Found"),
                                       );
                                     } else {
+                                      final now = DateTime.now();
+
+                                      final filteredDocs = snapshot.data!.docs
+                                          .where((doc) {
+                                            final data = doc.data();
+
+                                            final dueDate =
+                                                (data["taskDueDate"]
+                                                        as Timestamp)
+                                                    .toDate();
+
+                                            final dueTime = data["taskDueTime"];
+
+                                            print(dueTime);
+                                            if (dueTime == null) {
+                                              print("Due Time is null");
+                                              return false;
+                                            }
+
+                                            final dueDateTime = DateTime(
+                                              dueDate.year,
+                                              dueDate.month,
+                                              dueDate.day,
+                                              dueTime["hour"],
+                                              dueTime["minute"],
+                                            );
+
+                                            return dueDateTime.isBefore(now);
+                                          })
+                                          .toList();
+                                      print(
+                                        "Filtered Docs Length : ${filteredDocs.length}",
+                                      );
                                       return ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemCount: data?.length,
+                                        itemCount: filteredDocs.length,
                                         itemBuilder: (context, index) {
                                           return InkWell(
                                             onTap: () {
@@ -137,14 +187,16 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                   builder: (context) =>
                                                       TasksDetailScreen(
                                                         tasks: provider.tasks,
-                                                        id: data[index].id,
+                                                        id: filteredDocs[index]
+                                                            .id,
                                                         upcoming: false,
                                                       ),
                                                 ),
                                               );
                                             },
                                             child: TaskCards(
-                                              id: data![index].id.toString(),
+                                              id: filteredDocs[index].id
+                                                  .toString(),
                                               tasks: provider.tasks,
                                             ),
                                           );
@@ -205,37 +257,83 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                 .where("taskDueDate", isLessThan: endOfDay)
                                 .snapshots(),
                             builder: (context, snapshot) {
-                              final data = snapshot.data?.docs;
                               if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
                               } else {
-                                return ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: data?.length,
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                TasksDetailScreen(
-                                                  id: data[index].id
-                                                      .toString(),
-                                                  tasks: provider.tasks,
-                                                  upcoming: false,
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                      child: TaskCards(
-                                        id: data![index].id.toString(),
-                                        tasks: provider.tasks,
-                                      ),
-                                    );
-                                  },
+                                final now = DateTime.now();
+
+                                final filteredDocs = snapshot.data!.docs.where((
+                                  doc,
+                                ) {
+                                  final data = doc.data();
+
+                                  final dueDate =
+                                      (data["taskDueDate"] as Timestamp)
+                                          .toDate();
+
+                                  final dueTime = data["taskDueTime"];
+
+                                  print(dueTime);
+                                  if (dueTime == null) {
+                                    print("Due Time is null");
+                                    return false;
+                                  }
+
+                                  final dueDateTime = DateTime(
+                                    dueDate.year,
+                                    dueDate.month,
+                                    dueDate.day,
+                                    dueTime["hour"],
+                                    dueTime["minute"],
+                                  );
+
+                                  return dueDateTime.isAfter(now);
+                                }).toList();
+                                print(
+                                  "Filtered Docs Length : ${filteredDocs.length}",
                                 );
+
+                                return filteredDocs.isEmpty
+                                    ? SizedBox(
+                                        height: 400,
+                                        child: Center(
+                                          child: Text(
+                                            "No Task Yet",
+                                            style: TextStyle(
+                                              color: AppColors.moderateGrey,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: filteredDocs.length,
+                                        itemBuilder: (context, index) {
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TasksDetailScreen(
+                                                        id: filteredDocs[index]
+                                                            .id
+                                                            .toString(),
+                                                        tasks: provider.tasks,
+                                                        upcoming: false,
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            child: TaskCards(
+                                              id: filteredDocs[index].id
+                                                  .toString(),
+                                              tasks: provider.tasks,
+                                            ),
+                                          );
+                                        },
+                                      );
                               }
                             },
                           ),
@@ -289,8 +387,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                             builder: (context) =>
                                                 TasksDetailScreen(
                                                   tasks: provider.tasks,
-                                                  id: data[index].id
-                                                      .toString(),
+                                                  id: data[index].id.toString(),
                                                   upcoming: true,
                                                 ),
                                           ),

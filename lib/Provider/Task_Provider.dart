@@ -72,7 +72,10 @@ class TaskProvider extends ChangeNotifier {
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate?.day == DateTime.now().day &&
           element.taskDueDate?.month == DateTime.now().month &&
-          element.taskDueDate?.year == DateTime.now().year) {
+          element.taskDueDate?.year == DateTime.now().year &&
+          element.taskDueTime!.isAfter(
+            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+          )) {
         return element;
       }
     }).toList();
@@ -88,15 +91,9 @@ class TaskProvider extends ChangeNotifier {
   void upcomingTasks() {
     final now = DateTime.now();
 
-    final startOfDay = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    );
+    final startOfDay = DateTime(now.year, now.month, now.day);
 
-    final endOfDay = startOfDay.add(
-      const Duration(days: 1),
-    );
+    final endOfDay = startOfDay.add(const Duration(days: 1));
 
     notNullUpcomingTaskCount = 0;
 
@@ -121,8 +118,17 @@ class TaskProvider extends ChangeNotifier {
     final now = DateTime.now();
     late final startOfDay = DateTime(now.year, now.month, now.day);
     final todayTasks = tasks.map((element) {
-      if (element.taskDueDate!.isBefore(startOfDay) &&
-          element.isCompleted == false) {
+      print(startOfDay);
+      if (element.taskDueTime!.isBefore(
+            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+          ) &&
+          element.isCompleted == false &&
+          !element.taskDueDate!.isAfter(startOfDay)) {
+        print(
+          element.taskDueTime!.isBefore(
+            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+          ),
+        );
         return element;
       }
     }).toList();
@@ -135,7 +141,7 @@ class TaskProvider extends ChangeNotifier {
         notNullOverDueTaskCount++;
       }
     }
-    print(notNullOverDueTaskCount);
+    print("Over Due Count : $notNullOverDueTaskCount");
     notifyListeners();
   }
 
