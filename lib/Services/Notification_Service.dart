@@ -91,7 +91,8 @@ class NotificationService {
     print("Scheduling notification...");
     print("Current time: ${tz.TZDateTime.now(tz.local)}");
 
-    // if(dueDate.add(Duration(minutes: reminder)).isBefore(tz.TZDateTime.now(tz.local))){
+    if(!dueDate.add(Duration(minutes: reminder)).isAfter(dueDate)){
+      print("Notification Reminder not get scheduled!");
       await notifications.zonedSchedule(
         id: ('reminder_$id').hashCode,
         title: 'Task Reminder 🔔',
@@ -100,6 +101,7 @@ class NotificationService {
         notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
+    }
 
     await notifications.zonedSchedule(
       id: ('due_$id').hashCode,
