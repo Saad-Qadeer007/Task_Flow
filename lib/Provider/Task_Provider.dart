@@ -185,7 +185,9 @@ class TaskProvider extends ChangeNotifier {
       return items.isCompleted == true &&
               items.taskDueDate?.day == DateTime.now().day &&
               items.taskDueDate?.month == DateTime.now().month &&
-              items.taskDueDate?.year == DateTime.now().year
+              items.taskDueDate?.year == DateTime.now().year && items.taskDueTime!.isAfter(
+        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+      )
           ? completedTasks++
           : 0;
     }).toList();
