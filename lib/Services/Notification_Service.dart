@@ -91,8 +91,9 @@ class NotificationService {
     print("Scheduling notification...");
     print("Current time: ${tz.TZDateTime.now(tz.local)}");
 
-    if(!dueDate.add(Duration(minutes: reminder)).isAfter(dueDate)){
-      print("Notification Reminder not get scheduled!");
+    final now = tz.TZDateTime.now(tz.local);
+
+    if (reminderDate.isAfter(now)) {
       await notifications.zonedSchedule(
         id: ('reminder_$id').hashCode,
         title: 'Task Reminder 🔔',
@@ -101,23 +102,27 @@ class NotificationService {
         notificationDetails: details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
+    } else {
+      print("Reminder time has already passed. Not scheduling reminder.");
     }
 
-    await notifications.zonedSchedule(
-      id: ('due_$id').hashCode,
-      title: 'Task Reminder 🔔',
-      body: 'Your task "$title" is due',
-      scheduledDate: dueDate,
-      notificationDetails: details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+    if (dueDate.isAfter(now)) {
+      await notifications.zonedSchedule(
+        id: ('due_$id').hashCode,
+        title: 'Task Reminder 🔔',
+        body: 'Your task "$title" is due',
+        scheduledDate: dueDate,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    }
 
     print("Notification scheduled!");
 
     final pending = await notifications.pendingNotificationRequests();
 
     print("Pending notifications: ${pending.length}");
-    print(pending.map((e)=> print(e.body)));
+    print(pending.map((e) => print(e.body)));
   }
 
   Future<void> cancelNotification(String id) async {
@@ -126,7 +131,7 @@ class NotificationService {
     print("Notification Cancelled");
   }
 
-  Future<void> cancelAllNotification ()async {
+  Future<void> cancelAllNotification() async {
     final pending = await notifications.pendingNotificationRequests();
     print(pending.length);
     await notifications.cancelAll();

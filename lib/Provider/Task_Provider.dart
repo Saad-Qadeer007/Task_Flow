@@ -87,6 +87,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void upcomingTasks() {
+    print("upcoming function run");
     final now = DateTime.now();
 
     final startOfDay = DateTime(now.year, now.month, now.day);
@@ -112,6 +113,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void overDueTasks() {
+    print("Overdue function run");
     notNullOverDueTaskCount = 0;
     final now = DateTime.now();
     late final startOfDay = DateTime(now.year, now.month, now.day);
@@ -170,6 +172,7 @@ class TaskProvider extends ChangeNotifier {
     filterTodayTasks();
     taskCalculation();
     overDueTasks();
+    upcomingTasks();
     notifyListeners();
   }
 
