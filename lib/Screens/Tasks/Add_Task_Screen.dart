@@ -63,6 +63,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     'Other',
   ];
 
+  final List<String> repeatCategory = [
+    "Never",
+    "Daily",
+    "Weekly",
+    "Monthly",
+    "Yearly",
+  ];
+
+  late String defaultRepeat = repeatCategory[0];
+
   final List<String> taskPriority = ["Low", "Medium", "High"];
 
   final addTaskScreenFormKey = GlobalKey<FormState>();
@@ -398,8 +408,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           ),
                           SizedBox(height: 10),
                           DropdownButtonFormField(
-                            initialValue: defaultReminder,
-                            items: reminderOptionList
+                            initialValue: defaultRepeat,
+                            items: repeatCategory
                                 .map(
                                   (e) => DropdownMenuItem(
                                     value: e,
@@ -415,7 +425,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             hint: Text("Select Task Category"),
                             onChanged: (value) {
                               setState(() {
-                                defaultReminder = value!;
+                                defaultRepeat = value!;
                               });
                             },
                           ),
@@ -452,7 +462,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                             taskDueDate: selectedDate,
                                             taskDueTime: selectedTime,
                                             taskReminder: defaultReminder,
-                                            taskRepeat: '',
+                                            taskRepeat: defaultRepeat,
                                             createdAt: DateTime.now(),
                                             isCompleted: false,
                                           ),
@@ -473,7 +483,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                               "minute": selectedTime?.minute,
                                             },
                                             "taskReminder": defaultReminder,
-                                            "taskRepeat": '',
+                                            "taskRepeat": defaultRepeat,
                                             "createdAt": DateTime.now(),
                                           },
                                         );

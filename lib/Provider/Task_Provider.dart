@@ -136,6 +136,7 @@ class TaskProvider extends ChangeNotifier {
 
   void addTask(TaskModel task) async {
     TaskModel model = await FirebaseServices().addTaskToFirebase(task);
+    print(model.id);
     tasks.add(model);
     filterTodayTasks();
     upcomingTasks();

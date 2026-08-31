@@ -15,81 +15,74 @@ class TaskCards extends StatefulWidget {
 class _TaskCardsState extends State<TaskCards> {
   @override
   Widget build(BuildContext context) {
+    // Find the task only once
+    final task = widget.tasks
+        .where((element) => element.id == widget.id)
+        .firstOrNull;
+
+    // If task is not found, don't build the card
+    if (task == null) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
       width: MediaQuery.of(context).size.width,
       child: Card(
         elevation: 1,
         color: Theme.of(context).cardColor,
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Task status / priority icon
               CircleAvatar(
                 backgroundColor: Colors.grey.shade200,
-                child:
-                    widget.tasks
-                            .firstWhere((element) => element.id == widget.id)
-                            .isCompleted ==
-                        true
-                    ? Icon(Icons.done_rounded, color: Colors.green)
+                child: task.isCompleted == true
+                    ? const Icon(Icons.done_rounded, color: Colors.green)
                     : Icon(
                         Icons.circle_rounded,
-                        color:
-                            widget.tasks
-                                    .firstWhere(
-                                      (element) => element.id == widget.id,
-                                    )
-                                    .taskPriority ==
-                                "Low"
+                        color: task.taskPriority == "Low"
                             ? Colors.cyan.shade800
-                            : widget.tasks
-                                      .firstWhere(
-                                        (element) => element.id == widget.id,
-                                      )
-                                      .taskPriority ==
-                                  "Medium"
+                            : task.taskPriority == "Medium"
                             ? Colors.orange.shade600
                             : Colors.red,
                       ),
               ),
-              SizedBox(width: 10),
+
+              const SizedBox(width: 10),
+
+              // Task information
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
                     onTap: () {
                       print(widget.tasks.length);
-                      print(
-                        widget.tasks.firstWhere(
-                          (element) => element.id == widget.id,
-                        ),
-                      );
+                      print(task);
                     },
                     child: Text(
-                      widget.tasks
-                          .firstWhere((element) => element.id == widget.id)
-                          .taskTitle
-                          .toString(),
-                      style: TextStyle(
+                      task.taskTitle.toString(),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: 5),
+
+                  const SizedBox(height: 5),
+
                   Text(
-                    (widget.tasks
-                            .firstWhere((element) => element.id == widget.id)
-                            .createdAt)
-                        .toString()
-                        .substring(0, 19),
+                    task.createdAt.toString().substring(0, 19),
                     style: TextStyle(color: AppColors.moderateGrey),
                   ),
                 ],
               ),
-              Spacer(),
+
+              const Spacer(),
+
+              // Priority
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -98,29 +91,15 @@ class _TaskCardsState extends State<TaskCards> {
                     color: AppColors.moderateGrey,
                     size: 18,
                   ),
-                  SizedBox(height: 10),
+
+                  const SizedBox(height: 10),
+
                   Text(
-                    widget.tasks
-                        .firstWhere((element) => element.id == widget.id)
-                        .taskPriority
-                        .toString(),
+                    task.taskPriority.toString(),
                     style: TextStyle(
-                      color:
-                          widget.tasks
-                                  .firstWhere(
-                                    (element) => element.id == widget.id,
-                                  )
-                                  .taskPriority
-                                  .toString()
-                                  .toLowerCase() ==
-                              "low"
+                      color: task.taskPriority.toString().toLowerCase() == "low"
                           ? Colors.cyan.shade800
-                          : widget.tasks
-                                    .firstWhere(
-                                      (element) => element.id == widget.id,
-                                    )
-                                    .toString()
-                                    .toLowerCase() ==
+                          : task.taskPriority.toString().toLowerCase() ==
                                 "medium"
                           ? Colors.orange.shade600
                           : Colors.red,

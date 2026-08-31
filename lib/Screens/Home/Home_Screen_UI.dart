@@ -212,11 +212,16 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                           onTap: () {
                             context.read<TaskProvider>().overDueTasks();
                           },
-                          child: Text(
-                            "View All",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.primaryColor,
+                          child: InkWell(
+                            onTap: (){
+                              print(provider.tasks[0].taskRepeat);
+                            },
+                            child: Text(
+                              "View All",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.primaryColor,
+                              ),
                             ),
                           ),
                         ),

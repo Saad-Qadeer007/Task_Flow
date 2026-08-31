@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_flow/Models/Task_Model.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Services/Notification_Service.dart';
 
 class FirebaseServices {
@@ -65,6 +66,39 @@ class FirebaseServices {
         .collection("tasks")
         .doc(data["id"])
         .update(data);
+
+    if (data["isCompleted"] == true) {
+      final document = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection("tasks")
+          .doc(data["id"])
+          .get();
+
+      TaskModel model = TaskModel.toModel(
+        document.data() as Map<String, dynamic>,
+      );
+      print("Printing the task repeat of the task : ${model.taskRepeat}");
+      if (model.taskRepeat?.toLowerCase() == "weekly") {
+        model.taskDueDate = model.taskDueDate?.add(const Duration(days: 7));
+        model.isCompleted = false;
+        TaskProvider().addTask(model);
+        print("Task Updated And New Task Created ");
+      } else if (model.taskRepeat?.toLowerCase() == "monthly") {
+        model.taskDueDate = model.taskDueDate?.add(const Duration(days: 30));
+        model.isCompleted = false;
+        TaskProvider().addTask(model);
+        print("Task Updated And New Task Created ");
+      } else if (model.taskRepeat?.toLowerCase() == "daily") {
+        model.taskDueDate = model.taskDueDate?.add(const Duration(days: 1));
+        model.isCompleted = false;
+        TaskProvider().addTask(model);
+        print("Task Updated And New Task Created ");
+      } else {
+        print("The Selected is never ");
+      }
+    }
+
     if (data["isCompleted"] == true) {
       await NotificationService().cancelNotification(data["id"]);
       return;
