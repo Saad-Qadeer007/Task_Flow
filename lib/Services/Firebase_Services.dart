@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_flow/Models/Habit_Model.dart';
 import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Services/Notification_Service.dart';
 
 class FirebaseServices {
+  // Firebase Service For Handing the Firebase Operations For The Tasks
+
   Future<TaskModel> addTaskToFirebase(TaskModel model) async {
     Map<String, dynamic> data = TaskModel.toMap(model);
     try {
@@ -98,7 +101,7 @@ class FirebaseServices {
         model.taskDueDate = model.taskDueDate?.add(const Duration(days: 365));
         model.isCompleted = false;
         TaskProvider().addTask(model);
-      }else {
+      } else {
         print("The Selected is never ");
       }
     }
@@ -127,4 +130,53 @@ class FirebaseServices {
           : null,
     );
   }
+
+  //////////////////////////////////////////////////////////////////////
+
+  // Firebase Service For Handing the Firebase Operations For The Habits
+
+  Future<HabitModel> addHabitToFirebase(HabitModel model) async {
+    Map<String, dynamic> data = HabitModel.toMap(model);
+    try {
+      final document = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection("habits")
+          .add(data);
+      model.habitId = document.id;
+      await document.update({"habitId": document.id});
+
+      //   await NotificationService().scheduleNotification(
+      //     document.id,
+      //     model.taskTitle.toString(),
+      //     model.taskDueDate!,
+      //     model.taskDueTime!,
+      //     model.taskReminder == "5 Minutes Before"
+      //         ? 5
+      //         : model.taskReminder == "10 Minutes Before"
+      //         ? 10
+      //         : model.taskReminder == "30 Minutes Before"
+      //         ? 30
+      //         : model.taskReminder == "1 Hour Before"
+      //         ? 60
+      //         : null,
+      //   );
+      return model;
+    } catch (e) {
+      print(e);
+      return model;
+    }
+  }
+
+  Future<QuerySnapshot> getHabitFromFirebase() async {
+    final data = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("habits")
+        .get();
+    return data;
+  }
+
+
+
 }

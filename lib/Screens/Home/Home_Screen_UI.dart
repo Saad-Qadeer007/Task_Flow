@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Task_Model.dart';
+import 'package:task_flow/Provider/Habit_Provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Tasks/Tasks_Detail_Screen.dart';
 import 'package:task_flow/Services/Notification_Service.dart';
@@ -51,6 +52,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
       context.read<TaskProvider>().taskCalculation();
       context.read<TaskProvider>().calculateCompletedTasks();
       context.read<TaskProvider>().overDueTasks();
+      context.read<HabitProvider>().getHabits();
     });
   }
 
