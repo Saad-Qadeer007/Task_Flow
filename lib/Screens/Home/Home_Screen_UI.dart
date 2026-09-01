@@ -22,25 +22,26 @@ class HomeScreenUi extends StatefulWidget {
 }
 
 class _HomeScreenUiState extends State<HomeScreenUi> {
-   Timer? _timer;
-    @override
-    void initState() {
-      super.initState();
+  Timer? _timer;
 
-      initializeApp();
+  @override
+  void initState() {
+    super.initState();
 
-      _timer = Timer.periodic(const Duration(minutes: 1), (_) {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
+    initializeApp();
 
-    @override
-    void dispose() {
-      _timer?.cancel();
-      super.dispose();
-    }
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   Future<void> initializeApp() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -107,96 +108,96 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                     provider.notNullOverDueTaskCount == 0
                         ? Container()
                         : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Due Tasks",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Due Tasks",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            //   StreamBuilder to get the due tasks data from the firebase
-                            StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection("users")
-                                  .doc(
-                                    FirebaseAuth.instance.currentUser?.uid,
-                                  )
-                                  .collection("tasks")
-                                  .where(
-                                    "taskDueDate",
-                                    isLessThanOrEqualTo: startOfDay,
-                                  )
-                                  .where("isCompleted", isEqualTo: false)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: Text("No Data Found"),
-                                  );
-                                } else {
-                                  final now = DateTime.now();
+                              //   StreamBuilder to get the due tasks data from the firebase
+                              StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(FirebaseAuth.instance.currentUser?.uid)
+                                    .collection("tasks")
+                                    .where(
+                                      "taskDueDate",
+                                      isLessThanOrEqualTo: startOfDay,
+                                    )
+                                    .where("isCompleted", isEqualTo: false)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(child: Text("No Data Found"));
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    final now = DateTime.now();
 
-                                  final filteredDocs = snapshot.data!.docs
-                                      .where((doc) {
-                                        final data = doc.data();
+                                    final filteredDocs = snapshot.data!.docs
+                                        .where((doc) {
+                                          final data = doc.data();
 
-                                        final dueDate =
-                                            (data["taskDueDate"]
-                                                    as Timestamp)
-                                                .toDate();
+                                          final dueDate =
+                                              (data["taskDueDate"] as Timestamp)
+                                                  .toDate();
 
-                                        final dueTime = data["taskDueTime"];
+                                          final dueTime = data["taskDueTime"];
 
-                                        if (dueTime == null) {
-                                          return false;
-                                        }
+                                          if (dueTime == null) {
+                                            return false;
+                                          }
 
-                                        final dueDateTime = DateTime(
-                                          dueDate.year,
-                                          dueDate.month,
-                                          dueDate.day,
-                                          dueTime["hour"],
-                                          dueTime["minute"],
-                                        );
-
-                                        return dueDateTime.isBefore(now);
-                                      })
-                                      .toList();
-                                  return ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: filteredDocs.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TasksDetailScreen(
-                                                    tasks: provider.tasks,
-                                                    id: filteredDocs[index]
-                                                        .id,
-                                                    upcoming: false,
-                                                  ),
-                                            ),
+                                          final dueDateTime = DateTime(
+                                            dueDate.year,
+                                            dueDate.month,
+                                            dueDate.day,
+                                            dueTime["hour"],
+                                            dueTime["minute"],
                                           );
-                                        },
-                                        child: TaskCards(
-                                          id: filteredDocs[index].id
-                                              .toString(),
-                                          tasks: provider.tasks,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
+
+                                          return dueDateTime.isBefore(now);
+                                        })
+                                        .toList();
+                                    return ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: filteredDocs.length,
+                                      itemBuilder: (context, index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TasksDetailScreen(
+                                                      tasks: provider.tasks,
+                                                      id: filteredDocs[index]
+                                                          .id,
+                                                      upcoming: false,
+                                                    ),
+                                              ),
+                                            );
+                                          },
+                                          child: TaskCards(
+                                            id: filteredDocs[index].id
+                                                .toString(),
+                                            tasks: provider.tasks,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
 
                     Row(
                       children: [
@@ -213,7 +214,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                             context.read<TaskProvider>().overDueTasks();
                           },
                           child: InkWell(
-                            onTap: (){
+                            onTap: () {
                               print(provider.tasks[0].taskRepeat);
                             },
                             child: Text(
@@ -253,6 +254,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               } else {
                                 final now = DateTime.now();
 
@@ -361,6 +367,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                               final data = snapshot.data?.docs;
                               if (!snapshot.hasData) {
                                 return Center(child: Text("No Data Found"));
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               } else {
                                 return ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),

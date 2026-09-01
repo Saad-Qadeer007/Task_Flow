@@ -94,7 +94,11 @@ class FirebaseServices {
         model.isCompleted = false;
         TaskProvider().addTask(model);
         print("Task Updated And New Task Created ");
-      } else {
+      } else if (model.taskRepeat?.toLowerCase() == "yearly") {
+        model.taskDueDate = model.taskDueDate?.add(const Duration(days: 365));
+        model.isCompleted = false;
+        TaskProvider().addTask(model);
+      }else {
         print("The Selected is never ");
       }
     }
