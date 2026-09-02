@@ -163,6 +163,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                                       habitFrequency: selectedFrequency,
                                       habitStatus: false,
                                       habitCompletedDates: [],
+                                      createdAt : DateTime.now(),
                                     ),
                                   );
                                   SuccessSnackBar.showSuccessSnackBar(

@@ -177,6 +177,17 @@ class FirebaseServices {
     return data;
   }
 
+  Future<void> deleteHabitFromFirebase(String id) async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("habits")
+        .doc(id)
+        .delete();
+    //
+    // await NotificationService().cancelNotification(id);
+  }
+
 
 
 }

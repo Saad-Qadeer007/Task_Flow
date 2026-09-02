@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:task_flow/Models/Habit_Model.dart';
-
 import '../Services/Firebase_Services.dart';
 
 class HabitProvider extends ChangeNotifier {
@@ -26,5 +25,13 @@ class HabitProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> deleteHabit(String id) async {
+    int index = habits.indexWhere((element) => element.habitId == id);
+    habits.removeAt(index);
+    await FirebaseServices().deleteHabitFromFirebase(id);
+    await getHabits();
+    notifyListeners();
   }
 }

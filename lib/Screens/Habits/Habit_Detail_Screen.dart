@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
 import 'package:task_flow/Widgets/Streak_Card.dart';
+import 'package:task_flow/Widgets/Success_SnackBar.dart';
 
 import '../../Models/Habit_Model.dart';
 import '../../Utilties/App_Colors.dart';
@@ -50,9 +51,79 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.lightColor,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: AppColors.lightColor,
+                          ),
+                          Spacer(),
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    "Delete Habit",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  content: Text(
+                                    "Are you sure you want to delete this habit?",
+                                    style: TextStyle(
+                                      color: AppColors.moderateGrey,
+                                    ),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        backgroundColor: AppColors.successColor,
+                                        foregroundColor: AppColors.lightColor,
+                                      ),
+                                      child: Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Provider.of<HabitProvider>(
+                                          context,
+                                          listen: false,
+                                        ).deleteHabit(widget.id);
+                                        SuccessSnackBar.showSuccessSnackBar(
+                                          context,
+                                          'Habit Deleted Successfully',
+                                        );
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        backgroundColor: AppColors.errorColor,
+                                        foregroundColor: AppColors.lightColor,
+                                      ),
+                                      child: Text("Delete"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.delete,
+                              color: AppColors.lightColor,
+                              size: 30,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
