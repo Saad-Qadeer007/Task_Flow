@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
+import 'package:task_flow/Screens/Habits/Habit_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Habit_Card.dart';
 
 import '../../Utilties/App_Colors.dart';
@@ -111,22 +112,20 @@ class _HabitScreenState extends State<HabitScreen> {
                                   itemCount: data?.length,
                                   itemBuilder: (context, index) {
                                     return InkWell(
-                                      onTap: () {},
-                                      // onTap: () {
-                                      //   Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //           TasksDetailScreen(
-                                      //             id: filteredDocs[index]
-                                      //                 .id
-                                      //                 .toString(),
-                                      //             tasks: provider.tasks,
-                                      //             upcoming: false,
-                                      //           ),
-                                      //     ),
-                                      //   );
-                                      // },
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                HabitDetailScreen(
+                                                  id : data[index]
+                                                      .id
+                                                      .toString(),
+                                                  habits : habitProvider.habits,
+                                                ),
+                                          ),
+                                        );
+                                      },
                                       child: HabitCard(
                                         id: data![index].id.toString(),
                                         habit: habitProvider.habits,
