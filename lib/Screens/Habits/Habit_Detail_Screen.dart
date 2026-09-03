@@ -19,6 +19,7 @@ class HabitDetailScreen extends StatefulWidget {
 }
 
 class _HabitDetailScreenState extends State<HabitDetailScreen> {
+
   late HabitModel data = widget.habits.firstWhere(
     (element) => element.habitId == widget.id,
   );
@@ -180,13 +181,13 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                             Expanded(
                               child: StreakCard(
                                 title: "Current Streak",
-                                days: "7",
+                                days: provider.currentStreak.toString(),
                               ),
                             ),
                             Expanded(
                               child: StreakCard(
                                 title: "Best Streak",
-                                days: "14",
+                                days: provider.bestStreak.toString(),
                               ),
                             ),
                           ],
@@ -221,6 +222,9 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               context.read<HabitProvider>().updateHabit(data);
+                              context.read<HabitProvider>().calculateStreak(
+                                data,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsetsGeometry.all(15.0),
@@ -242,61 +246,86 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                         ),
                         SizedBox(height: 20),
                         Divider(),
-                        Text(
-                          "History",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              "History",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              "See All",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.moderateGrey,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 15),
                         Container(
                           height: 100,
-                          child: ListView.builder(
-                            itemCount: data.habitCompletedDates.length,
-                            itemBuilder: (context, index) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    Icons.circle_outlined,
-                                    color: AppColors.moderateGrey,
+                          child: data.habitCompletedDates.isEmpty
+                              ? SizedBox(
+                                  height: 300,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      "No Habit Completion Yet",
+                                      style: TextStyle(
+                                        color: AppColors.moderateGrey,
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "${data.habitCompletedDates[index].day} ${data.habitCompletedDates[index].month == 1
-                                        ? "Jan"
-                                        : data.habitCompletedDates[index].month == 2
-                                        ? "Feb"
-                                        : data.habitCompletedDates[index].month == 3
-                                        ? "Mar"
-                                        : data.habitCompletedDates[index].month == 4
-                                        ? "Apr"
-                                        : data.habitCompletedDates[index].month == 5
-                                        ? "May"
-                                        : data.habitCompletedDates[index].month == 6
-                                        ? "Jun"
-                                        : data.habitCompletedDates[index].month == 7
-                                        ? "Jul"
-                                        : data.habitCompletedDates[index].month == 8
-                                        ? "Aug"
-                                        : data.habitCompletedDates[index].month == 9
-                                        ? "Sep"
-                                        : data.habitCompletedDates[index].month == 10
-                                        ? "Oct"
-                                        : data.habitCompletedDates[index].month == 11
-                                        ? "Nov"
-                                        : "Dec"} ${data.habitCompletedDates[index].year}",
-                                  ),
-                                  Spacer(),
-                                  FaIcon(
-                                    FontAwesomeIcons.circleCheck,
-                                    size: 20,
-                                    color: AppColors.successColor,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
+                                )
+                              : ListView.builder(
+                                  itemCount: data.habitCompletedDates.length,
+                                  itemBuilder: (context, index) {
+                                    return Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle_outlined,
+                                          color: AppColors.moderateGrey,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          "${data.habitCompletedDates[index].day} ${data.habitCompletedDates[index].month == 1
+                                              ? "Jan"
+                                              : data.habitCompletedDates[index].month == 2
+                                              ? "Feb"
+                                              : data.habitCompletedDates[index].month == 3
+                                              ? "Mar"
+                                              : data.habitCompletedDates[index].month == 4
+                                              ? "Apr"
+                                              : data.habitCompletedDates[index].month == 5
+                                              ? "May"
+                                              : data.habitCompletedDates[index].month == 6
+                                              ? "Jun"
+                                              : data.habitCompletedDates[index].month == 7
+                                              ? "Jul"
+                                              : data.habitCompletedDates[index].month == 8
+                                              ? "Aug"
+                                              : data.habitCompletedDates[index].month == 9
+                                              ? "Sep"
+                                              : data.habitCompletedDates[index].month == 10
+                                              ? "Oct"
+                                              : data.habitCompletedDates[index].month == 11
+                                              ? "Nov"
+                                              : "Dec"} ${data.habitCompletedDates[index].year}",
+                                        ),
+                                        Spacer(),
+                                        FaIcon(
+                                          FontAwesomeIcons.circleCheck,
+                                          size: 20,
+                                          color: AppColors.successColor,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
                         ),
 
                         //   BreakDown of the task

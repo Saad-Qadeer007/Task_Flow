@@ -5,6 +5,8 @@ import '../Services/Firebase_Services.dart';
 
 class HabitProvider extends ChangeNotifier {
   List<HabitModel> habits = [];
+  int currentStreak = 0;
+  int bestStreak = 0;
 
   Future<void> addHabit(HabitModel model) async {
     HabitModel updatedModel = await FirebaseServices().addHabitToFirebase(
@@ -60,5 +62,81 @@ class HabitProvider extends ChangeNotifier {
     final data = HabitModel.toMap(model);
     await FirebaseServices().updateHabitFromFirebase(data);
     await getHabits();
+  }
+
+  Future<void> calculateStreak(HabitModel model) async {
+    currentStreak = 0;
+    bestStreak = 0;
+    final sortedList = [...model.habitCompletedDates]..sort();
+    print(model.habitCompletedDates.length);
+    print("Calculate Streak Function Run");
+    if (sortedList.isEmpty) {
+      print("Data Not Found");
+      currentStreak = 0;
+      bestStreak = 0;
+      notifyListeners();
+      return;
+    } else {
+      currentStreak = 0;
+      print("Third Block Run");
+      final now = DateTime.now();
+      final completedToday = sortedList.any(
+        (date) =>
+            date.year == now.year &&
+            date.month == now.month &&
+            date.day == now.day,
+      );
+      if (completedToday) {
+        print("Current Streak");
+        var checkDate = now;
+        while (true) {
+          if (sortedList.any((item) {
+            return item.year == checkDate.year &&
+                item.month == checkDate.month &&
+                item.day == checkDate.day;
+          })) {
+            currentStreak++;
+            final previous_Date = checkDate.subtract(Duration(days: 1));
+            checkDate = previous_Date;
+          } else {
+            break;
+          }
+          print(currentStreak);
+        }
+      } else {
+        print("scond block for else run");
+        var previous_Date = now.subtract(Duration(days: 1));
+        if (sortedList.any(
+          (date) =>
+              date.year == previous_Date.year &&
+              date.month == previous_Date.month &&
+              date.day == previous_Date.day,
+        )) {
+          var checkDate = previous_Date;
+          while (true) {
+            if (sortedList.any((item) {
+              return item.year == checkDate.year &&
+                  item.month == checkDate.month &&
+                  item.day == checkDate.day;
+            })) {
+              currentStreak++;
+              final previous_Date = checkDate.subtract(Duration(days: 1));
+              checkDate = previous_Date;
+            } else {
+              break;
+            }
+          }
+        }
+
+        print(currentStreak);
+        if (currentStreak > bestStreak) {
+          bestStreak = currentStreak;
+          notifyListeners();
+          return;
+        }
+        notifyListeners();
+        return;
+      }
+    }
   }
 }
