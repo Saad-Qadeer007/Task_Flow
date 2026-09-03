@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class HabitModel {
   String habitId;
   String habitTitle;
   String habitFrequency;
   bool habitStatus;
   List<DateTime> habitCompletedDates = [];
-  DateTime createdAt;
 
   HabitModel({
     required this.habitId,
@@ -12,7 +13,6 @@ class HabitModel {
     required this.habitFrequency,
     required this.habitStatus,
     required this.habitCompletedDates,
-    required this.createdAt,
   });
 
   static Map<String, dynamic> toMap(HabitModel model) {
@@ -22,9 +22,8 @@ class HabitModel {
       "habitFrequency": model.habitFrequency,
       "habitStatus": model.habitStatus,
       "habitCompletedDates": model.habitCompletedDates
-          .map((date) => date.toIso8601String())
+          .map((date) => Timestamp.fromDate(date))
           .toList(),
-      "createdAt": model.createdAt.toIso8601String(),
     };
   }
 
@@ -35,9 +34,8 @@ class HabitModel {
       habitFrequency: map["habitFrequency"],
       habitStatus: map["habitStatus"],
       habitCompletedDates: (map["habitCompletedDates"] as List)
-          .map((date) => DateTime.parse(date))
+          .map((date) => (date as Timestamp).toDate())
           .toList(),
-      createdAt: DateTime.parse(map["createdAt"]),
     );
   }
 }

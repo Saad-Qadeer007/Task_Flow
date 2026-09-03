@@ -218,7 +218,9 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<HabitProvider>().updateHabit(data);
+                            },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsetsGeometry.all(15.0),
                               shape: RoundedRectangleBorder(

@@ -18,9 +18,18 @@ class HabitProvider extends ChangeNotifier {
     habits.clear();
     try {
       QuerySnapshot data = await FirebaseServices().getHabitFromFirebase();
-      data.docs.map((items) {
-        habits.add(HabitModel.toModel(items.data() as Map<String, dynamic>));
-      }).toList();
+      final now = DateTime.now();
+      for (final items in data.docs) {
+        final habit = HabitModel.toModel(items.data() as Map<String, dynamic>);
+        final completedToday = habit.habitCompletedDates.any(
+          (date) =>
+              date.year == now.year &&
+              date.month == now.month &&
+              date.day == now.day,
+        );
+        habit.habitStatus = completedToday;
+        habits.add(habit);
+      }
       notifyListeners();
     } catch (e) {
       print(e);
@@ -33,5 +42,23 @@ class HabitProvider extends ChangeNotifier {
     await FirebaseServices().deleteHabitFromFirebase(id);
     await getHabits();
     notifyListeners();
+  }
+
+  Future<void> updateHabit(HabitModel model) async {
+    print("Function run");
+    final now = DateTime.now();
+    final completedToday = model.habitCompletedDates.any(
+      (date) =>
+          date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day,
+    );
+    if (!completedToday) {
+      model.habitCompletedDates.add(now);
+    }
+    model.habitStatus = true;
+    final data = HabitModel.toMap(model);
+    await FirebaseServices().updateHabitFromFirebase(data);
+    await getHabits();
   }
 }

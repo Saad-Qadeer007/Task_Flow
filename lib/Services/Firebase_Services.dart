@@ -188,6 +188,16 @@ class FirebaseServices {
     // await NotificationService().cancelNotification(id);
   }
 
-
-
+  Future<void> updateHabitFromFirebase(Map<String, dynamic> data) async {
+    try{
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection("habits")
+          .doc(data["habitId"])
+          .update(data);
+    }catch(e){
+      print(e);
+    }
+  }
 }

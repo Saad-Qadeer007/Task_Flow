@@ -45,7 +45,7 @@ class _HabitScreenState extends State<HabitScreen> {
         //   );
         // },
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddHabitScreen()),
           );
@@ -74,7 +74,12 @@ class _HabitScreenState extends State<HabitScreen> {
                             ),
                           ),
                           Spacer(),
-                          Icon(Icons.add, size: 30),
+                          InkWell(
+                            onTap: () {
+                              print(habitProvider.habits.length);
+                            },
+                            child: Icon(Icons.add, size: 30),
+                          ),
                         ],
                       ),
                     ),
@@ -118,10 +123,8 @@ class _HabitScreenState extends State<HabitScreen> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 HabitDetailScreen(
-                                                  id : data[index]
-                                                      .id
-                                                      .toString(),
-                                                  habits : habitProvider.habits,
+                                                  id: data[index].id.toString(),
+                                                  habits: habitProvider.habits,
                                                 ),
                                           ),
                                         );

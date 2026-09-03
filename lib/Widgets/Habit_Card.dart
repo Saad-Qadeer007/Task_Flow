@@ -52,7 +52,8 @@ class _HabitCardState extends State<HabitCard> {
                   InkWell(
                     onTap: () {},
                     child: Text(
-                      habit.habitTitle.toString()[0].toUpperCase() + habit.habitTitle.toString().substring(1),
+                      habit.habitTitle.toString()[0].toUpperCase() +
+                          habit.habitTitle.toString().substring(1),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -72,9 +73,19 @@ class _HabitCardState extends State<HabitCard> {
 
               const Spacer(),
 
-              Text(
-                "7 / 7 days",
-                style: TextStyle(color: AppColors.moderateGrey),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "7 / 7 days",
+                    style: TextStyle(color: AppColors.moderateGrey),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    habit.habitStatus == false ? "Pending" : "Completed",
+                    style: TextStyle(color: AppColors.moderateGrey),
+                  ),
+                ],
               ),
             ],
           ),

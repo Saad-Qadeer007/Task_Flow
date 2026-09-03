@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Habit_Model.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
-import 'package:task_flow/Screens/Habits/Habit_Screen.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Success_SnackBar.dart';
 
@@ -163,19 +162,13 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                                       habitFrequency: selectedFrequency,
                                       habitStatus: false,
                                       habitCompletedDates: [],
-                                      createdAt : DateTime.now(),
                                     ),
                                   );
                                   SuccessSnackBar.showSuccessSnackBar(
                                     context,
                                     "Habit Created Successfully",
                                   );
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HabitScreen(),
-                                    ),
-                                  );
+                                  Navigator.pop(context);
                                 }
                               },
                               child: Text(
