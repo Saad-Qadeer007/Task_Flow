@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
 import 'package:task_flow/Widgets/Streak_Card.dart';
@@ -251,9 +252,50 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                         SizedBox(height: 10),
                         Container(
                           height: 100,
-                          child: Text(
-                            "Coming Soon",
-                            style: TextStyle(color: AppColors.moderateGrey),
+                          child: ListView.builder(
+                            itemCount: data.habitCompletedDates.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Icon(
+                                    Icons.circle_outlined,
+                                    color: AppColors.moderateGrey,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    "${data.habitCompletedDates[index].day} ${data.habitCompletedDates[index].month == 1
+                                        ? "Jan"
+                                        : data.habitCompletedDates[index].month == 2
+                                        ? "Feb"
+                                        : data.habitCompletedDates[index].month == 3
+                                        ? "Mar"
+                                        : data.habitCompletedDates[index].month == 4
+                                        ? "Apr"
+                                        : data.habitCompletedDates[index].month == 5
+                                        ? "May"
+                                        : data.habitCompletedDates[index].month == 6
+                                        ? "Jun"
+                                        : data.habitCompletedDates[index].month == 7
+                                        ? "Jul"
+                                        : data.habitCompletedDates[index].month == 8
+                                        ? "Aug"
+                                        : data.habitCompletedDates[index].month == 9
+                                        ? "Sep"
+                                        : data.habitCompletedDates[index].month == 10
+                                        ? "Oct"
+                                        : data.habitCompletedDates[index].month == 11
+                                        ? "Nov"
+                                        : "Dec"} ${data.habitCompletedDates[index].year}",
+                                  ),
+                                  Spacer(),
+                                  FaIcon(
+                                    FontAwesomeIcons.circleCheck,
+                                    size: 20,
+                                    color: AppColors.successColor,
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
 
