@@ -7,6 +7,7 @@ class HabitProvider extends ChangeNotifier {
   List<HabitModel> habits = [];
   int currentStreak = 0;
   int bestStreak = 0;
+  int pre_bestStreak = 0;
 
   Future<void> addHabit(HabitModel model) async {
     HabitModel updatedModel = await FirebaseServices().addHabitToFirebase(
@@ -66,7 +67,6 @@ class HabitProvider extends ChangeNotifier {
 
   Future<void> calculateStreak(HabitModel model) async {
     currentStreak = 0;
-    bestStreak = 0;
     final sortedList = [...model.habitCompletedDates]..sort();
     print(model.habitCompletedDates.length);
     print("Calculate Streak Function Run");
@@ -127,16 +127,39 @@ class HabitProvider extends ChangeNotifier {
             }
           }
         }
-
-        print(currentStreak);
-        if (currentStreak > bestStreak) {
-          bestStreak = currentStreak;
-          notifyListeners();
-          return;
-        }
         notifyListeners();
-        return;
       }
     }
   }
+
+  Future<void> bestStreakCalculator(HabitModel model) async {
+    print("Best Streak Function run");
+    var currentStreakForCalculatingFinal = 1;
+    bestStreak = 1;
+    final sortedList = [...model.habitCompletedDates]..sort();
+    if (sortedList.isEmpty) {
+      bestStreak = 0;
+      notifyListeners();
+      return;
+    } else {
+      for (var i = 1; i < sortedList.length; i++) {
+        final previous = DateTime (sortedList[i - 1].year,sortedList[i-1].month,sortedList[i-1].day);
+        final next = DateTime (sortedList[i].year,sortedList[i].month,sortedList[i].day);
+        print("previos : $previous , next : $next");
+        if (next.difference(previous).inDays == 1) {
+          print("Run");
+          currentStreakForCalculatingFinal++;
+          if (currentStreakForCalculatingFinal > bestStreak) {
+            bestStreak = currentStreakForCalculatingFinal;
+          }
+        } else {
+          print("Scond Block Run");
+          currentStreakForCalculatingFinal = 1;
+        }
+      }
+    }
+    notifyListeners();
+  }
+
+
 }

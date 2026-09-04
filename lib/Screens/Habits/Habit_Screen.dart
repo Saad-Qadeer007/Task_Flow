@@ -126,6 +126,13 @@ class _HabitScreenState extends State<HabitScreen> {
                                                 data[index].data(),
                                               ),
                                             );
+                                        context
+                                            .read<HabitProvider>()
+                                            .bestStreakCalculator(
+                                              HabitModel.toModel(
+                                                data[index].data(),
+                                              ),
+                                            );
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

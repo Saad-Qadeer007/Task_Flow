@@ -19,7 +19,6 @@ class HabitDetailScreen extends StatefulWidget {
 }
 
 class _HabitDetailScreenState extends State<HabitDetailScreen> {
-
   late HabitModel data = widget.habits.firstWhere(
     (element) => element.habitId == widget.id,
   );
@@ -235,13 +234,21 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                               foregroundColor: AppColors.lightColor,
                               backgroundColor: AppColors.primaryColor,
                             ),
-                            child: Text(
-                              "Mark As Done",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: data.habitStatus
+                                ? Text(
+                                    "Completed",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : Text(
+                                    "Mark As Done",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                           ),
                         ),
                         SizedBox(height: 20),
