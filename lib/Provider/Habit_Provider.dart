@@ -8,6 +8,14 @@ class HabitProvider extends ChangeNotifier {
   int currentStreak = 0;
   int bestStreak = 0;
   int pre_bestStreak = 0;
+  List<int> getDay = [];
+  bool mondayCompleted = false;
+  bool tuesdayCompleted = false;
+  bool wednesdayCompleted = false;
+  bool thursdayCompleted = false;
+  bool fridayCompleted = false;
+  bool saturdayCompleted = false;
+  bool sundayCompleted = false;
 
   Future<void> addHabit(HabitModel model) async {
     HabitModel updatedModel = await FirebaseServices().addHabitToFirebase(
@@ -143,8 +151,16 @@ class HabitProvider extends ChangeNotifier {
       return;
     } else {
       for (var i = 1; i < sortedList.length; i++) {
-        final previous = DateTime (sortedList[i - 1].year,sortedList[i-1].month,sortedList[i-1].day);
-        final next = DateTime (sortedList[i].year,sortedList[i].month,sortedList[i].day);
+        final previous = DateTime(
+          sortedList[i - 1].year,
+          sortedList[i - 1].month,
+          sortedList[i - 1].day,
+        );
+        final next = DateTime(
+          sortedList[i].year,
+          sortedList[i].month,
+          sortedList[i].day,
+        );
         print("previos : $previous , next : $next");
         if (next.difference(previous).inDays == 1) {
           print("Run");
@@ -161,5 +177,51 @@ class HabitProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
+  void getCompletedDay(HabitModel model) {
+    getDay.clear();
+    mondayCompleted = false;
+    tuesdayCompleted = false;
+    wednesdayCompleted = false;
+    thursdayCompleted = false;
+    fridayCompleted = false;
+    saturdayCompleted = false;
+    sundayCompleted = false;
+    final sortedList = [...model.habitCompletedDates]..sort();
+    final now = DateTime.now();
+      final newSortedList = [];
+      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+      for (final i in sortedList) {
+        if (i.isAfter(startOfWeek) && i.isBefore(endOfWeek)) {
+          newSortedList.add(i);
+          getDay.add(i.weekday);
+        }
+      }
+      final sortGetDay = [...getDay]..sort();
+      for (final i in sortGetDay) {
+        if (i == 1) {
+          mondayCompleted = true;
+          print("Monday Completed");
+        } else if (i == 2) {
+          tuesdayCompleted = true;
+          print("Tuesday Completed");
+        } else if (i == 3) {
+          wednesdayCompleted = true;
+          print("Wednesday Completed");
+        } else if (i == 4) {
+          thursdayCompleted = true;
+          print("Thursday Completed");
+        } else if (i == 5) {
+          fridayCompleted = true;
+          print("Friday Completed");
+        } else if (i == 6) {
+          saturdayCompleted = true;
+          print("Saturday Completed");
+        } else if (i == 7) {
+          sundayCompleted = true;
+          print("Sunday Completed");
+        }
+      }
+      notifyListeners();
+  }
 }

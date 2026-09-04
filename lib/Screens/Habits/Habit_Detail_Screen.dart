@@ -193,11 +193,16 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                         ),
                         SizedBox(height: 20),
                         // Track of the streak
-                        Text(
-                          "This Week",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        InkWell(
+                          onTap: () {
+                            // context.read<HabitProvider>().getCompletedDay();
+                          },
+                          child: Text(
+                            "This Week",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -209,7 +214,24 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                               children: [
                                 Text(item[0]),
                                 SizedBox(height: 10),
-                                CircleAvatar(),
+                                CircleAvatar(
+                                  backgroundColor:
+                                      provider.getDay.contains(
+                                        days.indexOf(item) + 1,
+                                      )
+                                      ? Colors.green
+                                      : null,
+                                  child:
+                                      provider.getDay.contains(
+                                        days.indexOf(item) + 1,
+                                      )
+                                      ? FaIcon(
+                                          FontAwesomeIcons.check,
+                                          color: AppColors.lightColor,
+                                          size: 16,
+                                        )
+                                      : null,
+                                ),
                               ],
                             );
                           }).toList(),
@@ -222,6 +244,12 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                             onPressed: () {
                               context.read<HabitProvider>().updateHabit(data);
                               context.read<HabitProvider>().calculateStreak(
+                                data,
+                              );
+                              context
+                                  .read<HabitProvider>()
+                                  .bestStreakCalculator(data);
+                              context.read<HabitProvider>().getCompletedDay(
                                 data,
                               );
                             },
