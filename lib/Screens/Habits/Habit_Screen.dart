@@ -25,26 +25,6 @@ class _HabitScreenState extends State<HabitScreen> {
         elevation: 2,
         backgroundColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        // onPressed: () {
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => AddTaskScreen(
-        //         data: TaskModel(
-        //           id: "",
-        //           taskTitle: "",
-        //           taskDescription: "",
-        //           taskCategory: "",
-        //           taskPriority: "",
-        //           taskDueDate: null,
-        //           taskDueTime: null,
-        //           taskReminder: "",
-        //           taskRepeat: "",
-        //         ),
-        //       ),
-        //     ),
-        //   );
-        // },
         onPressed: () {
           Navigator.push(
             context,
@@ -77,9 +57,52 @@ class _HabitScreenState extends State<HabitScreen> {
                           Spacer(),
                           InkWell(
                             onTap: () {
-                              print(habitProvider.habits.length);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Info About Habits"),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Wrap(
+                                          spacing: 10,
+                                          runSpacing: 10,
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color: AppColors.errorColor,
+                                            ),
+                                            Text(
+                                              "Shows The Habits Which Are Not Completed Yet",
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Wrap(
+                                          spacing: 10,
+                                          runSpacing: 10,
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color: AppColors.successColor,
+                                            ),
+                                            Text(
+                                              "Shows The Habits Which Are Completed",
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
                             },
-                            child: Icon(Icons.add, size: 30),
+                            child: Icon(
+                              Icons.info,
+                              size: 30,
+                              color: AppColors.secondaryTextColor,
+                            ),
                           ),
                         ],
                       ),

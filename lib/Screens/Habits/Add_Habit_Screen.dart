@@ -17,7 +17,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   TextEditingController habitTitleController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  List<String> habitFrequency = ["Everyday", "Weekly", "Monthly"];
+  List<String> habitFrequency = ["Everyday"];
 
   late String selectedFrequency = habitFrequency[0];
 

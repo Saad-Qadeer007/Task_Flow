@@ -9,6 +9,7 @@ class HabitProvider extends ChangeNotifier {
   int bestStreak = 0;
   int pre_bestStreak = 0;
   List<int> getDay = [];
+  int taskCompletedDayLength = 0;
   bool mondayCompleted = false;
   bool tuesdayCompleted = false;
   bool wednesdayCompleted = false;
@@ -188,40 +189,43 @@ class HabitProvider extends ChangeNotifier {
     sundayCompleted = false;
     final sortedList = [...model.habitCompletedDates]..sort();
     final now = DateTime.now();
-      final newSortedList = [];
-      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-      for (final i in sortedList) {
-        if (i.isAfter(startOfWeek) && i.isBefore(endOfWeek)) {
-          newSortedList.add(i);
-          getDay.add(i.weekday);
-        }
+    final newSortedList = [];
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+    for (final i in sortedList) {
+      if ((i.isAfter(startOfWeek) && i.isBefore(endOfWeek)) ||
+          i.isAtSameMomentAs(startOfWeek) ||
+          i.isAtSameMomentAs(endOfWeek)) {
+        newSortedList.add(i);
+        getDay.add(i.weekday);
       }
-      final sortGetDay = [...getDay]..sort();
-      for (final i in sortGetDay) {
-        if (i == 1) {
-          mondayCompleted = true;
-          print("Monday Completed");
-        } else if (i == 2) {
-          tuesdayCompleted = true;
-          print("Tuesday Completed");
-        } else if (i == 3) {
-          wednesdayCompleted = true;
-          print("Wednesday Completed");
-        } else if (i == 4) {
-          thursdayCompleted = true;
-          print("Thursday Completed");
-        } else if (i == 5) {
-          fridayCompleted = true;
-          print("Friday Completed");
-        } else if (i == 6) {
-          saturdayCompleted = true;
-          print("Saturday Completed");
-        } else if (i == 7) {
-          sundayCompleted = true;
-          print("Sunday Completed");
-        }
+    }
+    print(getDay.length);
+    final sortGetDay = [...getDay]..sort();
+    for (final i in sortGetDay) {
+      if (i == 1) {
+        mondayCompleted = true;
+        print("Monday Completed");
+      } else if (i == 2) {
+        tuesdayCompleted = true;
+        print("Tuesday Completed");
+      } else if (i == 3) {
+        wednesdayCompleted = true;
+        print("Wednesday Completed");
+      } else if (i == 4) {
+        thursdayCompleted = true;
+        print("Thursday Completed");
+      } else if (i == 5) {
+        fridayCompleted = true;
+        print("Friday Completed");
+      } else if (i == 6) {
+        saturdayCompleted = true;
+        print("Saturday Completed");
+      } else if (i == 7) {
+        sundayCompleted = true;
+        print("Sunday Completed");
       }
-      notifyListeners();
+    }
+    notifyListeners();
   }
 }
