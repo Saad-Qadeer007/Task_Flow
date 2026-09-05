@@ -33,6 +33,10 @@ class TaskProvider extends ChangeNotifier {
   List<String> taskPriority = ["Low", "Medium", "High"];
   late String selectedCatagory = "";
   String activeDateChip = "All";
+  late var filterStatisticsTasks = [];
+  late var filterStatisticsCompletedTasks = [];
+  late var filterStatisticsPendingTasks = [];
+  double completedTaskPercentageForStatistics = 0.0;
 
   final now = DateTime.now();
 
@@ -189,9 +193,13 @@ class TaskProvider extends ChangeNotifier {
       return items.isCompleted == true &&
               items.taskDueDate?.day == DateTime.now().day &&
               items.taskDueDate?.month == DateTime.now().month &&
-              items.taskDueDate?.year == DateTime.now().year && items.taskDueTime!.isAfter(
-        TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
-      )
+              items.taskDueDate?.year == DateTime.now().year &&
+              items.taskDueTime!.isAfter(
+                TimeOfDay(
+                  hour: DateTime.now().hour,
+                  minute: DateTime.now().minute,
+                ),
+              )
           ? completedTasks++
           : 0;
     }).toList();
@@ -307,6 +315,115 @@ class TaskProvider extends ChangeNotifier {
   void upcomingTaskTracker(String id) {
     final upcoming = filteredList.firstWhere((item) => item.id == id);
     isUpcoming = upcoming.taskDueDate!.isBefore(endOfDay) ? false : true;
+    notifyListeners();
+  }
+
+  void getTaskCountForStatistics(String date) {
+    DateTime now = DateTime.now();
+    if (date.toLowerCase() == "this month") {
+      filterStatisticsTasks = [];
+      filterStatisticsCompletedTasks = [];
+      filterStatisticsPendingTasks = [];
+      final filteredmonthtask = tasks.map((item) {
+        if (item.taskDueDate?.month == now.month) {
+          return item;
+        }
+      }).toList();
+      for (var i in filteredmonthtask) {
+        if (i != null) {
+          filterStatisticsTasks.add(i);
+        }
+      }
+      if (filterStatisticsTasks.isNotEmpty) {
+        filterStatisticsTasks.map((item) {
+          if (item.isCompleted == true) {
+            filterStatisticsCompletedTasks.add(item);
+          } else {
+            filterStatisticsPendingTasks.add(item);
+          }
+        }).toList();
+      } else {
+        filterStatisticsTasks = [];
+        filterStatisticsCompletedTasks = [];
+        filterStatisticsPendingTasks = [];
+      }
+      notifyListeners();
+    } else if (date.toLowerCase() == "this year") {
+      print("year");
+      filterStatisticsTasks = [];
+      filterStatisticsCompletedTasks = [];
+      filterStatisticsPendingTasks = [];
+      final filteredTask = tasks.map((item) {
+        if (item.taskDueDate?.year == now.year) {
+          return item;
+        }
+      }).toList();
+      for (var i in filteredTask) {
+        if (i != null) {
+          filterStatisticsTasks.add(i);
+        }
+      }
+      if (filterStatisticsTasks.isNotEmpty) {
+        filterStatisticsTasks.map((item) {
+          if (item.isCompleted == true) {
+            filterStatisticsCompletedTasks.add(item);
+          } else {
+            filterStatisticsPendingTasks.add(item);
+          }
+        }).toList();
+      } else {
+        filterStatisticsTasks = [];
+        filterStatisticsCompletedTasks = [];
+        filterStatisticsPendingTasks = [];
+      }
+      notifyListeners();
+    } else {
+      filterStatisticsTasks = [];
+      filterStatisticsCompletedTasks = [];
+      filterStatisticsPendingTasks = [];
+      final now = DateTime.now();
+      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+      final filteredTask = tasks.map((item) {
+        if ((item.taskDueDate!.isAfter(startOfWeek) &&
+                item.taskDueDate!.isBefore(endOfWeek)) ||
+            item.taskDueDate!.isAtSameMomentAs(startOfWeek) ||
+            item.taskDueDate!.isAtSameMomentAs(endOfWeek)) {
+          return item;
+        }
+      }).toList();
+      for (var i in filteredTask) {
+        if (i != null) {
+          filterStatisticsTasks.add(i);
+        }
+      }
+      if (filterStatisticsTasks.isNotEmpty) {
+        filterStatisticsTasks.map((item) {
+          if (item.isCompleted == true) {
+            filterStatisticsCompletedTasks.add(item);
+          } else {
+            filterStatisticsPendingTasks.add(item);
+          }
+        }).toList();
+      } else {
+        filterStatisticsTasks = [];
+        filterStatisticsCompletedTasks = [];
+        filterStatisticsPendingTasks = [];
+      }
+    }
+    calculateCompletedTaskPercentageForStatistics();
+    notifyListeners();
+  }
+
+  void calculateCompletedTaskPercentageForStatistics() {
+    if (filterStatisticsTasks.length == 0) {
+      completedTaskByPercentage = 0.0;
+    } else {
+      completedTaskByPercentage =
+          filterStatisticsCompletedTasks.length /
+          filterStatisticsTasks.length *
+          100;
+    }
     notifyListeners();
   }
 }
