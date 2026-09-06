@@ -22,7 +22,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<TaskProvider>().getTaskCountForStatistics("this week");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TaskProvider>().getTaskCountForStatistics("this week");
+    });
   }
 
   @override
@@ -133,6 +135,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .toString(),
                                           tasks: provider.tasks,
                                           upcoming: provider.isUpcoming,
+                                          date : "this week",
                                         ),
                                       ),
                                     );
@@ -181,7 +184,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    provider.filterStatisticsCompletedTasks.isEmpty
+                    provider.filterStatisticsPendingTasks.isEmpty
                         ? SizedBox(
                             height: 200,
                             child: Center(child: Text("No Pending Task")),
@@ -214,6 +217,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .toString(),
                                           tasks: provider.tasks,
                                           upcoming: provider.isUpcoming,
+                                          date : defaultSelection,
                                         ),
                                       ),
                                     );

@@ -171,9 +171,10 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTask(Map<String, dynamic> data) async {
+  void updateTask(Map<String, dynamic> data,String date) async {
     await FirebaseServices().updateTaskFromFirebase(data);
     await getTasks();
+    getTaskCountForStatistics(date);
     filterTodayTasks();
     taskCalculation();
     overDueTasks();
@@ -313,8 +314,12 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void upcomingTaskTracker(String id) {
-    final upcoming = filteredList.firstWhere((item) => item.id == id);
-    isUpcoming = upcoming.taskDueDate!.isBefore(endOfDay) ? false : true;
+    final upcoming = tasks.where((element) => element.id == id).firstOrNull;
+
+    // If task is not found, don't build the card
+    if (upcoming != null) {
+      isUpcoming = upcoming.taskDueDate!.isBefore(endOfDay) ? false : true;
+    }
     notifyListeners();
   }
 
@@ -378,17 +383,22 @@ class TaskProvider extends ChangeNotifier {
       }
       notifyListeners();
     } else {
+      print("This Week Run");
+      print("Task CoUNT : ${tasks.length}");
       filterStatisticsTasks = [];
       filterStatisticsCompletedTasks = [];
       filterStatisticsPendingTasks = [];
       final now = DateTime.now();
-      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+      final startOfWeek = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
       final filteredTask = tasks.map((item) {
         if ((item.taskDueDate!.isAfter(startOfWeek) &&
                 item.taskDueDate!.isBefore(endOfWeek)) ||
-            item.taskDueDate!.isAtSameMomentAs(startOfWeek) ||
-            item.taskDueDate!.isAtSameMomentAs(endOfWeek)) {
+            item.taskDueDate!.isAtSameMomentAs(startOfWeek)) {
           return item;
         }
       }).toList();
@@ -397,12 +407,17 @@ class TaskProvider extends ChangeNotifier {
           filterStatisticsTasks.add(i);
         }
       }
+      print("Task Count : ${filterStatisticsTasks.length}");
       if (filterStatisticsTasks.isNotEmpty) {
         filterStatisticsTasks.map((item) {
           if (item.isCompleted == true) {
             filterStatisticsCompletedTasks.add(item);
+            print(
+              "Completed Task count ${filterStatisticsCompletedTasks.length}",
+            );
           } else {
             filterStatisticsPendingTasks.add(item);
+            print("Pending Task Title ${item.taskTitle}");
           }
         }).toList();
       } else {

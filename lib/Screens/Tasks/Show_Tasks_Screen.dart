@@ -397,6 +397,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                                     .toString(),
                                                 tasks: provider.filteredList,
                                                 upcoming: provider.isUpcoming,
+                                                date : "this week",
                                               ),
                                         ),
                                       );

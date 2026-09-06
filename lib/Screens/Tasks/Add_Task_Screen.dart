@@ -486,6 +486,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                             "taskRepeat": defaultRepeat,
                                             "createdAt": DateTime.now(),
                                           },
+                                          "this week",
                                         );
 
                                   provider.editMode == false

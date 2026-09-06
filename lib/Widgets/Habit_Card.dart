@@ -24,13 +24,16 @@ class _HabitCardState extends State<HabitCard> {
     if (habit != null) {
       final sortedList = [...habit.habitCompletedDates]..sort();
       final now = DateTime.now();
-      DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+      final startOfWeek = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).subtract(Duration(days: now.weekday - 1));
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 7));
       for (final i in sortedList) {
-        if ((i.isAfter(startOfWeek) && i.isBefore(endOfWeek)) ||
-            i.isAtSameMomentAs(startOfWeek) ||
-            i.isAtSameMomentAs(endOfWeek)) {
-          newSortedList.add(i);
+        if (i.isAtSameMomentAs(startOfWeek) ||
+            (i.isAfter(startOfWeek) && i.isBefore(endOfWeek))) {
+          newSortedList.add(i.weekday);
         }
       }
     }

@@ -180,6 +180,7 @@ class HabitProvider extends ChangeNotifier {
 
   void getCompletedDay(HabitModel model) {
     getDay.clear();
+
     mondayCompleted = false;
     tuesdayCompleted = false;
     wednesdayCompleted = false;
@@ -187,45 +188,47 @@ class HabitProvider extends ChangeNotifier {
     fridayCompleted = false;
     saturdayCompleted = false;
     sundayCompleted = false;
-    final sortedList = [...model.habitCompletedDates]..sort();
+
     final now = DateTime.now();
-    final newSortedList = [];
-    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-    for (final i in sortedList) {
-      if ((i.isAfter(startOfWeek) && i.isBefore(endOfWeek)) ||
-          i.isAtSameMomentAs(startOfWeek) ||
-          i.isAtSameMomentAs(endOfWeek)) {
-        newSortedList.add(i);
-        getDay.add(i.weekday);
+
+    // Monday 00:00:00
+    final startOfWeek = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
+
+    // Sunday 23:59:59
+    final endOfWeek = startOfWeek.add(const Duration(days: 7));
+
+    for (final date in model.habitCompletedDates) {
+      if (date.isAtSameMomentAs(startOfWeek) ||
+          (date.isAfter(startOfWeek) && date.isBefore(endOfWeek))) {
+
+        getDay.add(date.weekday);
       }
     }
-    print(getDay.length);
-    final sortGetDay = [...getDay]..sort();
-    for (final i in sortGetDay) {
-      if (i == 1) {
+
+    for (final day in getDay) {
+      if (day == 1) {
         mondayCompleted = true;
-        print("Monday Completed");
-      } else if (i == 2) {
+      } else if (day == 2) {
         tuesdayCompleted = true;
-        print("Tuesday Completed");
-      } else if (i == 3) {
+      } else if (day == 3) {
         wednesdayCompleted = true;
-        print("Wednesday Completed");
-      } else if (i == 4) {
+      } else if (day == 4) {
         thursdayCompleted = true;
-        print("Thursday Completed");
-      } else if (i == 5) {
+      } else if (day == 5) {
         fridayCompleted = true;
-        print("Friday Completed");
-      } else if (i == 6) {
+      } else if (day == 6) {
         saturdayCompleted = true;
-        print("Saturday Completed");
-      } else if (i == 7) {
+      } else if (day == 7) {
         sundayCompleted = true;
-        print("Sunday Completed");
       }
     }
+
+    print("Completed days: $getDay");
+
     notifyListeners();
   }
 }

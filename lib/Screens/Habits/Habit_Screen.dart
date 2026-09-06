@@ -163,6 +163,9 @@ class _HabitScreenState extends State<HabitScreen> {
                                                 data[index].data(),
                                               ),
                                             );
+                                        print(
+                                          "Get Data : ${habitProvider.getDay.length}",
+                                        );
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

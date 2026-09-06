@@ -33,6 +33,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
     _timer = Timer.periodic(const Duration(minutes: 1), (_) {
       if (mounted) {
+        print("Refreshed");
         setState(() {});
       }
     });
@@ -183,6 +184,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                       id: filteredDocs[index]
                                                           .id,
                                                       upcoming: false,
+                                                      date: "this week",
                                                     ),
                                               ),
                                             );
@@ -319,6 +321,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                             .toString(),
                                                         tasks: provider.tasks,
                                                         upcoming: false,
+                                                        date: "this week",
                                                       ),
                                                 ),
                                               );
@@ -390,6 +393,7 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                   tasks: provider.tasks,
                                                   id: data[index].id.toString(),
                                                   upcoming: true,
+                                                  date : "this week",
                                                 ),
                                           ),
                                         );

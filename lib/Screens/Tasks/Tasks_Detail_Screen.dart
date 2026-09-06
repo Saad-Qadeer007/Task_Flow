@@ -12,12 +12,14 @@ class TasksDetailScreen extends StatefulWidget {
   final String id;
   final List<TaskModel> tasks;
   final bool upcoming;
+  final String date;
 
   const TasksDetailScreen({
     super.key,
     required this.id,
     required this.tasks,
     required this.upcoming,
+    required this.date,
   });
 
   @override
@@ -226,7 +228,7 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                                   .updateTask({
                                                     "id": data.id,
                                                     "isCompleted": true,
-                                                  });
+                                                  }, widget.date);
                                         Navigator.pop(context);
                                         data.isCompleted == false
                                             ? SuccessSnackBar.showSuccessSnackBar(
@@ -298,6 +300,11 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                             context
                                                 .read<TaskProvider>()
                                                 .deleteTask(data.id.toString());
+                                            context
+                                                .read<TaskProvider>()
+                                                .getTaskCountForStatistics(
+                                                  widget.date,
+                                                );
                                             Navigator.pop(context);
                                             Navigator.pop(context);
                                             SuccessSnackBar.showSuccessSnackBar(
