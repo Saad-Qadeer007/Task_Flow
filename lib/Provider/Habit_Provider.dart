@@ -57,7 +57,6 @@ class HabitProvider extends ChangeNotifier {
   }
 
   Future<void> updateHabit(HabitModel model) async {
-    print("Function run");
     final now = DateTime.now();
     final completedToday = model.habitCompletedDates.any(
       (date) =>
@@ -77,17 +76,13 @@ class HabitProvider extends ChangeNotifier {
   Future<void> calculateStreak(HabitModel model) async {
     currentStreak = 0;
     final sortedList = [...model.habitCompletedDates]..sort();
-    print(model.habitCompletedDates.length);
-    print("Calculate Streak Function Run");
     if (sortedList.isEmpty) {
-      print("Data Not Found");
       currentStreak = 0;
       bestStreak = 0;
       notifyListeners();
       return;
     } else {
       currentStreak = 0;
-      print("Third Block Run");
       final now = DateTime.now();
       final completedToday = sortedList.any(
         (date) =>
@@ -96,7 +91,6 @@ class HabitProvider extends ChangeNotifier {
             date.day == now.day,
       );
       if (completedToday) {
-        print("Current Streak");
         var checkDate = now;
         while (true) {
           if (sortedList.any((item) {
@@ -105,23 +99,21 @@ class HabitProvider extends ChangeNotifier {
                 item.day == checkDate.day;
           })) {
             currentStreak++;
-            final previous_Date = checkDate.subtract(Duration(days: 1));
-            checkDate = previous_Date;
+            final previousDate = checkDate.subtract(Duration(days: 1));
+            checkDate = previousDate;
           } else {
             break;
           }
-          print(currentStreak);
         }
       } else {
-        print("scond block for else run");
-        var previous_Date = now.subtract(Duration(days: 1));
+        var previousDate = now.subtract(Duration(days: 1));
         if (sortedList.any(
           (date) =>
-              date.year == previous_Date.year &&
-              date.month == previous_Date.month &&
-              date.day == previous_Date.day,
+              date.year == previousDate.year &&
+              date.month == previousDate.month &&
+              date.day == previousDate.day,
         )) {
-          var checkDate = previous_Date;
+          var checkDate = previousDate;
           while (true) {
             if (sortedList.any((item) {
               return item.year == checkDate.year &&
@@ -129,8 +121,8 @@ class HabitProvider extends ChangeNotifier {
                   item.day == checkDate.day;
             })) {
               currentStreak++;
-              final previous_Date = checkDate.subtract(Duration(days: 1));
-              checkDate = previous_Date;
+              final previousDate = checkDate.subtract(Duration(days: 1));
+              checkDate = previousDate;
             } else {
               break;
             }
@@ -142,7 +134,6 @@ class HabitProvider extends ChangeNotifier {
   }
 
   Future<void> bestStreakCalculator(HabitModel model) async {
-    print("Best Streak Function run");
     var currentStreakForCalculatingFinal = 1;
     bestStreak = 1;
     final sortedList = [...model.habitCompletedDates]..sort();
@@ -162,15 +153,12 @@ class HabitProvider extends ChangeNotifier {
           sortedList[i].month,
           sortedList[i].day,
         );
-        print("previos : $previous , next : $next");
         if (next.difference(previous).inDays == 1) {
-          print("Run");
           currentStreakForCalculatingFinal++;
           if (currentStreakForCalculatingFinal > bestStreak) {
             bestStreak = currentStreakForCalculatingFinal;
           }
         } else {
-          print("Scond Block Run");
           currentStreakForCalculatingFinal = 1;
         }
       }
@@ -227,7 +215,6 @@ class HabitProvider extends ChangeNotifier {
       }
     }
 
-    print("Completed days: $getDay");
 
     notifyListeners();
   }

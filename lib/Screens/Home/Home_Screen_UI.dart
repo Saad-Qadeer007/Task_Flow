@@ -231,18 +231,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                           onTap: () {
                             context.read<TaskProvider>().overDueTasks();
                           },
-                          child: InkWell(
-                            onTap: () {
-                              print(
-                                "Task Overdue Count : ${provider.notNullOverDueTaskCount}",
-                              );
-                            },
-                            child: Text(
-                              "View All",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppColors.primaryColor,
-                              ),
+                          child: Text(
+                            "View All",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.primaryColor,
                             ),
                           ),
                         ),

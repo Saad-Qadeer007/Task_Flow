@@ -63,17 +63,11 @@ class _TaskCardsState extends State<TaskCards> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          print(widget.tasks.length);
-                          print(task);
-                        },
-                        child: Text(
-                          task.taskTitle.toString(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        task.taskTitle.toString(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
 

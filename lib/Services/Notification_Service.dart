@@ -34,7 +34,6 @@ class NotificationService {
   }
 
   Future<void> showNotification() async {
-    print("Notification Function");
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
           'task_reminders',
@@ -74,7 +73,6 @@ class NotificationService {
 
     final reminderDate = dueDate.subtract(Duration(minutes: reminder!));
 
-    print("Notification Function");
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
           'task_reminders',
@@ -122,7 +120,6 @@ class NotificationService {
     final pending = await notifications.pendingNotificationRequests();
 
     print("Pending notifications: ${pending.length}");
-    print(pending.map((e) => print(e.body)));
   }
 
   Future<void> cancelNotification(String id) async {

@@ -79,20 +79,11 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           ),
                         ),
                         Spacer(),
-                        InkWell(
-                          onTap: () {
-                            print(
-                              "Filtered List : ${provider.filteredList.length}",
-                            );
-                            print(provider.tasks.length);
-                            print("End Date : ${provider.endOfDay}");
-                          },
-                          child: Text(
-                            "All Tasks",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight(600),
-                            ),
+                        Text(
+                          "All Tasks",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight(600),
                           ),
                         ),
                         Spacer(),
@@ -230,7 +221,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                                         .toList(),
                                                   ),
                                                   SizedBox(height: 20),
-                                                  Container(
+                                                  SizedBox(
                                                     width: MediaQuery.of(
                                                       context,
                                                     ).size.width,
@@ -269,7 +260,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                                   ),
 
                                                   SizedBox(height: 10),
-                                                  Container(
+                                                  SizedBox(
                                                     width: MediaQuery.of(
                                                       context,
                                                     ).size.width,
@@ -364,7 +355,6 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                               onPressed: () {
                                 setState(() {
                                   provider.activeDateChip = e;
-                                  print(provider.activeDateChip);
                                   context.read<TaskProvider>().searchWithDate();
                                 });
                               },
@@ -383,7 +373,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                     SizedBox(height: 20),
                     //   Showing the data from the firebase
                     provider.tasks.isEmpty
-                        ? Container(
+                        ? SizedBox(
                             height: 400,
                             child: Center(
                               child: Text(
@@ -393,7 +383,7 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                             ),
                           )
                         : provider.filteredList.isEmpty
-                        ? Container(
+                        ? SizedBox(
                             height: 400,
                             child: Center(
                               child: Text(

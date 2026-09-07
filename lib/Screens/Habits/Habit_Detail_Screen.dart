@@ -153,7 +153,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: Column(
                                 children: [

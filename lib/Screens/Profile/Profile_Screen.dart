@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     SizedBox(height: 10),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: Column(
                         children: [

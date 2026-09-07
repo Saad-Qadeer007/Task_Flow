@@ -67,16 +67,10 @@ class _GreetingCardState extends State<GreetingCard> {
               ],
             ),
             Spacer(),
-            InkWell(
-              onTap: () {
-                // NotificationService().cancelAllNotification();
-                print(provider.tasks.length);
-              },
-              child: Icon(
-                Icons.notifications_none,
-                size: 35,
-                color: AppColors.moderateGrey,
-              ),
+            Icon(
+              Icons.notifications_none,
+              size: 35,
+              color: AppColors.moderateGrey,
             ),
           ],
         );

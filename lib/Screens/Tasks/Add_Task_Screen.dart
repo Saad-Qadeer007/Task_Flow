@@ -307,7 +307,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               if (gettedDate != null) {
                                 setState(() {
                                   selectedDate = gettedDate;
-                                  print(selectedDate);
                                   dueDateController.text =
                                       "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}";
                                 });
@@ -332,8 +331,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           SizedBox(height: 10),
                           TextFormField(
                             validator: (value) {
-                              print("Validator for the time runs");
-                              print("Selcted Time : $selectedTime");
                               if (selectedTime == null ||
                                   selectedTime ==
                                       TimeOfDay(hour: 00, minute: 00) ||
@@ -447,12 +444,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                print(provider.priority);
                                 if (addTaskScreenFormKey.currentState!
                                     .validate()) {
-                                  print(
-                                    "Validated Successfully -------------------------------------------------------------------------------------------------------",
-                                  );
                                   provider.editMode == false
                                       ? context.read<TaskProvider>().addTask(
                                           TaskModel(

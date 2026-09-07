@@ -7,7 +7,6 @@ import 'package:task_flow/Provider/Habit_Provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Habits/Habit_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Habit_Card.dart';
-
 import '../../Utilties/App_Colors.dart';
 import 'Add_Habit_Screen.dart';
 
@@ -44,7 +43,7 @@ class _HabitScreenState extends State<HabitScreen> {
                   children: [
                     SizedBox(height: 10),
                     //   Appbar for habit screen
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Row(
                         children: [
@@ -172,9 +171,6 @@ class _HabitScreenState extends State<HabitScreen> {
                                                 data[index].data(),
                                               ),
                                             );
-                                        print(
-                                          "Get Data : ${habitProvider.getDay.length}",
-                                        );
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

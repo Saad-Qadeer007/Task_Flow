@@ -26,8 +26,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     await Future.delayed(const Duration(seconds: 3));
 
-    print(FirebaseAuth.instance.currentUser?.displayName);
-
     if (!mounted) return;
 
     if (FirebaseAuth.instance.currentUser != null) {

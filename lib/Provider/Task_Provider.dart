@@ -53,7 +53,6 @@ class TaskProvider extends ChangeNotifier {
     isDark = !isDark;
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setBool("isDark", isDark);
-    print("Dark Mode get Saved");
     notifyListeners();
   }
 
@@ -64,9 +63,7 @@ class TaskProvider extends ChangeNotifier {
         : NotificationService().initialize();
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setBool("isNotification", isNotification);
-    print("Notification get Saved");
     getTasks();
-    print(isNotification);
     notifyListeners();
   }
 
@@ -111,7 +108,6 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> filterTodayTasks() async {
-    print("today function run");
     notNullTodayTaskCount = 0;
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate?.day == DateTime.now().day &&
@@ -132,7 +128,6 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void upcomingTasks() {
-    print("upcoming function run");
     final now = DateTime.now();
 
     final startOfDay = DateTime(now.year, now.month, now.day);
@@ -153,13 +148,10 @@ class TaskProvider extends ChangeNotifier {
         notNullUpcomingTaskCount++;
       }
     }
-    print("Upcoming Task Count : $notNullUpcomingTaskCount");
-
     notifyListeners();
   }
 
   void overDueTasks() {
-    print("Overdue function run");
     notNullOverDueTaskCount = 0;
     final now = DateTime.now();
     late final startOfDay = DateTime(now.year, now.month, now.day);
@@ -185,7 +177,6 @@ class TaskProvider extends ChangeNotifier {
       task,
       isNotification,
     );
-    print(model.id);
     tasks.add(model);
     filterTodayTasks();
     upcomingTasks();
@@ -193,8 +184,6 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> getTasks() async {
-    print("Task length : ${tasks.length}");
-    print("get task function run");
     tasks.clear();
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
@@ -208,7 +197,6 @@ class TaskProvider extends ChangeNotifier {
       pref.getBool("isDark") == null
           ? isDark = false
           : isDark = pref.getBool("isDark")!;
-      print(tasks.length);
       notifyListeners();
     } catch (e) {
       print(e);
@@ -409,7 +397,6 @@ class TaskProvider extends ChangeNotifier {
       }
       notifyListeners();
     } else if (date.toLowerCase() == "this year") {
-      print("year");
       filterStatisticsTasks = [];
       filterStatisticsCompletedTasks = [];
       filterStatisticsPendingTasks = [];
@@ -438,8 +425,6 @@ class TaskProvider extends ChangeNotifier {
       }
       notifyListeners();
     } else {
-      print("This Week Run");
-      print("Task CoUNT : ${tasks.length}");
       filterStatisticsTasks = [];
       filterStatisticsCompletedTasks = [];
       filterStatisticsPendingTasks = [];
@@ -462,17 +447,12 @@ class TaskProvider extends ChangeNotifier {
           filterStatisticsTasks.add(i);
         }
       }
-      print("Task Count : ${filterStatisticsTasks.length}");
       if (filterStatisticsTasks.isNotEmpty) {
         filterStatisticsTasks.map((item) {
           if (item.isCompleted == true) {
             filterStatisticsCompletedTasks.add(item);
-            print(
-              "Completed Task count ${filterStatisticsCompletedTasks.length}",
-            );
           } else {
             filterStatisticsPendingTasks.add(item);
-            print("Pending Task Title ${item.taskTitle}");
           }
         }).toList();
       } else {
@@ -486,7 +466,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void calculateCompletedTaskPercentageForStatistics() {
-    if (filterStatisticsTasks.length == 0) {
+    if (filterStatisticsTasks.isEmpty) {
       completedTaskByPercentage = 0.0;
     } else {
       completedTaskByPercentage =
