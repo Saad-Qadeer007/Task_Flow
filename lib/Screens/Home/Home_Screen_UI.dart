@@ -15,6 +15,7 @@ import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Progress_Card.dart';
 import '../../Widgets/Task_Cards.dart';
 import '../Tasks/Add_Task_Screen.dart';
+import '../Tasks/Show_Tasks_Screen.dart';
 
 class HomeScreenUi extends StatefulWidget {
   const HomeScreenUi({super.key});
@@ -229,7 +230,12 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                         Spacer(),
                         InkWell(
                           onTap: () {
-                            context.read<TaskProvider>().overDueTasks();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowTasksScreen(),
+                              ),
+                            );
                           },
                           child: Text(
                             "View All",

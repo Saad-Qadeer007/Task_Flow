@@ -34,12 +34,36 @@ class _GreetingCardState extends State<GreetingCard> {
                     ),
                     SizedBox(width: 10),
                     provider.greeting.toLowerCase() == "good morning"
-                        ? Icon(Icons.sunny, size: 20)
+                        ? Icon(
+                            Icons.sunny,
+                            size: 20,
+                            color: provider.isDark
+                                ? AppColors.lightColor
+                                : AppColors.moderateGrey,
+                          )
                         : provider.greeting.toLowerCase() == "good night"
-                        ? FaIcon(FontAwesomeIcons.moon, size: 20)
+                        ? FaIcon(
+                            FontAwesomeIcons.moon,
+                            size: 20,
+                            color: provider.isDark
+                                ? AppColors.lightColor
+                                : AppColors.moderateGrey,
+                          )
                         : provider.greeting.toLowerCase() == "good evening"
-                        ? FaIcon(FontAwesomeIcons.eyeLowVision, size: 20)
-                        : Icon(Icons.sunny, size: 20),
+                        ? FaIcon(
+                            FontAwesomeIcons.eyeLowVision,
+                            size: 20,
+                            color: provider.isDark
+                                ? AppColors.lightColor
+                                : AppColors.moderateGrey,
+                          )
+                        : Icon(
+                            Icons.sunny,
+                            size: 20,
+                            color: provider.isDark
+                                ? AppColors.lightColor
+                                : AppColors.moderateGrey,
+                          ),
                   ],
                 ),
                 Row(
@@ -60,17 +84,57 @@ class _GreetingCardState extends State<GreetingCard> {
                     FaIcon(
                       FontAwesomeIcons.user,
                       size: 25,
-                      color: AppColors.moderateGrey,
+                      color: provider.isDark
+                          ? AppColors.lightColor
+                          : AppColors.moderateGrey,
                     ),
                   ],
                 ),
               ],
             ),
             Spacer(),
-            Icon(
-              Icons.notifications_none,
-              size: 35,
-              color: AppColors.moderateGrey,
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text(
+                      "Notification Viewer",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text("Coming Soon...")],
+                    ),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          foregroundColor: AppColors.lightColor,
+                          backgroundColor: AppColors.primaryColor,
+                        ),
+                        child: Text("Close"),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.notifications_none,
+                size: 35,
+                color: provider.isDark
+                    ? AppColors.lightColor
+                    : AppColors.moderateGrey,
+              ),
             ),
           ],
         );
