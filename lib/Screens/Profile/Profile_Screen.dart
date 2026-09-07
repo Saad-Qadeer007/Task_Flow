@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:task_flow/Screens/Habits/Habit_Screen.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Profile_Card.dart';
 import '../Auth/Login_Screen.dart';
@@ -13,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool settingsController = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,13 +70,162 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 30),
                 Divider(),
                 SizedBox(height: 20),
-                ProfileCard(title: "My Habits", icon: Icons.bar_chart_rounded),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HabitScreen()),
+                    );
+                  },
+                  child: ProfileCard(
+                    title: "My Habits",
+                    icon: Icons.bar_chart_rounded,
+                  ),
+                ),
                 SizedBox(height: 15),
-                ProfileCard(title: "Settings", icon: Icons.settings_rounded),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      settingsController = !settingsController;
+                    });
+                  },
+                  child: ProfileCard(
+                    title: "Settings",
+                    icon: Icons.settings_rounded,
+                  ),
+                ),
+                settingsController == true
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.cards,
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: .9,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                title: Text("Dark Mode"),
+                                trailing: Switch(
+                                  value: true,
+                                  onChanged: (value) {},
+                                ),
+                              ),
+                              ListTile(
+                                title: Text("Notifications"),
+                                trailing: Switch(
+                                  value: true,
+                                  onChanged: (value) {},
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Divider(),
+                                      Text(
+                                        "About",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          Text("Version"),
+                                          Spacer(),
+                                          Text("1.0.0"),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ).animate().fade().slideX(
+                        begin: 0.5,
+                        end: 0,
+                        duration: 500.ms,
+                      )
+                    : SizedBox(),
                 SizedBox(height: 15),
                 ProfileCard(title: "Help", icon: Icons.help_rounded),
                 SizedBox(height: 15),
-                ProfileCard(title: "About", icon: Icons.info_rounded),
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: AppColors.background,
+                        title: Text(
+                          "About",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "This is a simple habit tracking app which lets you track your tasks and habits and track your progress.",
+                              style: TextStyle(
+                                color: AppColors.moderateGrey,
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Text(
+                              "Build With Flutter",
+                              style: TextStyle(
+                                color: AppColors.moderateGrey,
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Text(
+                              "Powered By Firebase",
+                              style: TextStyle(
+                                color: AppColors.moderateGrey,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadiusGeometry.circular(8),
+                              ),
+                              foregroundColor: AppColors.lightColor,
+                              backgroundColor: AppColors.primaryColor,
+                            ),
+                            child: Text("Close"),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: ProfileCard(title: "About", icon: Icons.info_rounded),
+                ),
 
                 SizedBox(height: 30),
                 InkWell(

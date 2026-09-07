@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Task_Model.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
@@ -189,11 +190,18 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                               ),
                                             );
                                           },
-                                          child: TaskCards(
-                                            id: filteredDocs[index].id
-                                                .toString(),
-                                            tasks: provider.tasks,
-                                          ),
+                                          child:
+                                              TaskCards(
+                                                id: filteredDocs[index].id
+                                                    .toString(),
+                                                tasks: provider.tasks,
+                                              ).animate().fade().slideX(
+                                                begin: 0.5,
+                                                end: 0.0,
+                                                duration: Duration(
+                                                  milliseconds: 500,
+                                                ),
+                                              ),
                                         );
                                       },
                                     );
@@ -326,11 +334,18 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                 ),
                                               );
                                             },
-                                            child: TaskCards(
-                                              id: filteredDocs[index].id
-                                                  .toString(),
-                                              tasks: provider.tasks,
-                                            ),
+                                            child:
+                                                TaskCards(
+                                                  id: filteredDocs[index].id
+                                                      .toString(),
+                                                  tasks: provider.tasks,
+                                                ).animate().fade().slideX(
+                                                  begin: 0.5,
+                                                  end: 0.0,
+                                                  duration: Duration(
+                                                    milliseconds: 500,
+                                                  ),
+                                                ),
                                           );
                                         },
                                       );
@@ -393,15 +408,22 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                                   tasks: provider.tasks,
                                                   id: data[index].id.toString(),
                                                   upcoming: true,
-                                                  date : "this week",
+                                                  date: "this week",
                                                 ),
                                           ),
                                         );
                                       },
-                                      child: TaskCards(
-                                        id: data![index].id.toString(),
-                                        tasks: provider.tasks,
-                                      ),
+                                      child:
+                                          TaskCards(
+                                            id: data![index].id.toString(),
+                                            tasks: provider.tasks,
+                                          ).animate().fade().slideX(
+                                            begin: 0.5,
+                                            end: 0.0,
+                                            duration: Duration(
+                                              milliseconds: 500,
+                                            ),
+                                          ),
                                     );
                                   },
                                 );

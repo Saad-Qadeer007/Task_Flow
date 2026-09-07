@@ -30,9 +30,16 @@ class _TaskCompletionStatusCardForStatisticsState
           children: [
             Text(widget.title),
             SizedBox(height: 5),
-            Text(
-              widget.count.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: widget.count.toDouble()),
+              duration: const Duration(seconds: 1),
+              curve: Curves.easeInOut,
+              builder: (context, value, child) {
+                return Text(
+                  value.toStringAsFixed(0),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                );
+              },
             ),
           ],
         ),

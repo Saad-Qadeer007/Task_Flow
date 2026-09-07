@@ -31,12 +31,22 @@ class _ProgressCardState extends State<ProgressCard> {
                       style: TextStyle(color: AppColors.moderateGrey),
                     ),
                     SizedBox(height: 5),
-                    Text(
-                      "${provider.completedTaskByPercentage.toStringAsFixed(0)} %",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(
+                        begin: 0,
+                        end: (provider.completedTaskByPercentage / 100) * 100,
                       ),
+                      duration: const Duration(seconds: 1),
+                      curve: Curves.easeInOut,
+                      builder: (context, value, child) {
+                        return Text(
+                          "${value.toStringAsFixed(0)} %",
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 5),
                     Text(
@@ -45,10 +55,20 @@ class _ProgressCardState extends State<ProgressCard> {
                   ],
                 ),
                 Spacer(),
-                CircularProgressIndicator(
-                  value: provider.completedTaskByPercentage / 100,
-                  color: Colors.green,
-                  strokeWidth: 10,
+                TweenAnimationBuilder<double>(
+                  tween: Tween(
+                    begin: 0,
+                    end: provider.completedTaskByPercentage / 100,
+                  ),
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                  builder: (context, value, child) {
+                    return CircularProgressIndicator(
+                      value: value,
+                      color: AppColors.successColor,
+                      strokeWidth: 5,
+                    );
+                  },
                 ),
               ],
             ),

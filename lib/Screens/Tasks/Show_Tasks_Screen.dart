@@ -261,16 +261,20 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                           );
                                         },
                                       ),
-                                    ),
+                                    ).animate().fadeIn(duration: 500.ms),
                                   ),
                                 );
                               },
                             );
                           },
-                          child: FaIcon(
-                            FontAwesomeIcons.filter,
-                            color: Colors.grey.shade700,
-                          ),
+                          child:
+                              FaIcon(
+                                FontAwesomeIcons.filter,
+                                color: Colors.grey.shade700,
+                              ).animate().shimmer(
+                                duration: Duration(milliseconds: 1000),
+                                color: Colors.grey.shade400,
+                              ),
                         ),
                       ],
                     ),
@@ -382,10 +386,10 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                     onTap: () {
                                       context
                                           .read<TaskProvider>()
-                                          .upcomingTaskTracker(provider
-                                          .filteredList[index]
-                                          .id
-                                          .toString());
+                                          .upcomingTaskTracker(
+                                            provider.filteredList[index].id
+                                                .toString(),
+                                          );
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -397,16 +401,21 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                                     .toString(),
                                                 tasks: provider.filteredList,
                                                 upcoming: provider.isUpcoming,
-                                                date : "this week",
+                                                date: "this week",
                                               ),
                                         ),
                                       );
                                     },
-                                    child: TaskCards(
-                                      id: provider.filteredList[index].id
-                                          .toString(),
-                                      tasks: provider.filteredList,
-                                    ),
+                                    child:
+                                        TaskCards(
+                                          id: provider.filteredList[index].id
+                                              .toString(),
+                                          tasks: provider.filteredList,
+                                        ).animate().fade().slideX(
+                                          begin: 0.5,
+                                          end: 0.0,
+                                          duration: Duration(milliseconds: 500),
+                                        ),
                                   );
                                 },
                               ),

@@ -114,14 +114,21 @@ class _HabitCardState extends State<HabitCard> {
                 ],
               ),
               SizedBox(height: 10),
-              LinearProgressIndicator(
-                value: newSortedList.length / 7,
-                minHeight: 10,
-                borderRadius: BorderRadius.circular(8),
-                backgroundColor: Colors.grey.shade300,
-                color: habit.habitStatus == false
-                    ? AppColors.errorColor
-                    : AppColors.successColor,
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: newSortedList.length / 7),
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeInOut,
+                builder: (context, value, child) {
+                  return LinearProgressIndicator(
+                    value: value,
+                    minHeight: 10,
+                    borderRadius: BorderRadius.circular(8),
+                    backgroundColor: Colors.grey.shade300,
+                    color: habit.habitStatus == false
+                        ? AppColors.errorColor
+                        : AppColors.successColor,
+                  );
+                },
               ),
             ],
           ),
