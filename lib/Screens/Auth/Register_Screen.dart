@@ -283,7 +283,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   }
                                 },
                                 child: isLoading
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
                                     : Text(
                                         "Create Account",
                                         style: TextStyle(

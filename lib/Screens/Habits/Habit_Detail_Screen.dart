@@ -315,7 +315,6 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                             ),
                             SizedBox(height: 15),
                             Container(
-                              height: 100,
                               child: data.habitCompletedDates.isEmpty
                                   ? SizedBox(
                                       height: 300,
@@ -330,6 +329,8 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                                       ),
                                     )
                                   : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
                                       itemCount:
                                           data.habitCompletedDates.length,
                                       itemBuilder: (context, index) {

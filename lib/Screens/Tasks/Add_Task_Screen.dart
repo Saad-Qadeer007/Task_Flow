@@ -336,7 +336,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                               print("Selcted Time : $selectedTime");
                               if (selectedTime == null ||
                                   selectedTime ==
-                                      TimeOfDay(hour: 00, minute: 00)) {
+                                      TimeOfDay(hour: 00, minute: 00) ||
+                                  selectedTime ==
+                                      TimeOfDay(
+                                        hour: DateTime.now().hour,
+                                        minute: DateTime.now().minute,
+                                      )) {
                                 return "Please Select Due Time";
                               } else {
                                 return null;

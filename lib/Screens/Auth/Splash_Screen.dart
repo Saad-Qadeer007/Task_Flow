@@ -21,79 +21,101 @@ class _SplashScreenState extends State<SplashScreen> {
     initializeApp();
   }
 
-  void initializeApp() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskProvider>().getTasks();
-    });
-    Future.delayed(Duration(seconds: 3), () {
-      print(FirebaseAuth.instance.currentUser?.displayName);
-      if (FirebaseAuth.instance.currentUser != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      }
-    });
+  Future<void> initializeApp() async {
+    await context.read<TaskProvider>().getTasks();
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    print(FirebaseAuth.instance.currentUser?.displayName);
+
+    if (!mounted) return;
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //   Logo
-          Container(
-            height: 150,
-            width: 150,
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Center(
-              child: CircleAvatar(
-                backgroundColor: AppColors.lightColor,
-                radius: 45,
-                child: Icon(
-                  Icons.done_rounded,
-                  color: AppColors.primaryColor,
-                  size: 80,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
+    return Consumer<TaskProvider>(
+      builder: (context, provider, child) {
+        return Scaffold(
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //   Logo
+              Container(
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Center(
+                  child: CircleAvatar(
+                    backgroundColor: AppColors.lightColor,
+                    radius: 45,
+                    child: Icon(
+                      Icons.done_rounded,
+                      color: AppColors.primaryColor,
+                      size: 80,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "TaskFlow",
+                    style: TextStyle(
+                      fontSize: 60,
+                      fontWeight: FontWeight.w500,
+                      color: provider.isDark
+                          ? AppColors.lightColor
+                          : AppColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
               Text(
-                "TaskFlow",
+                "Plan. Focus. Achieve.",
                 style: TextStyle(
-                  fontSize: 60,
-                  fontWeight: FontWeight(550),
-                  color: AppColors.textPrimary,
+                  color: provider.isDark
+                      ? AppColors.lightColor
+                      : AppColors.moderateGrey,
+                  fontSize: 22,
+                ),
+              ),
+              SizedBox(height: 50),
+              CircularProgressIndicator(
+                color: provider.isDark
+                    ? AppColors.lightColor
+                    : AppColors.primaryColor,
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Loading...",
+                style: TextStyle(
+                  color: provider.isDark
+                      ? AppColors.lightColor
+                      : AppColors.moderateGrey,
+                  fontSize: 25,
                 ),
               ),
             ],
           ),
-          Text(
-            "Plan. Focus. Achieve.",
-            style: TextStyle(color: AppColors.moderateGrey, fontSize: 22),
-          ),
-          SizedBox(height: 50),
-          CircularProgressIndicator(color: AppColors.primaryColor),
-          SizedBox(height: 20),
-          Text(
-            "Loading...",
-            style: TextStyle(color: Colors.grey.shade700, fontSize: 25),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

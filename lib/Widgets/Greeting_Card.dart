@@ -23,9 +23,24 @@ class _GreetingCardState extends State<GreetingCard> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Good Morning.",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight(400)),
+                Row(
+                  children: [
+                    Text(
+                      provider.greeting,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight(400),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    provider.greeting.toLowerCase() == "good morning"
+                        ? Icon(Icons.sunny, size: 20)
+                        : provider.greeting.toLowerCase() == "good night"
+                        ? FaIcon(FontAwesomeIcons.moon, size: 20)
+                        : provider.greeting.toLowerCase() == "good evening"
+                        ? FaIcon(FontAwesomeIcons.eyeLowVision, size: 20)
+                        : Icon(Icons.sunny, size: 20),
+                  ],
                 ),
                 Row(
                   children: [

@@ -38,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsetsGeometry.all(25.0),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(color: AppColors.lightColor),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -382,7 +381,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   backgroundColor: AppColors.primaryColor,
                                 ),
                                 child: isLoading
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
                                     : Text(
                                         "Login",
                                         style: TextStyle(

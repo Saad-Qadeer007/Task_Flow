@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Models/Habit_Model.dart';
 import 'package:task_flow/Provider/Habit_Provider.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Habits/Habit_Detail_Screen.dart';
 import 'package:task_flow/Widgets/Habit_Card.dart';
 
@@ -113,9 +114,17 @@ class _HabitScreenState extends State<HabitScreen> {
                             width: double.infinity,
                             height: 600,
                             child: Center(
-                              child: Text(
-                                "No Habits Yet",
-                                style: TextStyle(color: AppColors.moderateGrey),
+                              child: Consumer<TaskProvider>(
+                                builder: (context, provider, child) {
+                                  return Text(
+                                    "No Habits Yet",
+                                    style: TextStyle(
+                                      color: provider.isDark
+                                          ? AppColors.lightColor
+                                          : AppColors.moderateGrey,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           )

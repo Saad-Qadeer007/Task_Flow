@@ -8,6 +8,7 @@ import '../Services/Firebase_Services.dart';
 class TaskProvider extends ChangeNotifier {
   String priority = "High";
   bool isDark = false;
+  String greeting = "Good Morning";
   bool isNotification = false;
   List<TaskModel> tasks = [];
   bool editMode = false;
@@ -69,6 +70,20 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour >= 5 && hour < 12) {
+      greeting = "Good Morning";
+    } else if (hour >= 12 && hour < 17) {
+      greeting = "Good Afternoon";
+    } else if (hour >= 17 && hour < 21) {
+      greeting = "Good Evening";
+    } else {
+      greeting = "Good Night";
+    }
+    notifyListeners();
+  }
+
   void categorySelectionHandler(String value) {
     selectedCatagory = value;
     searchModeByCategory = true;
@@ -96,6 +111,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> filterTodayTasks() async {
+    print("today function run");
     notNullTodayTaskCount = 0;
     final todayTasks = tasks.map((element) {
       if (element.taskDueDate?.day == DateTime.now().day &&
@@ -137,6 +153,7 @@ class TaskProvider extends ChangeNotifier {
         notNullUpcomingTaskCount++;
       }
     }
+    print("Upcoming Task Count : $notNullUpcomingTaskCount");
 
     notifyListeners();
   }
@@ -176,6 +193,8 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> getTasks() async {
+    print("Task length : ${tasks.length}");
+    print("get task function run");
     tasks.clear();
     try {
       QuerySnapshot data = await FirebaseServices().getTasksFromFirebase();
@@ -189,6 +208,7 @@ class TaskProvider extends ChangeNotifier {
       pref.getBool("isDark") == null
           ? isDark = false
           : isDark = pref.getBool("isDark")!;
+      print(tasks.length);
       notifyListeners();
     } catch (e) {
       print(e);

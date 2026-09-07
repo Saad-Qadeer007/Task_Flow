@@ -34,8 +34,13 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
 
     _timer = Timer.periodic(const Duration(minutes: 1), (_) {
       if (mounted) {
-        print("Refreshed");
-        setState(() {});
+        final provider = context.read<TaskProvider>();
+        provider.overDueTasks();
+        provider.filterTodayTasks();
+        provider.upcomingTasks();
+        provider.taskCalculation();
+        provider.calculateCompletedTasks();
+        provider.getGreeting();
       }
     });
   }
@@ -49,12 +54,13 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
   Future<void> initializeApp() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NotificationService().initialize();
+      context.read<HabitProvider>().getHabits();
       context.read<TaskProvider>().filterTodayTasks();
       context.read<TaskProvider>().upcomingTasks();
+      context.read<TaskProvider>().overDueTasks();
       context.read<TaskProvider>().taskCalculation();
       context.read<TaskProvider>().calculateCompletedTasks();
-      context.read<TaskProvider>().overDueTasks();
-      context.read<HabitProvider>().getHabits();
+      context.read<TaskProvider>().getGreeting();
     });
   }
 
@@ -228,9 +234,8 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                           child: InkWell(
                             onTap: () {
                               print(
-                                "Is Notification :  ${provider.isNotification}",
+                                "Task Overdue Count : ${provider.notNullOverDueTaskCount}",
                               );
-                              NotificationService().cancelAllNotification();
                             },
                             child: Text(
                               "View All",
@@ -251,7 +256,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                             child: Center(
                               child: Text(
                                 "No Task Yet",
-                                style: TextStyle(color: AppColors.moderateGrey),
+                                style: TextStyle(
+                                  color: provider.isDark
+                                      ? AppColors.lightColor
+                                      : AppColors.moderateGrey,
+                                ),
                               ),
                             ),
                           )
@@ -310,7 +319,9 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                                           child: Text(
                                             "No Task Yet",
                                             style: TextStyle(
-                                              color: AppColors.moderateGrey,
+                                              color: provider.isDark
+                                                  ? AppColors.lightColor
+                                                  : AppColors.moderateGrey,
                                             ),
                                           ),
                                         ),
@@ -371,7 +382,11 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                             child: Center(
                               child: Text(
                                 "No Upcoming Task Yet",
-                                style: TextStyle(color: AppColors.moderateGrey),
+                                style: TextStyle(
+                                  color: provider.isDark
+                                      ? AppColors.lightColor
+                                      : AppColors.moderateGrey,
+                                ),
                               ),
                             ),
                           )
