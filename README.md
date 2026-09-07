@@ -435,23 +435,27 @@ The weekly progress system also checks which days of the current week contain a 
 
 ### Home Screen
 
-*Add your Home Screen screenshot here.*
+<img width="194" height="407" alt="image" src="https://github.com/user-attachments/assets/c17fd964-5b11-485b-8960-19235c01ad99" />
+
 
 ### Task Filtering
 
-*Add your filtering/search screenshot here.*
+<img width="188" height="402" alt="image" src="https://github.com/user-attachments/assets/bee3958f-3b6f-4037-96c6-103d5298b9df" />
+
 
 ### Habit Screen
 
-*Add your Habit Screen screenshot here.*
+<img width="198" height="401" alt="image" src="https://github.com/user-attachments/assets/fa8a47e6-c14a-4e75-86d1-de98c89cd709" />
 
 ### Habit Details & Streaks
 
-*Add your Habit Details screenshot here.*
+<img width="185" height="401" alt="image" src="https://github.com/user-attachments/assets/c20c611a-f2ab-43e0-ac57-ddf687c8c5ea" />
+
 
 ### Statistics
 
-*Add your Statistics screenshot here.*
+<img width="188" height="401" alt="image" src="https://github.com/user-attachments/assets/d1e01354-a9c5-4f22-a7e2-8b95b7650ed0" />
+
 
 ---
 
