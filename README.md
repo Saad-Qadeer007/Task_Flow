@@ -71,6 +71,24 @@ This allows users to create tasks that repeat without manually creating them aga
 * Supports scheduled notifications
 * Handles notification time zones
 * Notifications can work even when the application is not actively open
+* Global notification setting to enable or disable task notifications
+* Disabling notifications cancels all currently scheduled task notifications
+* New tasks created while notifications are disabled will not schedule notifications
+* Enabling notifications allows newly created tasks to schedule notifications again
+* Task notifications are triggered when a task is approaching its deadline and when the task expires
+
+---
+
+### 🌙 Light & Dark Mode
+
+TaskFlow supports both **Light Mode** and **Dark Mode** to provide a more comfortable experience in different lighting conditions.
+
+Users can switch between:
+
+* ☀️ Light Mode
+* 🌙 Dark Mode
+
+The selected theme is applied throughout the application interface, allowing users to choose the appearance that best suits their preference.
 
 ---
 
@@ -127,6 +145,7 @@ Statistics include information such as:
 
 * Clean and minimal interface
 * Consistent color system
+* Light and dark themes
 * Bottom navigation
 * Responsive Flutter layouts
 * Visual indicators for task and habit states
@@ -205,6 +224,7 @@ Building TaskFlow helped me move from learning Flutter concepts individually to 
 * Timers
 * Async/Await
 * UI state updates
+* Light and dark theme management
 
 ### State Management
 
@@ -214,6 +234,7 @@ Building TaskFlow helped me move from learning Flutter concepts individually to 
 * Managing application state
 * Updating UI from provider data
 * Separating UI and application logic
+* Managing global application settings
 
 ### Firebase
 
@@ -234,6 +255,9 @@ Building TaskFlow helped me move from learning Flutter concepts individually to 
 * Notification IDs
 * Reminder scheduling
 * Android notification permissions
+* Enabling and disabling notifications globally
+* Cancelling scheduled notifications
+* Controlling notification scheduling for newly created tasks
 
 ### Data & Logic
 
@@ -250,6 +274,8 @@ Building TaskFlow helped me move from learning Flutter concepts individually to 
 * Current streak calculation
 * Best streak calculation
 * Progress percentage calculation
+* Global notification state handling
+* Theme state management
 
 ---
 
@@ -274,6 +300,78 @@ Display New Occurrence
 ```
 
 This keeps the task system relatively simple while still allowing recurring tasks.
+
+---
+
+## 🔔 How Notification Settings Work
+
+TaskFlow provides a global notification setting that controls task notifications.
+
+When notifications are **ON**:
+
+```text
+Create Task
+     ↓
+Check Notification Setting
+     ↓
+Notifications Enabled
+     ↓
+Schedule Task Notifications
+     ↓
+Reminder + Expiration Notification
+```
+
+When notifications are **OFF**:
+
+```text
+Turn Notifications OFF
+          ↓
+Cancel Existing Notifications
+          ↓
+Create New Task
+          ↓
+Check Notification Setting
+          ↓
+Notifications Disabled
+          ↓
+No Notifications Scheduled
+```
+
+If notifications are enabled again:
+
+```text
+Turn Notifications ON
+          ↓
+New Task Created
+          ↓
+Check Notification Setting
+          ↓
+Notifications Enabled
+          ↓
+Schedule Notifications
+```
+
+This ensures that disabling notifications immediately stops existing scheduled notifications and also prevents notifications from being scheduled for tasks created while the setting is disabled.
+
+---
+
+## 🌙 How Theme Settings Work
+
+TaskFlow supports two application themes:
+
+```text
+        Theme Setting
+             │
+       ┌─────┴─────┐
+       ↓           ↓
+   Light Mode   Dark Mode
+       │           │
+       └─────┬─────┘
+             ↓
+      Application UI
+```
+
+Users can switch between Light Mode and Dark Mode, and the selected theme is applied throughout the application.
 
 ---
 
@@ -451,6 +549,8 @@ Firebase
 State Management
    +
 Notifications
+   +
+Theme Management
    +
 Task & Habit Logic
    +
