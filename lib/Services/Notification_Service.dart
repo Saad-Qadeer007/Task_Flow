@@ -133,7 +133,7 @@ class NotificationService {
 
   Future<void> cancelAllNotification() async {
     final pending = await notifications.pendingNotificationRequests();
-    print(pending.length);
+    print("Showing the pending notification count : ${pending.length}");
     await notifications.cancelAll();
     print(pending.length);
     print("All Notification Cancelled");

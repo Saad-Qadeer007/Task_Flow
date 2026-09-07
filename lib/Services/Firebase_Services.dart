@@ -9,7 +9,10 @@ import 'package:task_flow/Services/Notification_Service.dart';
 class FirebaseServices {
   // Firebase Service For Handing the Firebase Operations For The Tasks
 
-  Future<TaskModel> addTaskToFirebase(TaskModel model) async {
+  Future<TaskModel> addTaskToFirebase(
+    TaskModel model,
+    bool isNotification,
+  ) async {
     Map<String, dynamic> data = TaskModel.toMap(model);
     try {
       final document = await FirebaseFirestore.instance
@@ -20,21 +23,24 @@ class FirebaseServices {
       model.id = document.id;
       await document.update({"id": document.id});
 
-      await NotificationService().scheduleNotification(
-        document.id,
-        model.taskTitle.toString(),
-        model.taskDueDate!,
-        model.taskDueTime!,
-        model.taskReminder == "5 Minutes Before"
-            ? 5
-            : model.taskReminder == "10 Minutes Before"
-            ? 10
-            : model.taskReminder == "30 Minutes Before"
-            ? 30
-            : model.taskReminder == "1 Hour Before"
-            ? 60
-            : null,
-      );
+      print("Printing isNotification : $isNotification");
+      isNotification
+          ? await NotificationService().scheduleNotification(
+              document.id,
+              model.taskTitle.toString(),
+              model.taskDueDate!,
+              model.taskDueTime!,
+              model.taskReminder == "5 Minutes Before"
+                  ? 5
+                  : model.taskReminder == "10 Minutes Before"
+                  ? 10
+                  : model.taskReminder == "30 Minutes Before"
+                  ? 30
+                  : model.taskReminder == "1 Hour Before"
+                  ? 60
+                  : null,
+            )
+          : null;
       return model;
     } catch (e) {
       print(e);
@@ -51,7 +57,7 @@ class FirebaseServices {
     return data;
   }
 
-  Future<void> deleteTaskFromFirebase(String id) async {
+  Future<void> deleteTaskFromFirebase(String id, bool isNotification) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -59,10 +65,13 @@ class FirebaseServices {
         .doc(id)
         .delete();
 
-    await NotificationService().cancelNotification(id);
+    isNotification ? await NotificationService().cancelNotification(id) : null;
   }
 
-  Future<void> updateTaskFromFirebase(Map<String, dynamic> data) async {
+  Future<void> updateTaskFromFirebase(
+    Map<String, dynamic> data,
+    bool isNotification,
+  ) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -111,24 +120,26 @@ class FirebaseServices {
       return;
     }
     await NotificationService().cancelNotification(data["id"]);
-    await NotificationService().scheduleNotification(
-      data["id"],
-      data["taskTitle"],
-      data["taskDueDate"],
-      TimeOfDay(
-        hour: data["taskDueTime"]["hour"],
-        minute: data["taskDueTime"]["minute"],
-      ),
-      data["taskReminder"] == "5 Minutes Before"
-          ? 5
-          : data["taskReminder"] == "10 Minutes Before"
-          ? 10
-          : data["taskReminder"] == "30 Minutes Before"
-          ? 30
-          : data["taskReminder"] == "1 Hour Before"
-          ? 60
-          : null,
-    );
+    isNotification
+        ? await NotificationService().scheduleNotification(
+            data["id"],
+            data["taskTitle"],
+            data["taskDueDate"],
+            TimeOfDay(
+              hour: data["taskDueTime"]["hour"],
+              minute: data["taskDueTime"]["minute"],
+            ),
+            data["taskReminder"] == "5 Minutes Before"
+                ? 5
+                : data["taskReminder"] == "10 Minutes Before"
+                ? 10
+                : data["taskReminder"] == "30 Minutes Before"
+                ? 30
+                : data["taskReminder"] == "1 Hour Before"
+                ? 60
+                : null,
+          )
+        : null;
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -189,15 +200,17 @@ class FirebaseServices {
   }
 
   Future<void> updateHabitFromFirebase(Map<String, dynamic> data) async {
-    try{
+    try {
       await FirebaseFirestore.instance
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection("habits")
           .doc(data["habitId"])
           .update(data);
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
+
+
 }

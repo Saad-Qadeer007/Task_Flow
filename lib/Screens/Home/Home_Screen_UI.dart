@@ -227,7 +227,10 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
                           },
                           child: InkWell(
                             onTap: () {
-                              print(provider.tasks[0].taskRepeat);
+                              print(
+                                "Is Notification :  ${provider.isNotification}",
+                              );
+                              NotificationService().cancelAllNotification();
                             },
                             child: Text(
                               "View All",

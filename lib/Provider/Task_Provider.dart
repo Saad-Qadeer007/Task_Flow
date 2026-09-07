@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_flow/Models/Task_Model.dart';
+import 'package:task_flow/Services/Notification_Service.dart';
 import '../Services/Firebase_Services.dart';
 
 class TaskProvider extends ChangeNotifier {
   String priority = "High";
+  bool isDark = false;
+  bool isNotification = false;
   List<TaskModel> tasks = [];
   bool editMode = false;
   int totalTasks = 0;
@@ -43,6 +47,27 @@ class TaskProvider extends ChangeNotifier {
   late final startOfDay = DateTime(now.year, now.month, now.day);
 
   late final endOfDay = startOfDay.add(const Duration(days: 1));
+
+  Future<void> toggleDarkMode() async {
+    isDark = !isDark;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isDark", isDark);
+    print("Dark Mode get Saved");
+    notifyListeners();
+  }
+
+  Future<void> toggleNotification() async {
+    isNotification = !isNotification;
+    isNotification == false
+        ? NotificationService().cancelAllNotification()
+        : NotificationService().initialize();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setBool("isNotification", isNotification);
+    print("Notification get Saved");
+    getTasks();
+    print(isNotification);
+    notifyListeners();
+  }
 
   void categorySelectionHandler(String value) {
     selectedCatagory = value;
@@ -139,7 +164,10 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void addTask(TaskModel task) async {
-    TaskModel model = await FirebaseServices().addTaskToFirebase(task);
+    TaskModel model = await FirebaseServices().addTaskToFirebase(
+      task,
+      isNotification,
+    );
     print(model.id);
     tasks.add(model);
     filterTodayTasks();
@@ -154,6 +182,13 @@ class TaskProvider extends ChangeNotifier {
       data.docs.map((items) {
         tasks.add(TaskModel.toModel(items.data() as Map<String, dynamic>));
       }).toList();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.getBool("isNotification") == null
+          ? isNotification = false
+          : isNotification = pref.getBool("isNotification")!;
+      pref.getBool("isDark") == null
+          ? isDark = false
+          : isDark = pref.getBool("isDark")!;
       notifyListeners();
     } catch (e) {
       print(e);
@@ -163,7 +198,7 @@ class TaskProvider extends ChangeNotifier {
   void deleteTask(String id) async {
     int index = tasks.indexWhere((element) => element.id == id);
     tasks.removeAt(index);
-    await FirebaseServices().deleteTaskFromFirebase(id);
+    await FirebaseServices().deleteTaskFromFirebase(id, isNotification);
     await getTasks();
     searchWithDate();
     await filterTodayTasks();
@@ -171,8 +206,8 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTask(Map<String, dynamic> data,String date) async {
-    await FirebaseServices().updateTaskFromFirebase(data);
+  void updateTask(Map<String, dynamic> data, String date) async {
+    await FirebaseServices().updateTaskFromFirebase(data, isNotification);
     await getTasks();
     getTaskCountForStatistics(date);
     filterTodayTasks();
