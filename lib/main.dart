@@ -33,11 +33,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme().lightTheme,
-      themeMode: ThemeMode.light,
-      home: SplashScreen(),
+    return Consumer<TaskProvider>(
+      builder: (context, provider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme().lightTheme,
+          darkTheme: AppTheme().darkTheme,
+          themeMode: provider.isDark ? ThemeMode.dark : ThemeMode.light,
+          home: SplashScreen(),
+        );
+      },
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_flow/Provider/Task_Provider.dart';
 
 import '../Utilties/App_Colors.dart';
 
@@ -23,32 +25,48 @@ class _TaskSummaryCardState extends State<TaskSummaryCard> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      child: Card(
-        elevation: 0,
-        color: AppColors.background,
-        child: Row(
-          children: [
-            Icon(widget.icon, color: AppColors.secondaryTextColor,size: 25,),
-            SizedBox(width: 10),
-            Text(
-              widget.taskOption,
-              style: TextStyle(
-                color: AppColors.moderateGrey,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+      child: Consumer<TaskProvider>(
+        builder: (context, provider, child) {
+          return Card(
+            elevation: 0,
+            color: provider.isDark
+                ? AppColors.darkBackground
+                : AppColors.background,
+            child: Row(
+              children: [
+                Icon(
+                  widget.icon,
+                  color: provider.isDark == false
+                      ? AppColors.secondaryTextColor
+                      : AppColors.lightColor,
+                  size: 25,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  widget.taskOption,
+                  style: TextStyle(
+                    color: provider.isDark
+                        ? AppColors.lightColor
+                        : AppColors.moderateGrey,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  widget.taskOptionsData,
+                  style: TextStyle(
+                    color: provider.isDark
+                        ? AppColors.lightColor
+                        : AppColors.moderateGrey,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            Spacer(),
-            Text(
-              widget.taskOptionsData,
-              style: TextStyle(
-                color: AppColors.moderateGrey,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

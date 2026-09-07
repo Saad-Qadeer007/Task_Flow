@@ -98,7 +98,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: AppColors.moderateGrey,
+                        color: provider.isDark == false
+                            ? AppColors.moderateGrey
+                            : AppColors.lightColor,
                       ),
                     ),
                     SizedBox(height: 10),
@@ -114,7 +116,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 provider.filterStatisticsCompletedTasks.length,
                             itemBuilder: (context, index) {
                               return Card(
-                                color: AppColors.cards,
+                                color: Theme.of(context).cardColor,
                                 child: InkWell(
                                   onTap: () {
                                     context
@@ -135,14 +137,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .toString(),
                                           tasks: provider.tasks,
                                           upcoming: provider.isUpcoming,
-                                          date : "this week",
+                                          date: "this week",
                                         ),
                                       ),
                                     );
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
-                                      backgroundColor: Colors.grey.shade100,
+                                      backgroundColor: provider.isDark
+                                          ? AppColors.moderateGrey
+                                          : Colors.grey.shade100,
                                       child: Icon(
                                         Icons.check,
                                         color: Colors.green,
@@ -159,14 +163,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .taskTitle!
                                               .substring(1),
                                       style: TextStyle(
-                                        color: AppColors.moderateGrey,
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
                                       ),
                                     ),
                                     trailing: Text(
                                       "Completed",
                                       style: TextStyle(
                                         fontSize: 14,
-                                        color: AppColors.moderateGrey,
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
                                       ),
                                     ),
                                   ),
@@ -196,7 +204,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 provider.filterStatisticsPendingTasks.length,
                             itemBuilder: (context, index) {
                               return Card(
-                                color: AppColors.cards,
+                                color: Theme.of(context).cardColor,
                                 child: InkWell(
                                   onTap: () {
                                     context
@@ -217,14 +225,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .toString(),
                                           tasks: provider.tasks,
                                           upcoming: provider.isUpcoming,
-                                          date : defaultSelection,
+                                          date: defaultSelection,
                                         ),
                                       ),
                                     );
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(
-                                      backgroundColor: Colors.grey.shade100,
+                                      backgroundColor: provider.isDark
+                                          ? AppColors.moderateGrey
+                                          : Colors.grey.shade100,
                                       child: Icon(
                                         Icons.pending_actions,
                                         color: AppColors.secondaryTextColor,
@@ -241,14 +251,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                               .taskTitle!
                                               .substring(1),
                                       style: TextStyle(
-                                        color: AppColors.moderateGrey,
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
                                       ),
                                     ),
                                     trailing: Text(
                                       "Pending",
                                       style: TextStyle(
                                         fontSize: 14,
-                                        color: AppColors.moderateGrey,
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
                                       ),
                                     ),
                                   ),

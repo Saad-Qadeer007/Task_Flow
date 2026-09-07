@@ -36,7 +36,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
     return Consumer<TaskProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: provider.isDark
+              ? AppColors.moderateGrey
+              : AppColors.primaryColor,
           body: SingleChildScrollView(
             child: SafeArea(
               child: Column(
@@ -94,7 +96,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
                       ),
-                      color: AppColors.background,
+                      color: provider.isDark
+                          ? AppColors.darkBackground
+                          : AppColors.background,
                     ),
                     padding: EdgeInsets.all(15),
                     width: MediaQuery.of(context).size.width,
@@ -138,7 +142,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         Text(
                           "Description",
                           style: TextStyle(
-                            color: AppColors.moderateGrey,
+                            color: provider.isDark
+                                ? AppColors.lightColor
+                                : AppColors.moderateGrey,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -147,7 +153,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                         Text(
                           data.taskDescription.toString(),
                           style: TextStyle(
-                            color: AppColors.moderateGrey,
+                            color: provider.isDark == false
+                                ? AppColors.moderateGrey
+                                : AppColors.lightColor,
                             fontSize: 16,
                           ),
                         ),
@@ -260,7 +268,6 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      backgroundColor: AppColors.background,
                                       title: Text(
                                         "Delete Task",
                                         style: TextStyle(
@@ -274,7 +281,9 @@ class _TasksDetailScreenState extends State<TasksDetailScreen> {
                                           Text(
                                             "Are U Sure You Want To Delete This Note?",
                                             style: TextStyle(
-                                              color: AppColors.moderateGrey,
+                                              color: provider.isDark
+                                                  ? AppColors.lightColor
+                                                  : AppColors.moderateGrey,
                                               fontSize: 16,
                                             ),
                                           ),

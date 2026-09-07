@@ -109,9 +109,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: AppColors.cards,
+                                color: provider.isDark == false
+                                    ? AppColors.cards
+                                    : AppColors.moderateGrey,
                                 border: Border.all(
-                                  color: Colors.grey.shade300,
+                                  color: provider.isDark
+                                      ? AppColors.darkBackground
+                                      : Colors.grey.shade300,
                                   width: .9,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
@@ -120,14 +124,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SwitchListTile(
-                                    title: Text("Dark Mode"),
+                                    title: Text(
+                                      "Dark Mode",
+                                      style: TextStyle(
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     value: provider.isDark,
                                     onChanged: (bool value) {
                                       provider.toggleDarkMode();
                                     },
                                   ),
                                   SwitchListTile(
-                                    title: Text("Notifications"),
+                                    title: Text(
+                                      "Notifications",
+                                      style: TextStyle(
+                                        color: provider.isDark == false
+                                            ? AppColors.moderateGrey
+                                            : AppColors.lightColor,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                     value: provider.isNotification,
                                     onChanged: (bool value) {
                                       provider.toggleNotification();
@@ -178,7 +200,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            backgroundColor: AppColors.background,
                             title: Text(
                               "About",
                               style: TextStyle(
@@ -193,7 +214,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   "This is a simple habit tracking app which lets you track your tasks and habits and track your progress.",
                                   style: TextStyle(
-                                    color: AppColors.moderateGrey,
+                                    color: provider.isDark == false
+                                        ? AppColors.moderateGrey
+                                        : AppColors.lightColor,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -247,7 +270,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            backgroundColor: AppColors.background,
                             title: Text(
                               "Logout",
                               style: TextStyle(
@@ -261,7 +283,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   "Are U Sure You Want To Logout?",
                                   style: TextStyle(
-                                    color: AppColors.moderateGrey,
+                                    color: provider.isDark == false
+                                        ? AppColors.moderateGrey
+                                        : AppColors.lightColor,
                                     fontSize: 16,
                                   ),
                                 ),

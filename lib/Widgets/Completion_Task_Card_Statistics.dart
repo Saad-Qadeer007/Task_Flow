@@ -19,7 +19,7 @@ class _CompletionTaskCardStatisticsState
     return Consumer<TaskProvider>(
       builder: (context, provider, child) {
         return Card(
-          color: AppColors.cards,
+          color: Theme.of(context).cardColor,
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Row(

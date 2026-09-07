@@ -73,7 +73,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           },
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: AppColors.moderateGrey,
+                            color: provider.isDark == false
+                                ? AppColors.moderateGrey
+                                : AppColors.lightColor,
                           ),
                         ),
                         Spacer(),
@@ -102,7 +104,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           },
                           child: Icon(
                             Icons.search,
-                            color: AppColors.moderateGrey,
+                            color: provider.isDark == false
+                                ? AppColors.moderateGrey
+                                : AppColors.lightColor,
                             size: 30,
                           ),
                         ),
@@ -114,154 +118,196 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                               builder: (context) {
                                 return SafeArea(
                                   child: SingleChildScrollView(
-                                    child: Container(
-                                      padding: EdgeInsets.all(15.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadiusGeometry.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Consumer<TaskProvider>(
-                                        builder: (context, provider, child) {
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Filter Notes",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: AppColors.darkGrey,
-                                                  fontWeight: FontWeight(600),
+                                    child: Consumer<TaskProvider>(
+                                      builder: (context, provider, child) {
+                                        return Container(
+                                          padding: EdgeInsets.all(15.0),
+                                          decoration: BoxDecoration(
+                                            color: provider.isDark == false
+                                                ? AppColors.background
+                                                : AppColors.darkBackground,
+                                            borderRadius:
+                                                BorderRadiusGeometry.only(
+                                                  topLeft: Radius.circular(20),
+                                                  topRight: Radius.circular(20),
                                                 ),
-                                              ),
-                                              SizedBox(height: 20),
-                                              Text(
-                                                "Filter By Category",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.darkGrey,
-                                                ),
-                                              ),
-                                              SizedBox(height: 15),
-                                              Wrap(
-                                                spacing: 10,
-                                                children: taskCategories.map((
-                                                  item,
-                                                ) {
-                                                  return TaskCategoryChip(
-                                                    category: item,
-                                                  );
-                                                }).toList(),
-                                              ),
-                                              Row(
+                                          ),
+                                          width: MediaQuery.of(
+                                            context,
+                                          ).size.width,
+                                          child: Consumer<TaskProvider>(
+                                            builder: (context, provider, child) {
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "Filter For Priority",
+                                                    "Filter Notes",
                                                     style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.darkGrey,
+                                                      fontSize: 20,
+                                                      color:
+                                                          provider.isDark ==
+                                                              false
+                                                          ? AppColors.darkGrey
+                                                          : AppColors
+                                                                .lightColor,
+                                                      fontWeight: FontWeight(
+                                                        600,
+                                                      ),
                                                     ),
                                                   ),
-                                                  Spacer(),
+                                                  SizedBox(height: 20),
                                                   Text(
-                                                    provider.priority,
+                                                    "Filter By Category",
                                                     style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: AppColors
-                                                          .moderateGrey,
+                                                      color:
+                                                          provider.isDark ==
+                                                              false
+                                                          ? AppColors.darkGrey
+                                                          : AppColors
+                                                                .lightColor,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 15),
+                                                  Wrap(
+                                                    spacing: 10,
+                                                    children: taskCategories.map(
+                                                      (item) {
+                                                        return TaskCategoryChip(
+                                                          category: item,
+                                                        );
+                                                      },
+                                                    ).toList(),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        "Filter For Priority",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              provider.isDark ==
+                                                                  false
+                                                              ? AppColors
+                                                                    .darkGrey
+                                                              : AppColors
+                                                                    .lightColor,
+                                                        ),
+                                                      ),
+                                                      Spacer(),
+                                                      Text(
+                                                        provider.priority,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              provider.isDark ==
+                                                                  false
+                                                              ? AppColors
+                                                                    .darkGrey
+                                                              : AppColors
+                                                                    .lightColor,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 15),
+                                                  Wrap(
+                                                    spacing: 10,
+                                                    children: provider
+                                                        .taskPriority
+                                                        .map((item) {
+                                                          return TaskPriorityChips(
+                                                            item: item,
+                                                          );
+                                                        })
+                                                        .toList(),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Container(
+                                                    width: MediaQuery.of(
+                                                      context,
+                                                    ).size.width,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            AppColors
+                                                                .primaryColor,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8.0,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        context
+                                                            .read<
+                                                              TaskProvider
+                                                            >()
+                                                            .searchWithCatagory();
+                                                        context
+                                                            .read<
+                                                              TaskProvider
+                                                            >()
+                                                            .searchWithPriority();
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(
+                                                        "Apply Filter",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: MediaQuery.of(
+                                                      context,
+                                                    ).size.width,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            AppColors
+                                                                .primaryColor,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8.0,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        context
+                                                            .read<
+                                                              TaskProvider
+                                                            >()
+                                                            .clearFilter();
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text(
+                                                        "Clear Filter",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
-                                              ),
-                                              SizedBox(height: 15),
-                                              Wrap(
-                                                spacing: 10,
-                                                children: provider.taskPriority
-                                                    .map((item) {
-                                                      return TaskPriorityChips(
-                                                        item: item,
-                                                      );
-                                                    })
-                                                    .toList(),
-                                              ),
-                                              SizedBox(height: 20),
-                                              Container(
-                                                width: MediaQuery.of(
-                                                  context,
-                                                ).size.width,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.primaryColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8.0,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    context
-                                                        .read<TaskProvider>()
-                                                        .searchWithCatagory();
-                                                    context
-                                                        .read<TaskProvider>()
-                                                        .searchWithPriority();
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    "Apply Filter",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-
-                                              SizedBox(height: 10),
-                                              Container(
-                                                width: MediaQuery.of(
-                                                  context,
-                                                ).size.width,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.primaryColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8.0,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    context
-                                                        .read<TaskProvider>()
-                                                        .clearFilter();
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    "Clear Filter",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ).animate().fadeIn(duration: 500.ms),
+                                              );
+                                            },
+                                          ),
+                                        ).animate().fadeIn(duration: 500.ms);
+                                      },
+                                    ),
                                   ),
                                 );
                               },
@@ -270,7 +316,9 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           child:
                               FaIcon(
                                 FontAwesomeIcons.filter,
-                                color: Colors.grey.shade700,
+                                color: provider.isDark == false
+                                    ? AppColors.moderateGrey
+                                    : AppColors.lightColor,
                               ).animate().shimmer(
                                 duration: Duration(milliseconds: 1000),
                                 color: Colors.grey.shade400,
@@ -290,15 +338,8 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                                         .searchByTextField(value);
                                   },
                                   decoration: InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: AppColors.moderateGrey,
-                                    ),
+                                    prefixIcon: Icon(Icons.search),
                                     hintText: "Search",
-                                    hintStyle: TextStyle(
-                                      color: AppColors.moderateGrey,
-                                      fontWeight: FontWeight.bold,
-                                    ),
                                   ),
                                 ),
                               )
@@ -310,14 +351,16 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                     SizedBox(height: 20),
                     //   Chips For Filter By Date
                     Wrap(
-                      runSpacing: 2,
-                      spacing: 1,
+                      runSpacing: 5,
+                      spacing: 5,
                       children: dateChipList
                           .map(
                             (e) => ActionChip(
                               backgroundColor: provider.activeDateChip == e
                                   ? AppColors.primaryColor
-                                  : AppColors.background,
+                                  : provider.isDark == false
+                                  ? AppColors.background
+                                  : AppColors.darkBackground,
                               onPressed: () {
                                 setState(() {
                                   provider.activeDateChip = e;

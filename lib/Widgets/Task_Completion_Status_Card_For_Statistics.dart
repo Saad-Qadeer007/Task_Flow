@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../Utilties/App_Colors.dart';
-
 class TaskCompletionStatusCardForStatistics extends StatefulWidget {
   final String title;
   final int count;
@@ -22,7 +19,7 @@ class _TaskCompletionStatusCardForStatisticsState
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.cards,
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(

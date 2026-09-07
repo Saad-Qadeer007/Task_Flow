@@ -65,7 +65,6 @@ class _ProgressCardState extends State<ProgressCard> {
                   builder: (context, value, child) {
                     return CircularProgressIndicator(
                       value: value,
-                      color: AppColors.successColor,
                       strokeWidth: 5,
                     );
                   },
