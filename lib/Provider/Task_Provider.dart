@@ -153,14 +153,17 @@ class TaskProvider extends ChangeNotifier {
 
   void overDueTasks() {
     notNullOverDueTaskCount = 0;
-    final now = DateTime.now();
-    late final startOfDay = DateTime(now.year, now.month, now.day);
     final todayTasks = tasks.map((element) {
-      if (element.taskDueTime!.isBefore(
-            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
-          ) &&
-          element.isCompleted == false &&
-          !element.taskDueDate!.isAfter(startOfDay)) {
+      final dueDateTime = DateTime(
+        element.taskDueDate!.year,
+        element.taskDueDate!.month,
+        element.taskDueDate!.day,
+        element.taskDueTime!.hour,
+        element.taskDueTime!.minute,
+      );
+
+      if (dueDateTime.isBefore(DateTime.now()) &&
+          element.isCompleted == false) {
         return element;
       }
     }).toList();
@@ -301,6 +304,9 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void applyFilter() {
+    print("Apply Filter rn");
+    print(searchWithDateChips);
+    print(activeDateChip);
     final searchedResult = tasks.where((task) {
       bool matchesText = true;
       bool matchesCategory = true;
@@ -326,9 +332,12 @@ class TaskProvider extends ChangeNotifier {
         matchesPriority = task.taskPriority == priority;
       }
 
-      if (searchWithDateChips) {
+      if (searchWithDateChips == true) {
+        print("Search With DateChip Is True");
         if (activeDateChip == "All") {
+          print("All Section Run");
           filteredList = tasks;
+          print("Filtered List : ${filteredList.length}");
         } else if (activeDateChip == "Today") {
           matchDate =
               task.taskDueDate?.day == DateTime.now().day &&
@@ -341,7 +350,15 @@ class TaskProvider extends ChangeNotifier {
                 ),
               );
         } else if (activeDateChip == "Upcoming") {
-          matchDate = task.taskDueDate!.isAfter(endOfDay) ? true : false;
+          final today = DateTime.now();
+
+          final startOfTomorrow = DateTime(
+            today.year,
+            today.month,
+            today.day + 1,
+          );
+
+          matchDate = !task.taskDueDate!.isBefore(startOfTomorrow);
         } else if (activeDateChip == "Completed") {
           matchDate = task.isCompleted == true ? true : false;
         }
@@ -474,6 +491,31 @@ class TaskProvider extends ChangeNotifier {
           filterStatisticsTasks.length *
           100;
     }
+    notifyListeners();
+  }
+
+  void clearTaskProviderData() {
+    tasks.clear();
+    clearFilter();
+    getGreeting();
+    isDark = false;
+    isNotification = false;
+    priority = "High";
+    selectedCatagory = "";
+    activeDateChip = "All";
+    filteredList = tasks;
+    isUpcoming = false;
+    totalTasks = 0;
+    completedTasks = 0;
+    completedTaskByPercentage = 0.0;
+    notNullOverDueTaskCount = 0;
+    notNullTodayTaskCount = 0;
+    notNullUpcomingTaskCount = 0;
+    searchModeByTextField = false;
+    searchModeByCategory = false;
+    searchModeByPriority = false;
+    searchWithDateChips = false;
+    searchText = "";
     notifyListeners();
   }
 }

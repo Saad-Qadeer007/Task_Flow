@@ -192,7 +192,6 @@ class HabitProvider extends ChangeNotifier {
     for (final date in model.habitCompletedDates) {
       if (date.isAtSameMomentAs(startOfWeek) ||
           (date.isAfter(startOfWeek) && date.isBefore(endOfWeek))) {
-
         getDay.add(date.weekday);
       }
     }
@@ -215,7 +214,11 @@ class HabitProvider extends ChangeNotifier {
       }
     }
 
+    notifyListeners();
+  }
 
+  void clearHabitProvider() {
+    habits.clear();
     notifyListeners();
   }
 }

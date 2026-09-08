@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Habits/Habit_Screen.dart';
+import '../../Provider/Habit_Provider.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Profile_Card.dart';
 import '../Auth/Login_Screen.dart';
@@ -307,6 +308,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  context
+                                      .read<TaskProvider>()
+                                      .clearTaskProviderData();
+                                  context
+                                      .read<HabitProvider>()
+                                      .clearHabitProvider();
                                   FirebaseAuth.instance.signOut();
                                   Navigator.pushReplacement(
                                     context,
