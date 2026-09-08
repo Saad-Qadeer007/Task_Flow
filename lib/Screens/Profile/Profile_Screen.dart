@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:task_flow/Provider/Task_Provider.dart';
 import 'package:task_flow/Screens/Habits/Habit_Screen.dart';
+
 import '../../Provider/Habit_Provider.dart';
 import '../../Utilties/App_Colors.dart';
 import '../../Widgets/Profile_Card.dart';
@@ -21,6 +22,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current Firebase user safely
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Get user's name safely
+    final String? name = user?.displayName;
+
     return Consumer<TaskProvider>(
       builder: (context, provider, child) {
         return Scaffold(
@@ -30,42 +37,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
+
                     SizedBox(
                       width: double.infinity,
                       child: Column(
                         children: [
                           CircleAvatar(
                             radius: 50,
-                            backgroundColor: AppColors.secondaryTextColor,
+                            backgroundColor:
+                            AppColors.secondaryTextColor,
                             child: Icon(
                               Icons.person,
                               size: 50,
                               color: AppColors.lightColor,
                             ),
                           ),
-                          SizedBox(height: 20),
+
+                          const SizedBox(height: 20),
+
+                          // USER NAME
                           Text(
-                            FirebaseAuth.instance.currentUser!.displayName
-                                        .toString() ==
-                                    ""
+                            name == null || name.isEmpty
                                 ? "No Name"
-                                : FirebaseAuth.instance.currentUser!.displayName
-                                          .toString()[0]
-                                          .toUpperCase() +
-                                      FirebaseAuth
-                                          .instance
-                                          .currentUser!
-                                          .displayName
-                                          .toString()
-                                          .substring(1),
-                            style: TextStyle(
+                                : name[0].toUpperCase() +
+                                name.substring(1),
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
+                          // USER EMAIL
                           Text(
-                            FirebaseAuth.instance.currentUser!.email.toString(),
+                            user?.email ?? "No Email",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColors.moderateGrey,
@@ -75,15 +80,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 30),
-                    Divider(),
-                    SizedBox(height: 20),
+
+                    const SizedBox(height: 30),
+
+                    const Divider(),
+
+                    const SizedBox(height: 20),
+
+                    // MY HABITS
                     InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HabitScreen(),
+                            builder: (context) => const HabitScreen(),
                           ),
                         );
                       },
@@ -92,7 +102,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: Icons.bar_chart_rounded,
                       ),
                     ),
-                    SizedBox(height: 15),
+
+                    const SizedBox(height: 15),
+
+                    // SETTINGS
                     InkWell(
                       onTap: () {
                         setState(() {
@@ -104,104 +117,127 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: Icons.settings_rounded,
                       ),
                     ),
-                    settingsController == true
+
+                    // SETTINGS CONTENT
+                    settingsController
                         ? Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: provider.isDark == false
-                                    ? AppColors.cards
-                                    : AppColors.moderateGrey,
-                                border: Border.all(
-                                  color: provider.isDark
-                                      ? AppColors.darkBackground
-                                      : Colors.grey.shade300,
-                                  width: .9,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15.0,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: provider.isDark == false
+                              ? AppColors.cards
+                              : AppColors.moderateGrey,
+                          border: Border.all(
+                            color: provider.isDark
+                                ? AppColors.darkBackground
+                                : Colors.grey.shade300,
+                            width: .9,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            // DARK MODE
+                            SwitchListTile(
+                              title: Text(
+                                "Dark Mode",
+                                style: TextStyle(
+                                  color: provider.isDark == false
+                                      ? AppColors.moderateGrey
+                                      : AppColors.lightColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
+                              value: provider.isDark,
+                              onChanged: (bool value) {
+                                provider.toggleDarkMode();
+                              },
+                            ),
+
+                            // NOTIFICATIONS
+                            SwitchListTile(
+                              title: Text(
+                                "Notifications",
+                                style: TextStyle(
+                                  color: provider.isDark == false
+                                      ? AppColors.moderateGrey
+                                      : AppColors.lightColor,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              value: provider.isNotification,
+                              onChanged: (bool value) {
+                                provider.toggleNotification();
+                              },
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
                                 children: [
-                                  SwitchListTile(
-                                    title: Text(
-                                      "Dark Mode",
-                                      style: TextStyle(
-                                        color: provider.isDark == false
-                                            ? AppColors.moderateGrey
-                                            : AppColors.lightColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  const Divider(),
+
+                                  const Text(
+                                    "About",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    value: provider.isDark,
-                                    onChanged: (bool value) {
-                                      provider.toggleDarkMode();
-                                    },
                                   ),
-                                  SwitchListTile(
-                                    title: Text(
-                                      "Notifications",
-                                      style: TextStyle(
-                                        color: provider.isDark == false
-                                            ? AppColors.moderateGrey
-                                            : AppColors.lightColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    value: provider.isNotification,
-                                    onChanged: (bool value) {
-                                      provider.toggleNotification();
-                                    },
-                                  ),
-                                  SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Container(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Divider(),
-                                          Text(
-                                            "About",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              Text("Version"),
-                                              Spacer(),
-                                              Text("1.0.0"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+
+                                  const SizedBox(height: 10),
+
+                                  const Row(
+                                    children: [
+                                      Text("Version"),
+                                      Spacer(),
+                                      Text("1.0.0"),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                          ).animate().fade().slideX(
-                            begin: 0.5,
-                            end: 0,
-                            duration: 500.ms,
-                          )
-                        : SizedBox(),
-                    SizedBox(height: 15),
-                    ProfileCard(title: "Help", icon: Icons.help_rounded),
-                    SizedBox(height: 15),
+                          ],
+                        ),
+                      ),
+                    )
+                        .animate()
+                        .fade()
+                        .slideX(
+                      begin: 0.5,
+                      end: 0,
+                      duration: 500.ms,
+                    )
+                        : const SizedBox(),
+
+                    const SizedBox(height: 15),
+
+                    // HELP
+                    ProfileCard(
+                      title: "Help",
+                      icon: Icons.help_rounded,
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // ABOUT
                     InkWell(
                       onTap: () {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(
+                            title: const Text(
                               "About",
                               style: TextStyle(
                                 fontSize: 20,
@@ -209,7 +245,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
@@ -221,16 +258,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 15),
-                                Text(
+
+                                const SizedBox(height: 15),
+
+                                const Text(
                                   "Build With Flutter",
                                   style: TextStyle(
                                     color: AppColors.moderateGrey,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 15),
-                                Text(
+
+                                const SizedBox(height: 15),
+
+                                const Text(
                                   "Powered By Firebase",
                                   style: TextStyle(
                                     color: AppColors.moderateGrey,
@@ -246,14 +287,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                      8,
-                                    ),
+                                    borderRadius:
+                                    BorderRadius.circular(8),
                                   ),
-                                  foregroundColor: AppColors.lightColor,
-                                  backgroundColor: AppColors.primaryColor,
+                                  foregroundColor:
+                                  AppColors.lightColor,
+                                  backgroundColor:
+                                  AppColors.primaryColor,
                                 ),
-                                child: Text("Close"),
+                                child: const Text("Close"),
                               ),
                             ],
                           ),
@@ -265,13 +307,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
+
+                    // LOGOUT
                     InkWell(
                       onTap: () {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text(
+                            title: const Text(
                               "Logout",
                               style: TextStyle(
                                 fontSize: 20,
@@ -293,6 +337,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
                             actions: [
+                              // CANCEL
                               ElevatedButton(
                                 onPressed: () {
                                   Navigator.pop(context);
@@ -301,24 +346,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   backgroundColor: Colors.green,
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius:
+                                    BorderRadius.circular(8.0),
                                   ),
                                 ),
-                                child: Text("Cancel"),
+                                child: const Text("Cancel"),
                               ),
+
+                              // LOGOUT
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   context
                                       .read<TaskProvider>()
                                       .clearTaskProviderData();
+
                                   context
                                       .read<HabitProvider>()
                                       .clearHabitProvider();
-                                  FirebaseAuth.instance.signOut();
+
+                                  await FirebaseAuth.instance.signOut();
+
+                                  if (!context.mounted) return;
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginScreen(),
+                                      builder: (context) =>
+                                      const LoginScreen(),
                                     ),
                                   );
                                 },
@@ -326,10 +380,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   backgroundColor: Colors.red,
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius:
+                                    BorderRadius.circular(8.0),
                                   ),
                                 ),
-                                child: Text("Logout"),
+                                child: const Text("Logout"),
                               ),
                             ],
                           ),
@@ -348,14 +403,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment:
+                            MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.logout_rounded,
                                 color: AppColors.errorColor,
                                 size: 30,
                               ),
-                              SizedBox(width: 10),
+
+                              const SizedBox(width: 10),
+
                               Text(
                                 "Logout",
                                 style: TextStyle(

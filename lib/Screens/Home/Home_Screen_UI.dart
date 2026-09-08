@@ -53,15 +53,23 @@ class _HomeScreenUiState extends State<HomeScreenUi> {
   }
 
   Future<void> initializeApp() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       NotificationService().initialize();
-      context.read<HabitProvider>().getHabits();
-      context.read<TaskProvider>().filterTodayTasks();
-      context.read<TaskProvider>().upcomingTasks();
-      context.read<TaskProvider>().overDueTasks();
-      context.read<TaskProvider>().taskCalculation();
-      context.read<TaskProvider>().calculateCompletedTasks();
-      context.read<TaskProvider>().getGreeting();
+
+      await context.read<HabitProvider>().getHabits();
+
+      final taskProvider = context.read<TaskProvider>();
+
+      // First load tasks for the currently logged-in user
+      await taskProvider.getTasks();
+
+      // Then process those tasks
+      taskProvider.filterTodayTasks();
+      taskProvider.upcomingTasks();
+      taskProvider.overDueTasks();
+      taskProvider.taskCalculation();
+      taskProvider.calculateCompletedTasks();
+      taskProvider.getGreeting();
     });
   }
 

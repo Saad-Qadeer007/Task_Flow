@@ -331,14 +331,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           SizedBox(height: 10),
                           TextFormField(
                             validator: (value) {
+                              DateTime todayTime = DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day,
+                                DateTime.now().hour,
+                                DateTime.now().minute,
+                              );
                               if (selectedTime == null ||
                                   selectedTime ==
                                       TimeOfDay(hour: 00, minute: 00) ||
-                                  selectedTime ==
-                                      TimeOfDay(
-                                        hour: DateTime.now().hour,
-                                        minute: DateTime.now().minute,
-                                      )) {
+                                  DateTime(
+                                        selectedDate!.year,
+                                        selectedDate!.month,
+                                        selectedDate!.day,
+                                        selectedTime!.hour,
+                                        selectedTime!.minute,
+                                      ) ==
+                                      todayTime) {
                                 return "Please Select Due Time";
                               } else {
                                 return null;

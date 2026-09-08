@@ -94,39 +94,45 @@ class _GreetingCardState extends State<GreetingCard> {
             ),
             Spacer(),
             InkWell(
+              // onTap: () {
+              //   showDialog(
+              //     context: context,
+              //     builder: (context) => AlertDialog(
+              //       title: Text(
+              //         "Notification Viewer",
+              //         style: TextStyle(
+              //           fontWeight: FontWeight.bold,
+              //           fontSize: 18,
+              //         ),
+              //       ),
+              //       content: Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [Text("Coming Soon...")],
+              //       ),
+              //       actions: [
+              //         ElevatedButton(
+              //           onPressed: () {
+              //             Navigator.pop(context);
+              //           },
+              //           style: ElevatedButton.styleFrom(
+              //             shape: RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(10),
+              //             ),
+              //             foregroundColor: AppColors.lightColor,
+              //             backgroundColor: AppColors.primaryColor,
+              //           ),
+              //           child: Text("Close"),
+              //         ),
+              //       ],
+              //     ),
+              //   );
+              // },
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text(
-                      "Notification Viewer",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text("Coming Soon...")],
-                    ),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          foregroundColor: AppColors.lightColor,
-                          backgroundColor: AppColors.primaryColor,
-                        ),
-                        child: Text("Close"),
-                      ),
-                    ],
-                  ),
-                );
+                print(provider.tasks.length);
+                print(provider.notNullTodayTaskCount);
+                print(provider.notNullUpcomingTaskCount);
+                print(provider.filteredList.length);
               },
               child: Icon(
                 Icons.notifications_none,
