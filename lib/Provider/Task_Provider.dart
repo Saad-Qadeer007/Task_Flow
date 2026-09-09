@@ -304,9 +304,6 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void applyFilter() {
-    print("Apply Filter rn");
-    print(searchWithDateChips);
-    print(activeDateChip);
     final searchedResult = tasks.where((task) {
       bool matchesText = true;
       bool matchesCategory = true;
@@ -333,11 +330,8 @@ class TaskProvider extends ChangeNotifier {
       }
 
       if (searchWithDateChips == true) {
-        print("Search With DateChip Is True");
         if (activeDateChip == "All") {
-          print("All Section Run");
           filteredList = tasks;
-          print("Filtered List : ${filteredList.length}");
         } else if (activeDateChip == "Today") {
           matchDate =
               task.taskDueDate?.day == DateTime.now().day &&

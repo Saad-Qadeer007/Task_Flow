@@ -79,17 +79,11 @@ class _ShowTasksScreenState extends State<ShowTasksScreen> {
                           ),
                         ),
                         Spacer(),
-                        InkWell(
-                          onTap: () {
-                            print(provider.tasks.length);
-                            print(provider.filteredList.length);
-                          },
-                          child: Text(
-                            "All Tasks",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight(600),
-                            ),
+                        Text(
+                          "All Tasks",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight(600),
                           ),
                         ),
                         Spacer(),
